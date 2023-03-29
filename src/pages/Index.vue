@@ -27,6 +27,17 @@
         </h6>
       </div>
     </div>
+    <div class="box">
+        <div class="waterfall">
+          <vue-waterfall-easy
+            ref="waterfall"
+            :imgsArr="imgsArr"
+            @scrollReachBottom="getData"
+          >
+            <!-- <div class="info" slot-scope="props">第{{ props.index + 1 }}张图片</div> -->
+          </vue-waterfall-easy>
+        </div>
+    </div>
     <div class="main">
       <div class="section section-images">
         <div class="container">
@@ -89,6 +100,7 @@ import NucleoIconsSection from './components/NucleoIconsSection';
 import SignupForm from './components/SignupForm';
 import ExamplesSection from './components/ExamplesSection';
 import DownloadSection from './components/DownloadSection';
+import vueWaterfallEasy from 'vue-waterfall-easy';
 
 export default {
   name: 'index',
@@ -106,16 +118,79 @@ export default {
     NucleoIconsSection,
     SignupForm,
     ExamplesSection,
-    DownloadSection
+    DownloadSection,
+    vueWaterfallEasy
   },
   data() {
     return {
-      loginname: ''
+      loginname: '',
+      imgsArr: [],
+      page: 0,
     }
   },
   mounted () {
-    this.loginname = this.cookie.getCookie("userName")
+    this.loginname = this.cookie.getCookie("userName");
+    this.getData();
+  },
+  methods: {
+    getData() {
+      var list = [
+        {
+          src:
+            "https://sucai.suoluomei.cn/sucai_zs/images/20201027152322-15.jpg",
+        },
+        {
+          src:
+            "https://sucai.suoluomei.cn/sucai_zs/images/20201027152321-13.jpg",
+        },
+        {
+          src:
+            "https://sucai.suoluomei.cn/sucai_zs/images/20201027152322-14.jpg",
+        },
+        {
+          src:
+            "https://sucai.suoluomei.cn/sucai_zs/images/20201027152321-12.jpg",
+        },
+        {
+          src:
+            "https://sucai.suoluomei.cn/sucai_zs/images/20201027152320-10.jpg",
+        },
+        {
+          src:
+            "https://sucai.suoluomei.cn/sucai_zs/images/20201027152320-11.jpg",
+        },
+        {
+          src:
+            "https://sucai.suoluomei.cn/sucai_zs/images/20201027152318-8.jpg",
+        },
+        {
+          src:
+            "https://sucai.suoluomei.cn/sucai_zs/images/20201027152319-9.jpg",
+        },
+        {
+          src:
+            "https://sucai.suoluomei.cn/sucai_zs/images/20201027152300-7.jpg",
+        },
+        {
+          src:
+            "https://sucai.suoluomei.cn/sucai_zs/images/20201027152300-6.jpg",
+        }
+      ];
+      this.page += 1;
+      if (this.page == 6) {
+        this.$refs.waterfall.waterfallOver();
+      } else {
+        this.imgsArr = this.imgsArr.concat(list);
+      }
+    },
   }
 };
 </script>
-<style></style>
+<style>
+.waterfall {
+  height: 800px;
+}
+
+.info {
+  text-align: center;
+}</style>
