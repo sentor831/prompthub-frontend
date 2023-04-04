@@ -5,6 +5,7 @@
       <router-view />
     </div>
     <router-view name="footer" />
+    <el-backtop :bottom="30"></el-backtop>
   </div>
 </template>
 <script>

@@ -8,6 +8,9 @@ import Profile from './pages/Profile.vue';
 import MainNavbar from './layout/MainNavbar.vue';
 import MainFooter from './layout/MainFooter.vue';
 import ForgetPass from './pages/ForgetPass.vue';
+import Search from './pages/Search.vue';
+import TheHeader from './components/TheHeader.vue';
+import PicInfo from './pages/PicInfo.vue'
 
 Vue.use(Router);
 
@@ -64,7 +67,25 @@ export default new Router({
         header: { colorOnScroll: 400 },
         footer: { backgroundColor: 'black' }
       }
-    }
+    },
+    {
+      path: '/search',
+      name: 'search',
+      components: { default: Search, header: TheHeader, footer: MainFooter },
+      props: {
+        header: { colorOnScroll: 400 },
+        footer: { backgroundColor: 'black' }
+      }
+    },
+    {
+      path: '/picinfo',
+      name: 'picinfo',
+      components: { default: PicInfo, header: TheHeader, footer: MainFooter },
+      props: {
+        header: { colorOnScroll: 400 },
+        footer: { backgroundColor: 'black' }
+      }
+    },
   ],
   scrollBehavior: to => {
     if (to.hash) {

@@ -1,33 +1,34 @@
 <template>
   <div>
-    <div class="page-header clear-filter" filter-color="orange">
-      <parallax class="page-header-image" style="background-image:url('img/header.jpg')">
-      </parallax>
-      <div class="container">
-
-        <div>当前登录人：{{ loginname }}</div>
-
-        <div class="content-center brand">
-          <h2>欢迎使用Prompthub</h2>
-          <el-input class="input" placeholder="搜索..." v-model="keyword" @keyup.enter="goSearch()">
-            <el-button slot="append" icon="el-icon-search" @click="goSearch()"></el-button>
-          </el-input>
-        </div>
-
-      </div>
+    <!-- <the-header></the-header> -->
+    <el-backtop target=".page-component__scroll .el-scrollbar__wrap"></el-backtop>
+    <div style="margin-left: 90px; margin-top: 100px;">
+      <h3>
+        "{{ keyword }}"的搜索结果
+      </h3>
     </div>
-
     <div>
-      <el-row style=" margin-left: 90px; margin-top: 30px;">
-        <el-button round @click="chooseHot()" :type="btntypeH">热门推荐</el-button>
-        <el-button round @click="chooseRecommend()" :type="btntypeR">个性化推荐</el-button>
+      <el-row style="margin-left: 90px; margin-top: 40px;">
+        <el-button round @click="chooseD()" :type="btntypeD">DALL-E</el-button>
+        <el-button round @click="chooseM()" :type="btntypeM">Midjourney</el-button>
+        <el-button round @click="chooseS()" :type="btntypeS">Stable Diffusion</el-button>
+        <el-dropdown style="margin-left: 20px">
+          <el-button id="sort">
+            综合排序<i class="el-icon-arrow-down el-icon--right"></i>
+          </el-button>
+          <el-dropdown-menu slot="dropdown">
+            <el-dropdown-item @click.native="chooseDefault">综合排序</el-dropdown-item>
+            <el-dropdown-item @click.native="chooseGood">最多点赞</el-dropdown-item>
+            <el-dropdown-item @click.native="chooseNew">最新发布</el-dropdown-item>
+          </el-dropdown-menu>
+        </el-dropdown>
+        <div>当前登录人：{{ loginname }}</div>
       </el-row>
-
-      <!-- <div class="waterfall" style="height:400px; margin-top: 20px;">
-        <vue-waterfall-easy ref="waterfall" :imgsArr="imgsArr" @scrollReachBottom="getData">
-          <div class="info" slot-scope="props" style="text-align: center;">第{{ props.index + 1 }}张图片</div>
-        </vue-waterfall-easy>
-      </div> -->
+      <!-- <drop-down class="nav-item" title="综合排序" id="sort">
+        <a class="dropdown-item" @click="chooseDefault">综合排序</a>
+        <a class="dropdown-item" @click="chooseGood">最多点赞</a>
+        <a class="dropdown-item" @click="chooseNew">最新发布</a>
+      </drop-down> -->
 
       <Waterfall :list="list" style="margin-top:20px" width="320" :breakpoints="breakpoints" lazyload="false">
         <template #item="{ item, url }">
@@ -39,25 +40,24 @@
           </div>
         </template>
       </Waterfall>
-
     </div>
-
-
-
 
   </div>
 </template>
 <script>
 import { Parallax } from '@/components';
 import { FormGroupInput as FgInput } from '../components'
+import vueWaterfallEasy from 'vue-waterfall-easy';
+import { DropDown, Navbar, NavLink } from '@/components';
+import TheHeader from '../components/TheHeader.vue'
 import { LazyImg, Waterfall } from 'vue-waterfall-plugin'
 import 'vue-waterfall-plugin/dist/style.css'
 
 export default {
-  name: 'index',
-  bodyClass: 'index-page',
+  name: 'search',
+  bodyClass: 'search-page',
   components: {
-    Parallax,
+    // TheHeader,
     Waterfall,
     LazyImg,
   },
@@ -65,13 +65,15 @@ export default {
     return {
       loginname: '',
       keyword: '',
-      imgsArr: [],         //存放所有已加载图片的数组（即当前页面会加载的所有图片）
-      fetchImgsArr: [],     //存放每次滚动时下一批要加载的图片的数组
+      imgsArr: [],
       page: 0,
-      btntypeH: 'primary',
-      btntypeR: '',
-      stateH: 1,
-      stateR: 0,
+      btntypeD: 'primary',
+      btntypeM: 'primary',
+      btntypeS: 'primary',
+      stateD: 1,
+      stateM: 1,
+      stateS: 1,
+      stateSort: 1,
       list: [
         {
           src:
@@ -199,29 +201,52 @@ export default {
   },
   mounted() {
     this.loginname = this.cookie.getCookie("userName");
+    this.keyword = this.cookie.getCookie("keyword");
     this.getData();
   },
   methods: {
-    picInfo(item) {
-      // this.cookie.setCookie()
-      this.$router.push('/picinfo')
-    },
-    chooseHot() {
-      this.btntypeH = 'primary'
-      this.btntypeR = ''
-      this.stateH = 1
-    },
-    chooseRecommend() {
-      this.stateR = 1 - this.stateR
-      if (this.stateR == 1) {
-        this.btntypeR = 'btn btn-primary'
-        this.btntypeH = ''
-        this.stateH = 0
+    chooseD() {
+      this.stateD = 1 - this.stateD
+      console.log(this.stateD)
+      if (this.stateD == 1) {
+        this.btntypeD = 'primary'
       } else {
-        this.btntypeR = ''
-        this.btntypeH = 'primary'
-        this.stateH = 1
+        this.btntypeD = ''
       }
+
+    },
+    chooseM() {
+      this.stateM = 1 - this.stateM
+      if (this.stateM == 1) {
+        this.btntypeM = 'primary'
+      } else {
+        this.btntypeM = ''
+      }
+
+    },
+    chooseS() {
+      this.stateS = 1 - this.stateS
+      if (this.stateS == 1) {
+        this.btntypeS = 'primary'
+      } else {
+        this.btntypeS = ''
+      }
+
+    },
+    chooseDefault() {
+      this.stateSort = 1
+      document.getElementById('sort').innerHTML = '综合排序<i class="el-icon-arrow-down el-icon--right"></i>'
+
+    },
+    chooseGood() {
+      this.stateSort = 2
+      document.getElementById('sort').innerHTML = '最多点赞<i class="el-icon-arrow-down el-icon--right"></i>'
+
+    },
+    chooseNew() {
+      this.stateSort = 3
+      document.getElementById('sort').innerHTML = '最新发布<i class="el-icon-arrow-down el-icon--right"></i>'
+
     },
     getData() {
       var list = [
@@ -268,18 +293,11 @@ export default {
       ];
       this.page += 1;
       if (this.page == 6) {
-        this.$refs.waterfall.waterfallOver();
+        // this.$refs.waterfall.waterfallOver();
       } else {
         this.imgsArr = this.imgsArr.concat(list);
       }
     },
-    goSearch() {
-      let searchInfo = {
-        keyword: this.keyword,
-      }
-      this.cookie.setCookie(searchInfo, 1)
-      this.$router.push({ path: '/search', query: { keyword: this.keyword } })
-    }
   }
 };
 </script>
