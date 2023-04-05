@@ -1,12 +1,9 @@
 <template>
   <div>
-    
+
     <div class="page-header clear-filter" filter-color="orange">
       <!-- 背景 -->
-      <parallax
-        class="page-header-image"
-        style="background-image:url('img/bg5.jpg')"
-      >
+      <parallax class="page-header-image" style="background-image:url('img/bg5.jpg')">
       </parallax>
       <!-- 头像 -->
       <div class="container">
@@ -38,10 +35,14 @@
     <div class="section">
       <div class="container">
         <div class="button-container">
-          <router-link to="/Profile/MyHome" active-class="active" class="btn btn-primary btn-round btn-lg">主页</router-link>
-          <router-link to="/Profile/product" active-class="active" class="btn btn-primary btn-round btn-lg">作品</router-link>
-          <router-link to="/Profile/collection" active-class="active" class="btn btn-primary btn-round btn-lg">收藏</router-link>
-          <router-link to="/Profile/viewhistory" active-class="active" class="btn btn-primary btn-round btn-lg">历史</router-link>
+          <router-link to="/Profile/MyHome" active-class="active"
+            class="btn btn-primary btn-round btn-lg">主页</router-link>
+          <router-link to="/Profile/product" active-class="active"
+            class="btn btn-primary btn-round btn-lg">作品</router-link>
+          <router-link to="/Profile/collection" active-class="active"
+            class="btn btn-primary btn-round btn-lg">收藏</router-link>
+          <router-link to="/Profile/viewhistory" active-class="active"
+            class="btn btn-primary btn-round btn-lg">历史</router-link>
         </div>
         <router-view>使用router-view占位</router-view>
 
@@ -52,10 +53,9 @@
       
     <router-view></router-view>
     </div> -->
-    
 
-    </div>
 
+  </div>
 </template>
 <script>
 
@@ -68,8 +68,8 @@ export default {
     // TabPane
 
   },
-  methods:{
-    toMenberList(){
+  methods: {
+    toMenberList() {
       this.$router.push('/memberlist')
     }
   }
