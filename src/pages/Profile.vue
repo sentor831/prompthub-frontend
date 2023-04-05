@@ -38,13 +38,16 @@
     <div class="section">
       <div class="container">
         <div class="button-container">
-          <a href="#button" class="btn btn-primary btn-round btn-lg">我的收藏</a>
-          <a href="#button" class="btn btn-primary btn-round btn-lg">我的点赞</a>
-          <a href="#button" class="btn btn-primary btn-round btn-lg">等待审核</a>
-          <a href="#button" class="btn btn-primary btn-round btn-lg">浏览历史</a>
+          <router-link to="/Profile/mycollection" active-class="active" class="btn btn-primary btn-round btn-lg">我的收藏</router-link>
+          <router-link to="/Profile/thumbs" active-class="active" class="btn btn-primary btn-round btn-lg">我的点赞</router-link>
+          <router-link to="/Profile/checking" active-class="active" class="btn btn-primary btn-round btn-lg">等待审核</router-link>
+          <router-link to="/Profile/viewhistory" active-class="active" class="btn btn-primary btn-round btn-lg">浏览历史</router-link>
         </div>
+        <!-- 使用router-view占位 -->
+        <router-view>
+        </router-view>
 
-        <div class="row">
+        <!-- <div class="row">
           <tabs
             pills
             class="nav-align-center"
@@ -103,20 +106,20 @@
               </div>
             </tab-pane>
           </tabs>
-        </div>
+        </div> -->
       </div>
     </div>
   </div>
 </template>
 <script>
-import { Tabs, TabPane } from '@/components';
+// import { Tabs, TabPane } from '@/components';
 
 export default {
   name: 'profile',
   bodyClass: 'profile-page',
   components: {
-    Tabs,
-    TabPane
+    // Tabs,
+    // TabPane
   }
 };
 </script>

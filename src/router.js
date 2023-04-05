@@ -17,6 +17,11 @@ import UploadPage from './pages/UploadPage.vue';
 import EditPage from './pages/EditPage.vue';
 import CheckPage from './pages/CheckPage.vue';
 
+// 黄新引入部分
+import Waterfall_hx from "./components/Hx_components/Waterfall_hx"
+import ModInfo from "./pages/ModInfo"
+// 黄新引入部分end
+
 Vue.use(Router);
 
 export default new Router({
@@ -65,13 +70,47 @@ export default new Router({
       }
     },
     {
+      path: '/modinfo',
+      name: 'modinfo',
+      components: { default: ModInfo, header: MainNavbar , footer: MainFooter},
+      props: {
+        header: { colorOnScroll: 400 },
+        footer: { backgroundColor: 'black' }
+      }
+    },
+    {
       path: '/profile',
       name: 'profile',
       components: { default: Profile, header: MainNavbar, footer: MainFooter },
       props: {
         header: { colorOnScroll: 400 },
         footer: { backgroundColor: 'black' }
-      }
+      },
+      children:[
+        {
+          path:"",
+          component: Waterfall_hx
+        },
+        {
+          path: 'mycollection',
+          component: Waterfall_hx
+        },
+        {
+          path: 'thumbs',
+          // component: Thumbs
+          component: Waterfall_hx
+        },
+        {
+          path: 'checking',
+          // component: Checking
+          component: Waterfall_hx
+        },
+        {
+          path: 'viewhistory',
+          // component: Viewhistory
+          component: Waterfall_hx
+        }
+      ]
     },
     {
       path: '/search',
