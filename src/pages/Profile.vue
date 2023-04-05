@@ -1,17 +1,23 @@
 <template>
   <div>
+    
     <div class="page-header clear-filter" filter-color="orange">
+      <!-- 背景 -->
       <parallax
         class="page-header-image"
         style="background-image:url('img/bg5.jpg')"
       >
       </parallax>
+      <!-- 头像 -->
       <div class="container">
         <div class="photo-container">
           <img src="img/ryan.jpg" alt="" />
         </div>
+        <!-- 姓名 -->
         <h3 class="title">Ryan Scheinder</h3>
+        <!-- 职业介绍 -->
         <p class="category">Photographer</p>
+        <!-- 下面的三列内容 -->
         <div class="content">
           <div class="social-description">
             <h2>26</h2>
@@ -28,38 +34,17 @@
         </div>
       </div>
     </div>
+
     <div class="section">
       <div class="container">
         <div class="button-container">
-          <a href="#button" class="btn btn-primary btn-round btn-lg">Follow</a>
-          <a
-            href="#button"
-            class="btn btn-default btn-round btn-lg btn-icon"
-            rel="tooltip"
-            title="Follow me on Twitter"
-          >
-            <i class="fab fa-twitter"></i>
-          </a>
-          <a
-            href="#button"
-            class="btn btn-default btn-round btn-lg btn-icon"
-            rel="tooltip"
-            title="Follow me on Instagram"
-          >
-            <i class="fab fa-instagram"></i>
-          </a>
+          <a href="#button" class="btn btn-primary btn-round btn-lg">我的收藏</a>
+          <a href="#button" class="btn btn-primary btn-round btn-lg">我的点赞</a>
+          <a href="#button" class="btn btn-primary btn-round btn-lg">等待审核</a>
+          <a href="#button" class="btn btn-primary btn-round btn-lg">浏览历史</a>
         </div>
-        <h3 class="title">About me</h3>
-        <h5 class="description">
-          An artist of considerable range, Ryan — the name taken by
-          Melbourne-raised, Brooklyn-based Nick Murphy — writes, performs and
-          records all of his own music, giving it a warm, intimate feel with a
-          solid groove structure. An artist of considerable range.
-        </h5>
+
         <div class="row">
-          <div class="col-md-6 ml-auto mr-auto">
-            <h4 class="title text-center">My Portfolio</h4>
-          </div>
           <tabs
             pills
             class="nav-align-center"
