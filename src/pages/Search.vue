@@ -30,7 +30,7 @@
         <a class="dropdown-item" @click="chooseNew">最新发布</a>
       </drop-down> -->
 
-      <Waterfall :list="list" style="margin-top:20px" width="320" :breakpoints="breakpoints" lazyload="false">
+      <Waterfall :list="list" style="margin-top:20px" :breakpoints="breakpoints">
         <template #item="{ item, url }">
           <div @click="picInfo(item)" style="cursor: pointer;"
             class="bg-gray-900 rounded-lg shadow-md overflow-hidden transition-all duration-300 ease-linear hover:shadow-lg hover:shadow-gray-600 group">
@@ -196,7 +196,7 @@ export default {
             "https://sucai.suoluomei.cn/sucai_zs/images/20201027152300-6.jpg",
         },
       ],
-      breakpoints: { 3000: { rowPerView: 4 }, }
+      breakpoints: { 3000: { rowPerView: 4 }, },
     }
   },
   mounted() {
@@ -205,6 +205,11 @@ export default {
     this.getData();
   },
   methods: {
+    picInfo(item) {
+      // this.cookie.setCookie()
+      // this.$router.push({ path: '/picinfo', query: { picid: item.id } })
+      this.$router.push('/picInfo')
+    },
     chooseD() {
       this.stateD = 1 - this.stateD
       console.log(this.stateD)

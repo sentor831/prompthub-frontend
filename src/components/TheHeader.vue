@@ -1,5 +1,6 @@
 <template>
-    <navbar menu-classes="ml-auto" position="fixed" type="info" :transparent=false>
+    <navbar menu-classes="ml-auto" position="fixed" type="primary" :transparent="transparent"
+        :color-on-scroll="colorOnScroll">
         <a class="navbar-brand" href="/#/">PROMPTHUB</a>
 
         <template slot="navbar-menu">

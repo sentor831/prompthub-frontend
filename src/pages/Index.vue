@@ -28,8 +28,9 @@
           <div class="info" slot-scope="props" style="text-align: center;">第{{ props.index + 1 }}张图片</div>
         </vue-waterfall-easy>
       </div> -->
+      <a class="btn btn-simple btn-link btn-block" @click="change()">修改密码</a>
 
-      <Waterfall :list="list" style="margin-top:20px" width="320" :breakpoints="breakpoints" lazyload="false">
+      <Waterfall :list="list" style="margin-top:20px" :breakpoints="breakpoints">
         <template #item="{ item, url }">
           <div @click="picInfo(item)" style="cursor: pointer;"
             class="bg-gray-900 rounded-lg shadow-md overflow-hidden transition-all duration-300 ease-linear hover:shadow-lg hover:shadow-gray-600 group">
@@ -52,6 +53,7 @@ import { Parallax } from '@/components';
 import { FormGroupInput as FgInput } from '../components'
 import { LazyImg, Waterfall } from 'vue-waterfall-plugin'
 import 'vue-waterfall-plugin/dist/style.css'
+import { modifyPass } from '../api/index'
 
 export default {
   name: 'index',
@@ -198,13 +200,22 @@ export default {
     }
   },
   mounted() {
-    this.loginname = this.cookie.getCookie("userName");
+    this.loginname = this.cookie.getCookie("email");
     this.getData();
   },
   methods: {
+    change() {
+      modifyPass({
+        old_password: '123',
+        new_password: '345'
+      }).then((res) => {
+        console.log(res)
+      })
+    },
     picInfo(item) {
       // this.cookie.setCookie()
-      this.$router.push('/picinfo')
+      // this.$router.push({ path: '/picinfo', query: { picid: item.id } })
+      this.$router.push('/picInfo')
     },
     chooseHot() {
       this.btntypeH = 'primary'

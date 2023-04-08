@@ -10,7 +10,9 @@ import MainFooter from './layout/MainFooter.vue';
 import ForgetPass from './pages/ForgetPass.vue';
 import Search from './pages/Search.vue';
 import TheHeader from './components/TheHeader.vue';
-import PicInfo from './pages/PicInfo.vue'
+import PicInfo from './pages/PicInfo.vue';
+import NoticeSystem from './pages/NoticeSystem.vue';
+import NoticeReply from './pages/NoticeReply.vue'
 
 Vue.use(Router);
 
@@ -22,7 +24,7 @@ export default new Router({
       name: 'index',
       components: { default: Index, header: MainNavbar, footer: MainFooter },
       props: {
-        header: { colorOnScroll: 400 },
+        header: { colorOnScroll: 300 },
         footer: { backgroundColor: 'black' }
       }
     },
@@ -38,7 +40,7 @@ export default new Router({
     {
       path: '/login',
       name: 'login',
-      components: { default: Login, header: MainNavbar },
+      components: { default: Login, header: TheHeader },
       props: {
         header: { colorOnScroll: 400 }
       }
@@ -46,7 +48,7 @@ export default new Router({
     {
       path: '/signup',
       name: 'signup',
-      components: { default: SignUp, header: MainNavbar },
+      components: { default: SignUp, header: TheHeader },
       props: {
         header: { colorOnScroll: 400 }
       }
@@ -54,9 +56,9 @@ export default new Router({
     {
       path: '/forgetpass',
       name: 'forgetpass',
-      components: { default: ForgetPass, header: MainNavbar },
+      components: { default: ForgetPass, header: TheHeader },
       props: {
-        header: { colorOnScroll: 400 }
+        header: { colorOnScroll: 0 }
       }
     },
     {
@@ -82,8 +84,24 @@ export default new Router({
       name: 'picinfo',
       components: { default: PicInfo, header: TheHeader, footer: MainFooter },
       props: {
-        header: { colorOnScroll: 400 },
+        header: { colorOnScroll: 400, transparent: true },
         footer: { backgroundColor: 'black' }
+      }
+    },
+    {
+      path: '/system',
+      name: 'system-notice',
+      components: { default: NoticeSystem, header: TheHeader },
+      props: {
+        header: { colorOnScroll: 400 }
+      }
+    },
+    {
+      path: '/reply',
+      name: 'reply-notice',
+      components: { default: NoticeReply, header: TheHeader },
+      props: {
+        header: { colorOnScroll: 400 }
       }
     },
   ],
