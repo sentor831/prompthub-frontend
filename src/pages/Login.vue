@@ -72,12 +72,12 @@ export default {
         })
           .then((res) => {
             console.log(res)
-            if (res.data.code == 200) {
+            if (res.status == 200) {
               // let loginInfo = {
               //   email: this.email
               // }
-              setToken(res.data.data.access_token)
-              setRefreshToken(res.data.data.refresh_token)
+              setToken(res.data.access_token)
+              setRefreshToken(res.data.refresh_token)
               // this.cookie.setCookie(loginInfo, 1)
 
               this.$router.push('/')
