@@ -47,12 +47,19 @@ class HttpRequest {
         instance.interceptors.response.use(res => {
             this.destroy(url)
             const { data, status } = res
+            console.log(res)
+            console.log(data)
+            console.log(status)
             return { data, status }
         }, async (error) => {
             this.destroy(url)
             const errorJson = JSON.parse(JSON.stringify(error))
             const { response: { status } } = errorJson
-            if (status === 401) {
+
+            console.log('--------------------------------------------')
+            console.log(data)
+            if (data.code === 401) {
+                console.log('..')
                 // should refresh token or re-login
                 // 当请求url已经是刷新token时
                 // 说明此时刷新失败

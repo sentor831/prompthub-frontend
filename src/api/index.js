@@ -2,8 +2,9 @@ import axios from 'axios'
 import HttpRequest from '@/api/axios'
 
 export const refreshTokenReq = (refreshToken) => {
-    const url = '/api/token-refresh'
+    const url = '/api/auth/refresh_token'
     const headers = refreshToken ? { Authorization: 'Bearer ' + refreshToken } : {}
+    console.log(refreshToken)
     // TODO 是axios还是axioss
     return axios.request({
         url,
