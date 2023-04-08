@@ -13,6 +13,9 @@ import TheHeader from './components/TheHeader.vue';
 import PicInfo from './pages/PicInfo.vue';
 import NoticeSystem from './pages/NoticeSystem.vue';
 import NoticeReply from './pages/NoticeReply.vue'
+import UploadPage from './pages/UploadPage.vue';
+import EditPage from './pages/EditPage.vue';
+import CheckPage from './pages/CheckPage.vue';
 
 Vue.use(Router);
 
@@ -102,6 +105,33 @@ export default new Router({
       components: { default: NoticeReply, header: TheHeader },
       props: {
         header: { colorOnScroll: 400 }
+      }
+    },
+    {
+      path: '/upload',
+      name: 'upload',
+      components: { default: UploadPage, header: TheHeader, footer: MainFooter },
+      props: {
+        header: { colorOnScroll: 400 },
+        footer: { backgroundColor: 'black' }
+      }
+    },
+    {
+      path: '/edit',
+      name: 'edit',
+      components: { default: EditPage, header: TheHeader, footer: MainFooter },
+      props: {
+        header: { colorOnScroll: 400 },
+        footer: { backgroundColor: 'black' }
+      }
+    },
+    {
+      path: '/check',
+      name: 'check',
+      components: { default: CheckPage, header: TheHeader, footer: MainFooter },
+      props: {
+        header: { colorOnScroll: 400 },
+        footer: { backgroundColor: 'black' }
       }
     },
   ],
