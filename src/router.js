@@ -18,8 +18,15 @@ import EditPage from './pages/EditPage.vue';
 import CheckPage from './pages/CheckPage.vue';
 
 // 黄新引入部分
+// 引入组件
 import Waterfall_hx from "./components/Hx_components/Waterfall_hx"
+import ProfileCarousel from "./components/Hx_components/ProfileCarousel"
+import ProfileCollection from "./components/Hx_components/ProfileCollection"
+
+
+// 引入页面
 import ModInfo from "./pages/ModInfo"
+import MemberList from "./pages/MemberList"
 // 黄新引入部分end
 
 Vue.use(Router);
@@ -89,21 +96,21 @@ export default new Router({
       children:[
         {
           path:"",
-          component: Waterfall_hx
+          component: ProfileCarousel
         },
         {
-          path: 'mycollection',
-          component: Waterfall_hx
+          path: 'MyHome',
+          component: ProfileCarousel
         },
         {
-          path: 'thumbs',
+          path: 'product',
           // component: Thumbs
           component: Waterfall_hx
         },
         {
-          path: 'checking',
+          path: 'collection',
           // component: Checking
-          component: Waterfall_hx
+          component: ProfileCollection
         },
         {
           path: 'viewhistory',
@@ -111,6 +118,15 @@ export default new Router({
           component: Waterfall_hx
         }
       ]
+    },
+    {
+      path: '/memberlist',
+      name:'memberlist',
+      components: {default : MemberList, header : MainNavbar, footer : MainFooter},
+      props: {
+        header: { colorOnScroll: 400 },
+        footer: { backgroundColor: 'black' }
+      }
     },
     {
       path: '/search',

@@ -21,15 +21,15 @@
         <div class="content">
           <div class="social-description">
             <h2>26</h2>
-            <p>Comments</p>
+            <p @click="toMenberList">关注</p>
           </div>
           <div class="social-description">
             <h2>26</h2>
-            <p>Comments</p>
+            <p @click="toMenberList">粉丝</p>
           </div>
           <div class="social-description">
             <h2>48</h2>
-            <p>Bookmarks</p>
+            <p @click="toMenberList">赞与收藏</p>
           </div>
         </div>
       </div>
@@ -38,81 +38,27 @@
     <div class="section">
       <div class="container">
         <div class="button-container">
-          <router-link to="/Profile/mycollection" active-class="active" class="btn btn-primary btn-round btn-lg">我的收藏</router-link>
-          <router-link to="/Profile/thumbs" active-class="active" class="btn btn-primary btn-round btn-lg">我的点赞</router-link>
-          <router-link to="/Profile/checking" active-class="active" class="btn btn-primary btn-round btn-lg">等待审核</router-link>
-          <router-link to="/Profile/viewhistory" active-class="active" class="btn btn-primary btn-round btn-lg">浏览历史</router-link>
+          <router-link to="/Profile/MyHome" active-class="active" class="btn btn-primary btn-round btn-lg">主页</router-link>
+          <router-link to="/Profile/product" active-class="active" class="btn btn-primary btn-round btn-lg">作品</router-link>
+          <router-link to="/Profile/collection" active-class="active" class="btn btn-primary btn-round btn-lg">收藏</router-link>
+          <router-link to="/Profile/viewhistory" active-class="active" class="btn btn-primary btn-round btn-lg">历史</router-link>
         </div>
-        <!-- 使用router-view占位 -->
-        <router-view>
-        </router-view>
+        <router-view>使用router-view占位</router-view>
 
-        <!-- <div class="row">
-          <tabs
-            pills
-            class="nav-align-center"
-            tab-content-classes="gallery"
-            tab-nav-classes="nav-pills-just-icons"
-            type="primary"
-          >
-            <tab-pane title="Profile">
-              <i slot="label" class="now-ui-icons design_image"></i>
-
-              <div class="col-md-10 ml-auto mr-auto">
-                <div class="row collections">
-                  <div class="col-md-6">
-                    <img src="img/bg6.jpg" class="img-raised" />
-                    <img src="img/bg11.jpg" alt="" class="img-raised" />
-                  </div>
-                  <div class="col-md-6">
-                    <img src="img/bg7.jpg" alt="" class="img-raised" />
-                    <img src="img/bg8.jpg" alt="" class="img-raised" />
-                  </div>
-                </div>
-              </div>
-            </tab-pane>
-
-            <tab-pane title="Home">
-              <i slot="label" class="now-ui-icons location_world"></i>
-
-              <div class="col-md-10 ml-auto mr-auto">
-                <div class="row collections">
-                  <div class="col-md-6">
-                    <img src="img/bg1.jpg" alt="" class="img-raised" />
-                    <img src="img/bg3.jpg" alt="" class="img-raised" />
-                  </div>
-                  <div class="col-md-6">
-                    <img src="img/bg8.jpg" alt="" class="img-raised" />
-                    <img src="img/bg7.jpg" alt="" class="img-raised" />
-                  </div>
-                </div>
-              </div>
-            </tab-pane>
-
-            <tab-pane title="Messages">
-              <i slot="label" class="now-ui-icons sport_user-run"></i>
-
-              <div class="col-md-10 ml-auto mr-auto">
-                <div class="row collections">
-                  <div class="col-md-6">
-                    <img src="img/bg3.jpg" alt="" class="img-raised" />
-                    <img src="img/bg8.jpg" alt="" class="img-raised" />
-                  </div>
-                  <div class="col-md-6">
-                    <img src="img/bg7.jpg" alt="" class="img-raised" />
-                    <img src="img/bg6.jpg" class="img-raised" />
-                  </div>
-                </div>
-              </div>
-            </tab-pane>
-          </tabs>
-        </div> -->
       </div>
     </div>
-  </div>
+    <!-- <Profile_subheader></Profile_subheader>
+    <div class="container">
+      
+    <router-view></router-view>
+    </div> -->
+    
+
+    </div>
+
 </template>
 <script>
-// import { Tabs, TabPane } from '@/components';
+
 
 export default {
   name: 'profile',
@@ -120,7 +66,14 @@ export default {
   components: {
     // Tabs,
     // TabPane
+
+  },
+  methods:{
+    toMenberList(){
+      this.$router.push('/memberlist')
+    }
   }
 };
 </script>
+
 <style></style>
