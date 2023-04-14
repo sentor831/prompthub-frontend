@@ -10,7 +10,8 @@
             </div>
             <div class="SubCheckText3">
                 <p class="CheckDescribe">上传日期：{{ UploadDate }}
-                    <span class="CheckDescribe" style="color:#BFBFBF" v-if="isUnderReview">丨
+                    <span class="CheckDescribe" style="color:#BFBFBF" v-if="isUnderReview">
+                        <el-divider direction="vertical"></el-divider>
                         <img src='../../../public/img/under-review.png' width="22vh" style="margin-top:-0.3vh">
                         <span class="CheckDescribe" style="color:#00A1D6"> 审核中</span>
                     </span>
