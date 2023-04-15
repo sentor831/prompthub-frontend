@@ -22,15 +22,19 @@
 </template>
 
 <script>
+import axios from 'axios'
+import { get_qiniu_token } from '../api/index.js'
+
 export default {
   name: 'Upload',
   bodyClass: 'profile-page',
   components:{
 
   },
+
   data(){
       return{
-          
+          uploadHeaders: {}
         }
     },
   methods:{
@@ -39,9 +43,10 @@ export default {
     },
     UploadHttpRequest(options){
       this.isShowLoading = true;
-      let fileReader = new fileReader();
+      let fileReader = new FileReader();
       let _this = this;
       let maxsize = 512 * 512;
+      let file = options.file
       // 开始读取上传文件
       if (file){
         fileReader.readAsDataURL(file);
@@ -50,8 +55,30 @@ export default {
       fileReader.onload = (event) => {
         let imageSrc = event.target.result;
         // 上传到七牛云
-        _this.UploadHttpRequest(imgSrc, options, file)
+        console.log('upload success')
+        this.xRayUpload(imageSrc, options, file)
+        // _this.UploadHttpRequest(imgSrc, options, file)
       };
+    },
+    xRayUpload(data, options, file) {
+      get_qiniu_token().then(res => {
+        console.log(res);
+        const formdata = new FormData()
+        formdata.append('file', data.split(',')[1])
+        formdata.append('token', res.data.token)
+        formdata.append('key', res.data.key)
+        console.log(data)
+        axios.post('http:///upload-z1.qiniup.com', formdata, {
+                headers: { "Content-Type": "multipart/form-data" },
+                withCredentials: false
+        }).then(res => {
+          console.log('success')
+          console.log(res)
+          console.log(res.data.key)
+        }).catch(err => { 
+          console.log(err)
+        })
+      })
     },
     // 获取TOKEN
     getTokenValue(){
