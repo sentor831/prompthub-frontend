@@ -1,9 +1,9 @@
 <template>
   <div class="section section-signup"
-    style="background-image: url('img/bg11.jpg'); background-size: cover; background-position: top center; min-height: 700px;">
+    style="background-image: url('img/signup.jpg'); background-size: cover; background-position: top center; min-height: 700px;">
     <div class="container">
       <div class="row">
-        <card class="card-signup" header-classes="text-center" color="orange">
+        <card class="card-signup" header-classes="text-center" color="orange" style="opacity: 80%;">
           <template slot="header">
             <h3 class="card-title title-up"><strong>注册账号</strong></h3>
           </template>
@@ -100,7 +100,7 @@ export default {
         })
           .then((res) => {
             console.log(res)
-            if (res.code == 200) {
+            if (res.status == 200) {
               Notification({ title: '邮件发送成功', message: '快去查看吧', type: 'success', duration: 2000 })
               this.verifyDisabled = true
               this.timer = setInterval(() => {
@@ -119,7 +119,7 @@ export default {
           })
           .catch((err) => {
             console.log(err)
-            Notification({ title: '邮件发送失败', message: '其他错误', type: 'error', duration: 2000 })
+            Notification({ title: '邮件发送失败', message: err.response.data.msg, type: 'error', duration: 2000 })
           })
       }
     },
@@ -132,7 +132,7 @@ export default {
       })
         .then((res) => {
           console.log(res)
-          if (res.code == 200) {
+          if (res.status == 200) {
             this.$router.push('/login')
             Notification({ title: '注册成功', message: '快去登录吧！', type: 'success', duration: 2000 })
           } else {
@@ -141,7 +141,7 @@ export default {
         })
         .catch((err) => {
           console.log(err)
-          Notification({ title: '注册失败', message: '其他错误', type: 'error', duration: 2000 })
+          Notification({ title: '注册失败', message: err.response.data.msg, type: 'error', duration: 2000 })
         })
     },
     validate(key) {

@@ -6,23 +6,14 @@
                 <div class="col">
                     <h5 style="text-align: left; margin-left: 2vh;">评 论 通 知</h5>
                     <ul class="list-group list-group-flush" style="overflow-y: auto; height: 75vh;">
+                        <!-- TODO v-for -->
                         <li class="list-group-item">
-                            <h4>xxx评论了您的作品（id：111）</h4>
-                            <p>hhh</p>
-                            <p style="text-align: right; font-size: small;">2023-01-06 20:52:23</p>
-                        </li>
-                        <li class="list-group-item">
-                            <h4>y回复了您</h4>
-                            <p>hhh</p>
-                            <p style="text-align: right; font-size: small;">2023-01-06 20:52:23</p>
-                        </li>
-                        <li class="list-group-item">
-                            <h4>yyy回复了您</h4>
-                            <p>hhh</p>
-                            <p style="text-align: right; font-size: small;">2023-01-06 20:52:23</p>
-                        </li>
-                        <li class="list-group-item">
-                            <h4>xxx评论了您的作品（id：134）</h4>
+                            <div class="row">
+                                <h4 class="noticeTitle" style="margin-left: 2vh;" @click="jumptoPic()">xxx评论了您的作品（id：111）
+                                </h4>
+                                <i class="now-ui-icons ui-1_simple-remove" style="margin-left: auto; cursor: pointer;"
+                                    @click="deleteNotice()"></i>
+                            </div>
                             <p>hhh</p>
                             <p style="text-align: right; font-size: small;">2023-01-06 20:52:23</p>
                         </li>
@@ -45,12 +36,39 @@ export default {
     },
     data: function () {
         return {
-
+            noticeList: []
         }
     },
+    mounted() {
+        this.getNoticeList()
+    },
+    methods: {
+        getNoticeList() {
+            // TODO
 
+        },
+        jumptoPic() {
+            // TODO
+            this.$router.push({ path: '/picinfo' })
+        },
+
+        deleteNotice() {
+            // TODO
+
+            this.getNoticeList()
+        }
+    }
 }
 
 </script>
 
-<style></style>
+<style>
+.noticeTitle {
+    cursor: pointer;
+    ;
+}
+
+.noticeTitle:hover {
+    color: darkblue
+}
+</style>

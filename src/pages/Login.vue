@@ -1,6 +1,6 @@
 <template>
   <div class="page-header clear-filter" filter-color="orange">
-    <div class="page-header-image" style="background-image:url('img/login.jpg')"></div>
+    <div class="page-header-image" style="background-image:url('img/login2.jpg')"></div>
     <div class="content">
       <div class="container">
         <div class="col-md-5 ml-auto mr-auto">
@@ -73,12 +73,12 @@ export default {
           .then((res) => {
             console.log(res)
             if (res.status == 200) {
-              // let loginInfo = {
-              //   email: this.email
-              // }
               setToken(res.data.access_token)
               setRefreshToken(res.data.refresh_token)
-              // this.cookie.setCookie(loginInfo, 1)
+              let loginInfo = {
+                isLogin: 1
+              }
+              this.cookie.setCookie(loginInfo, 1)
 
               this.$router.push('/')
 
@@ -89,7 +89,7 @@ export default {
           })
           .catch((err) => {
             console.log(err)
-            Notification({ title: '登录失败', message: '其他错误', type: 'error', duration: 2000 })
+            Notification({ title: '登录失败', message: err.response.data.msg, type: 'error', duration: 2000 })
           });
       }
     },

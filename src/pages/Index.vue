@@ -1,12 +1,9 @@
 <template>
   <div>
     <div class="page-header clear-filter" filter-color="orange">
-      <parallax class="page-header-image" style="background-image:url('img/header.jpg')">
+      <parallax class="page-header-image" style="background-image:url('img/header2.jpg')">
       </parallax>
       <div class="container">
-
-        <div>当前登录人：{{ loginname }}</div>
-
         <div class="content-center brand">
           <h2>欢迎使用Prompthub</h2>
           <el-input class="input" placeholder="搜索..." v-model="keyword" @keyup.enter="goSearch()">
@@ -20,7 +17,7 @@
     <div>
       <el-row style=" margin-left: 90px; margin-top: 30px;">
         <el-button round @click="chooseHot()" :type="btntypeH">热门推荐</el-button>
-        <el-button round @click="chooseRecommend()" :type="btntypeR">个性化推荐</el-button>
+        <el-button round v-if="login === '1'" @click="chooseRecommend()" :type="btntypeR">个性化推荐</el-button>
       </el-row>
 
       <!-- <div class="waterfall" style="height:400px; margin-top: 20px;">
@@ -28,7 +25,6 @@
           <div class="info" slot-scope="props" style="text-align: center;">第{{ props.index + 1 }}张图片</div>
         </vue-waterfall-easy>
       </div> -->
-      <a class="btn btn-simple btn-link btn-block" @click="change()">修改密码</a>
 
       <Waterfall :list="list" style="margin-top:20px" :breakpoints="breakpoints">
         <template #item="{ item, url }">
@@ -54,6 +50,7 @@ import { FormGroupInput as FgInput } from '../components'
 import { LazyImg, Waterfall } from 'vue-waterfall-plugin'
 import 'vue-waterfall-plugin/dist/style.css'
 import { modifyPass } from '../api/index'
+import { Notification } from 'element-ui';
 
 export default {
   name: 'index',
@@ -65,7 +62,7 @@ export default {
   },
   data() {
     return {
-      loginname: '',
+      login: '',
       keyword: '',
       imgsArr: [],         //存放所有已加载图片的数组（即当前页面会加载的所有图片）
       fetchImgsArr: [],     //存放每次滚动时下一批要加载的图片的数组
@@ -200,19 +197,13 @@ export default {
     }
   },
   mounted() {
-    this.loginname = this.cookie.getCookie("email");
+    this.login = this.cookie.getCookie("isLogin");
+    // TODO 获取热门推荐
     this.getData();
   },
   methods: {
-    change() {
-      modifyPass({
-        old_password: '123',
-        new_password: '345'
-      }).then((res) => {
-        console.log(res)
-      })
-    },
     picInfo(item) {
+      // TODO 设置cookie
       // this.cookie.setCookie()
       // this.$router.push({ path: '/picinfo', query: { picid: item.id } })
       this.$router.push('/picInfo')
@@ -221,11 +212,13 @@ export default {
       this.btntypeH = 'primary'
       this.btntypeR = ''
       this.stateH = 1
+      this.stateR = 0
+      // TODO 热门推荐
     },
     chooseRecommend() {
       this.stateR = 1 - this.stateR
       if (this.stateR == 1) {
-        this.btntypeR = 'btn btn-primary'
+        this.btntypeR = 'primary'
         this.btntypeH = ''
         this.stateH = 0
       } else {
@@ -233,6 +226,7 @@ export default {
         this.btntypeH = 'primary'
         this.stateH = 1
       }
+      // TODO 个性化推荐
     },
     getData() {
       var list = [
@@ -285,11 +279,15 @@ export default {
       }
     },
     goSearch() {
-      let searchInfo = {
-        keyword: this.keyword,
+      if (this.keyword !== '') {
+        let searchInfo = {
+          keyword: this.keyword,
+        }
+        this.cookie.setCookie(searchInfo, 1)
+        this.$router.push({ path: '/search', query: { keyword: this.keyword } })
+      } else {
+        Notification({ title: '提示', message: '请输入搜索内容', type: 'warning', duration: 2000 })
       }
-      this.cookie.setCookie(searchInfo, 1)
-      this.$router.push({ path: '/search', query: { keyword: this.keyword } })
     }
   }
 };

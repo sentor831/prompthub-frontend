@@ -92,7 +92,7 @@ export default {
       })
         .then((res) => {
           console.log(res)
-          if (res.code == 200) {
+          if (res.status == 200) {
             Notification({ title: '邮件发送成功', message: '快去查看吧', type: 'success', duration: 2000 })
             this.verifyDisabled = true
             this.timer = setInterval(() => {
@@ -111,18 +111,18 @@ export default {
         })
         .catch((err) => {
           console.log(err)
-          Notification({ title: '邮件发送失败', message: '其他错误', type: 'error', duration: 2000 })
+          Notification({ title: '邮件发送失败', message: err.response.data.msg, type: 'error', duration: 2000 })
         })
     },
     handleModify() {
-      modifyPass({
+      modifyForgetPass({
         email: this.email,
         password: this.password,
         code: this.verifycode
       })
         .then((res) => {
           console.log(res)
-          if (res.code == 200) {
+          if (res.status == 200) {
             this.$router.push('/login')
             Notification({ title: '修改密码成功', message: '快去登录吧', type: 'success', duration: 2000 })
           } else {
@@ -131,7 +131,7 @@ export default {
         })
         .catch((err) => {
           console.log(err)
-          Notification({ title: '修改密码失败', message: '其他错误', type: 'error', duration: 2000 })
+          Notification({ title: '修改密码失败', message: err.response.data.msg, type: 'error', duration: 2000 })
         })
     }
   }

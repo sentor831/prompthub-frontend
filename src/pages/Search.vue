@@ -14,21 +14,14 @@
         <el-button round @click="chooseS()" :type="btntypeS">Stable Diffusion</el-button>
         <el-dropdown style="margin-left: 20px">
           <el-button id="sort">
-            综合排序<i class="el-icon-arrow-down el-icon--right"></i>
+            最高热度<i class="el-icon-arrow-down el-icon--right"></i>
           </el-button>
           <el-dropdown-menu slot="dropdown">
-            <el-dropdown-item @click.native="chooseDefault">综合排序</el-dropdown-item>
-            <el-dropdown-item @click.native="chooseGood">最多点赞</el-dropdown-item>
+            <el-dropdown-item @click.native="chooseGood">最高热度</el-dropdown-item>
             <el-dropdown-item @click.native="chooseNew">最新发布</el-dropdown-item>
           </el-dropdown-menu>
         </el-dropdown>
-        <div>当前登录人：{{ loginname }}</div>
       </el-row>
-      <!-- <drop-down class="nav-item" title="综合排序" id="sort">
-        <a class="dropdown-item" @click="chooseDefault">综合排序</a>
-        <a class="dropdown-item" @click="chooseGood">最多点赞</a>
-        <a class="dropdown-item" @click="chooseNew">最新发布</a>
-      </drop-down> -->
 
       <Waterfall :list="list" style="margin-top:20px" :breakpoints="breakpoints">
         <template #item="{ item, url }">
@@ -200,12 +193,25 @@ export default {
     }
   },
   mounted() {
-    this.loginname = this.cookie.getCookie("userName");
     this.keyword = this.cookie.getCookie("keyword");
+    // TODO 根据关键词获取数据
     this.getData();
+  },
+  watch: {
+    // 监听路由发生改变
+    '$route': {
+      handler(newVal) {
+        if (newVal.query.keyword) {
+          this.keyword = this.cookie.getCookie("keyword");
+          this.getData()
+          console.log(this.keyword)
+        }
+      }
+    }
   },
   methods: {
     picInfo(item) {
+      // TODO 设置cookie
       // this.cookie.setCookie()
       // this.$router.push({ path: '/picinfo', query: { picid: item.id } })
       this.$router.push('/picInfo')
@@ -238,14 +244,9 @@ export default {
       }
 
     },
-    chooseDefault() {
-      this.stateSort = 1
-      document.getElementById('sort').innerHTML = '综合排序<i class="el-icon-arrow-down el-icon--right"></i>'
-
-    },
     chooseGood() {
       this.stateSort = 2
-      document.getElementById('sort').innerHTML = '最多点赞<i class="el-icon-arrow-down el-icon--right"></i>'
+      document.getElementById('sort').innerHTML = '最高热度<i class="el-icon-arrow-down el-icon--right"></i>'
 
     },
     chooseNew() {
