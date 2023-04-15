@@ -2,7 +2,7 @@
     <div class="MainBack">
         <div class="SecondBack">
 
-            <div class="GroupBox" style="padding-top: 15vh;">
+            <div class="GroupBox">
                 <p class="Characters">图 片</p>
                 <div class="Picture">
                     <img src='../../public/img/dog1.jpeg' width="200vh" class="img-thumbnail">
@@ -12,25 +12,31 @@
 
             <div class="GroupBox">
                 <p class="Characters">Prompt</p>
-                <textarea class="PromptInput" placeholder="请输入Prompt" v-model="Prompt"></textarea>
+                <!-- <textarea class="PromptInput" placeholder="请输入Prompt" v-model="Prompt"></textarea> -->
+                <el-input type="textarea" class="PromptInput" :rows="6" placeholder="请输入Prompt"  v-model="Prompt">
+                </el-input>
             </div>
             <br><br>
 
             <div class="GroupBox">
                 <p class="Characters">模 型</p>
-                <input type="text" class="ModelInput" placeholder="请输入模型名称" v-model="Model">
+                <!-- <input type="text" class="ModelInput" placeholder="请输入模型名称" v-model="Model"> -->
+                <el-input class="ModelInput" placeholder="请输入模型名称" v-model="Model" clearable>
+                </el-input>
+
             </div>
             <br><br>
             
             <div class="GroupBox">
                 <p class="Characters">标 签</p>
-                <input type="text" class="ModelInput" placeholder="请输入图片标签" v-model="Label">
+                <!-- <input type="text" class="ModelInput" placeholder="请输入图片标签" v-model="Label"> -->
+                <el-input class="ModelInput" placeholder="请输入图片标签" v-model="Label" clearable></el-input>
             </div>
             <br><br>
 
             <div class="GroupBox">
-                <button type="button" class="btn btn-primary" style="width:13vh; margin-left:20vh; background:#00A1D6" @click=Subbmit()>立即上传</button>
-                <button type="button" class="btn btn-primary" style="width:13vh; margin-left:5vh; background:#FFFFFF; color:#000000" @click="SaveDraft()">存草稿</button>
+                <button type="button" class="btn btn-primary" style="width:15vh; margin-left:20vh; background:#00A1D6" @click=Subbmit()>立即上传</button>
+                <button type="button" class="btn btn-primary" style="width:15vh; margin-left:5vh; background:#FFFFFF; color:#000000" @click="SaveDraft()">存草稿</button>
             </div>
             <br><br>
 
@@ -98,16 +104,16 @@ export default {
         /* box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25); */
     }
     .PromptInput{
-        border: 1.5px solid #BFBFBF;
-        border-radius: 8px;
+        /* border: 1.5px solid #BFBFBF; */
+        /* border-radius: 8px; */
         width: 90vh;
         height: 20vh;
-        margin: 0 0 0 8vh;
+        margin: 0 0 0 7.5vh;
         resize: none;
     }
     .ModelInput{
-        border: 1.5px solid #BFBFBF;
-        border-radius: 8px;
+        /* border: 1.5px solid #BFBFBF; */
+        /* border-radius: 8px; */
         width: 90vh;
         height: 5vh;
         margin: 0 0 0 9.5vh;

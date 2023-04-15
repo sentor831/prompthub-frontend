@@ -69,3 +69,11 @@ export const modifyPass = (params) => {
     })
 
 }
+
+// 上传图片，获取图片key以及七牛token
+export const get_qiniu_token = (params) => {
+    return axioss.request({
+        url: `api/image/get_qiniu_token`,
+        method: 'get'
+    })
+}

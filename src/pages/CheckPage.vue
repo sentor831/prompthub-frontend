@@ -6,6 +6,7 @@
             <hr>
             <CheckMyWorks></CheckMyWorks>
             <hr>
+            <el-pagination background layout="prev, pager, next" :total="1000" style="margin:5vh 0 0 40vh"></el-pagination>
         </div>
     </div>
 </template>

@@ -122,7 +122,7 @@ export default new Router({
       name: 'edit',
       components: { default: EditPage, header: TheHeader, footer: MainFooter },
       props: {
-        header: { colorOnScroll: 400 },
+        header: { colorOnScroll: 0 },
         footer: { backgroundColor: 'black' }
       }
     },
@@ -131,7 +131,7 @@ export default new Router({
       name: 'check',
       components: { default: CheckPage, header: TheHeader, footer: MainFooter },
       props: {
-        header: { colorOnScroll: 400 },
+        header: { colorOnScroll: 0 },
         footer: { backgroundColor: 'black' }
       }
     },
