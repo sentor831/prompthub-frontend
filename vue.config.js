@@ -13,6 +13,13 @@ module.exports = {
         // pathRewrite: {
         //   '^/api': ''
         // }
+      },
+      '/upload': {
+        target: 'http://upload.qiniup.com/',
+        changeOrigin: true,
+        pathRewrite: {
+          '^/upload': ''
+        }
       }
     }
   }

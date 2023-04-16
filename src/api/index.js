@@ -4,8 +4,7 @@ import HttpRequest from '@/api/axios'
 export const refreshTokenReq = (refreshToken) => {
     const url = '/api/auth/refresh_token'
     const headers = refreshToken ? { Authorization: 'Bearer ' + refreshToken } : {}
-    console.log(refreshToken)
-    // TODO 是axios还是axioss
+    console.log('refreshtoken:' + refreshToken)
     return axios.request({
         url,
         method: 'get',
@@ -52,7 +51,7 @@ export const sendForgetPassEmail = (params) => {
     })
 }
 
-// 修改新密码
+// 修改忘记的密码
 export const modifyForgetPass = (params) => {
     return axioss.request({
         url: `/api/user/confirm_forget_password`,
@@ -69,4 +68,12 @@ export const modifyPass = (params) => {
         method: 'post'
     })
 
+}
+
+// 上传图片，获取图片key以及七牛token
+export const get_qiniu_token = (params) => {
+    return axioss.request({
+        url: `api/image/get_qiniu_token`,
+        method: 'get'
+    })
 }

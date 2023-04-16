@@ -8,6 +8,7 @@ import Profile from './pages/Profile.vue';
 import MainNavbar from './layout/MainNavbar.vue';
 import MainFooter from './layout/MainFooter.vue';
 import ForgetPass from './pages/ForgetPass.vue';
+import ModiPass from './pages/ModiPass.vue';
 import Search from './pages/Search.vue';
 import TheHeader from './components/TheHeader.vue';
 import PicInfo from './pages/PicInfo.vue';
@@ -73,7 +74,15 @@ export default new Router({
       name: 'forgetpass',
       components: { default: ForgetPass, header: TheHeader },
       props: {
-        header: { colorOnScroll: 0 }
+        header: { colorOnScroll: 400 }
+      }
+    },
+    {
+      path: '/modipass',
+      name: 'modipass',
+      components: { default: ModiPass, header: TheHeader },
+      props: {
+        header: { colorOnScroll: 400 }
       }
     },
     {
@@ -133,7 +142,6 @@ export default new Router({
       name: 'search',
       components: { default: Search, header: TheHeader, footer: MainFooter },
       props: {
-        header: { colorOnScroll: 400 },
         footer: { backgroundColor: 'black' }
       }
     },
@@ -142,32 +150,25 @@ export default new Router({
       name: 'picinfo',
       components: { default: PicInfo, header: TheHeader, footer: MainFooter },
       props: {
-        header: { colorOnScroll: 400, transparent: true },
         footer: { backgroundColor: 'black' }
       }
     },
     {
       path: '/system',
       name: 'system-notice',
-      components: { default: NoticeSystem, header: TheHeader },
-      props: {
-        header: { colorOnScroll: 400 }
-      }
+      components: { default: NoticeSystem, header: TheHeader }
     },
     {
       path: '/reply',
       name: 'reply-notice',
-      components: { default: NoticeReply, header: TheHeader },
-      props: {
-        header: { colorOnScroll: 400 }
-      }
+      components: { default: NoticeReply, header: TheHeader }
     },
     {
       path: '/upload',
       name: 'upload',
       components: { default: UploadPage, header: TheHeader, footer: MainFooter },
       props: {
-        header: { colorOnScroll: 400 },
+        header: { colorOnScroll: 0 },
         footer: { backgroundColor: 'black' }
       }
     },
@@ -176,7 +177,7 @@ export default new Router({
       name: 'edit',
       components: { default: EditPage, header: TheHeader, footer: MainFooter },
       props: {
-        header: { colorOnScroll: 400 },
+        header: { colorOnScroll: 0 },
         footer: { backgroundColor: 'black' }
       }
     },
@@ -185,7 +186,7 @@ export default new Router({
       name: 'check',
       components: { default: CheckPage, header: TheHeader, footer: MainFooter },
       props: {
-        header: { colorOnScroll: 400 },
+        header: { colorOnScroll: 0 },
         footer: { backgroundColor: 'black' }
       }
     },
