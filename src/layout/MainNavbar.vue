@@ -8,18 +8,18 @@
     </template>
     <template slot="navbar-menu">
 
-      <li class="nav-item" v-if="login === '0'">
+      <li class="nav-item" v-if="login === null">
         <a class="nav-link" href="/#/login">
           <p>登 录</p>
         </a>
       </li>
 
-      <li class="nav-item" v-if="login === '0'">
+      <li class="nav-item" v-if="login === null">
         <a class="nav-link btn btn-neutral" href="/#/signup">
           <p> 加 入</p>
         </a>
       </li>
-      <li class="nav-item" v-if="login === '1'" style="margin-right: 5vh; cursor: pointer;" @click="toCreate()">
+      <li class="nav-item" v-if="login !== null" style="margin-right: 5vh; cursor: pointer;" @click="toCreate()">
         <div v-popover:popover1 style="margin-top: 2vh">
           <i class="el-icon-brush" style="font-size: 20px;"></i>
         </div>
@@ -30,7 +30,7 @@
         </el-popover>
       </li>
 
-      <li class="nav-item" v-if="login === '1'" style="margin-right: 5vh; cursor: pointer;" @click="toNotice()">
+      <li class="nav-item" v-if="login !== null" style="margin-right: 5vh; cursor: pointer;" @click="toNotice()">
         <div v-popover:popover2 style="margin-top: 2vh">
           <el-badge :hidden="noticenum == 0" :value=noticenum>
             <i class="el-icon-bell" style="font-size: 20px;"></i>
@@ -42,7 +42,7 @@
           </div>
         </el-popover>
       </li>
-      <li class="nav-item" v-if="login === '1'">
+      <li class="nav-item" v-if="login !== null">
         <!-- <img :src="attachImageUrl(avator)" alt=""> -->
         <el-dropdown trigger="hover">
           <span class="el-dropdown-link">
@@ -78,7 +78,7 @@ export default {
   data() {
     return {
       keyword: this.cookie.getCookie("keyword"),
-      login: '0',
+      login: null,
       noticenum: 1,
       avator: ''
     }
@@ -89,8 +89,8 @@ export default {
     }
   },
   mounted() {
-    this.login = this.cookie.getCookie("isLogin")
-    if (this.login === '1') {
+    this.login = this.cookie.getCookie("token")
+    if (this.login !== null) {
       this.getNoticeNum()
       this.getAvator()
     }
@@ -106,8 +106,9 @@ export default {
     },
     handlelogOut() {
       console.log('logout')
-      this.cookie.clearCookie('isLogin')
-      this.login = '0'
+      this.cookie.clearCookie('token')
+      this.cookie.clearCookie('refresh-token')
+      this.login = null
     },
     toModifyPass() {
       this.$router.push('/modipass')

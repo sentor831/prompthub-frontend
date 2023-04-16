@@ -17,7 +17,7 @@
     <div>
       <el-row style=" margin-left: 90px; margin-top: 30px;">
         <el-button round @click="chooseHot()" :type="btntypeH">热门推荐</el-button>
-        <el-button round v-if="login === '1'" @click="chooseRecommend()" :type="btntypeR">个性化推荐</el-button>
+        <el-button round v-if="login !== null" @click="chooseRecommend()" :type="btntypeR">个性化推荐</el-button>
       </el-row>
 
       <!-- <div class="waterfall" style="height:400px; margin-top: 20px;">
@@ -62,7 +62,7 @@ export default {
   },
   data() {
     return {
-      login: '',
+      login: null,
       keyword: '',
       imgsArr: [],         //存放所有已加载图片的数组（即当前页面会加载的所有图片）
       fetchImgsArr: [],     //存放每次滚动时下一批要加载的图片的数组
@@ -197,7 +197,7 @@ export default {
     }
   },
   mounted() {
-    this.login = this.cookie.getCookie("isLogin");
+    this.login = this.cookie.getCookie("token");
     // TODO 获取热门推荐
     this.getData();
   },
