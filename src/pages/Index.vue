@@ -54,7 +54,7 @@ import { Parallax } from '@/components';
 import { FormGroupInput as FgInput } from '../components'
 import { LazyImg, Waterfall } from 'vue-waterfall-plugin'
 import 'vue-waterfall-plugin/dist/style.css'
-import { modifyPass, hot_prompt_list } from '../api/index'
+import { modifyPass, hot_prompt_list, personized_prompt_list } from '../api/index'
 import { Notification } from 'element-ui';
 
 export default {

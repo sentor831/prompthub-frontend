@@ -276,7 +276,7 @@ export const search_prompt_keyword = (params) => {
     })
 }
 
-// 按热度搜索
+// 按热度浏览
 export const hot_prompt_list = (per_page, page_index) => {
     return axioss.request({
         url: `api/prompt_list/hot_prompt_list?per_page=${per_page}&page_index=${page_index}`,
@@ -285,11 +285,10 @@ export const hot_prompt_list = (per_page, page_index) => {
 }
 
 // 个性化浏览
-export const personized_prompt_list = (params) => {
+export const personized_prompt_list = (per_page, page_index) => {
     return axioss.request({
-        url: `api/prompt_list/personized_prompt_list`,
-        method: 'get',
-        data: params
+        url: `api/prompt_list/personized_prompt_list?per_page=${per_page}&page_index=${page_index}`,
+        method: 'get'
     })
 }
 // ***************************************黄新，http请求接口end*************************

@@ -43,10 +43,9 @@
         </el-popover>
       </li>
       <li class="nav-item" v-if="login !== null">
-        <!-- <img :src="attachImageUrl(avatar)" alt=""> -->
         <el-dropdown trigger="hover">
           <span class="el-dropdown-link">
-            <img :src=avatar style="width: 7vh; height: 7vh; border-radius: 50%; cursor: pointer;" @click="toMyself()">
+            <img :src=avatar style="width: 4em; height: 4em; border-radius: 50%; cursor: pointer;" @click="toMyself()">
           </span>
           <el-dropdown-menu slot="dropdown">
             <el-dropdown-item icon="now-ui-icons ui-1_lock-circle-open"
@@ -101,7 +100,6 @@ export default {
 
     },
     getAvatar() {
-      // TODO 获取头像
       this.avatar = this.cookie.getCookie('avatar')
     },
     handlelogOut() {

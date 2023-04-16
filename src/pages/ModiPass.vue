@@ -65,14 +65,10 @@ export default {
         })
           .then((res) => {
             console.log(res)
-            if (res.status == 200) {
-              setToken(res.data.access_token)
-              setRefreshToken(res.data.refresh_token)
-              this.$router.push('/')
-              Notification({ title: '修改密码成功', message: '', type: 'success', duration: 2000 })
-            } else {
-              Notification({ title: '修改密码失败', message: res.msg, type: 'error', duration: 2000 })
-            }
+            setToken(res.data.access_token)
+            setRefreshToken(res.data.refresh_token)
+            this.$router.push('/')
+            Notification({ title: '修改密码成功', message: '', type: 'success', duration: 2000 })
           })
           .catch((err) => {
             console.log(err)

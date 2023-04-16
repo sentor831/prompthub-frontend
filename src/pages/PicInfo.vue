@@ -2,12 +2,12 @@
     <div class="container">
         <div class="row" style="margin-top: 14vh;">
             <div class="col-7">
-                <img :src="pic" style="cursor: pointer;" />
+                <img :src="pic" style="cursor: pointer; width: 100%" />
                 <div class="row">
-                    <div class="col-10" style="padding-left: 3vh; margin-top: 1vh;">
+                    <div class="col" style="padding-left: 3vh; margin-top: 1vh;">
                         <p>{{ uploadtime }}</p>
                     </div>
-                    <div class="col">
+                    <div class="col" style="text-align: right;">
                         <a class="btn btn-primary" @click="dialogVisible = true">+ 收藏</a>
                     </div>
                 </div>
@@ -31,8 +31,7 @@
             <div class="col" style="margin-left: 5vh;">
                 <div class="row">
                     <div class="col col-md-auto">
-                        <img :src="uploader_avatar"
-                            style="width: 10vh; height: 10vh; border-radius: 50%; cursor: pointer;" />
+                        <img :src="uploader_avatar" style="width: 6em; height: 6em; border-radius: 50%; cursor: pointer;" />
                     </div>
                     <div class="col col-md-auto" style=" padding-top: 3vh;">
                         <h5 class="username" style="cursor: pointer;">{{ uploader }}</h5>
@@ -45,7 +44,7 @@
                 <h3 style="margin-top: 5vh; margin-bottom: 2vh;">Prompts</h3>
                 <div class="row">
                     <p id="prompt-content" class="blockquote blockquote-default"
-                        style="margin: 2vh; margin-bottom: 1vh; margin-top: 1vh">
+                        style="margin: 2vh; margin-bottom: 1vh; margin-top: 1vh; width: 100%;">
                         {{ prompts }}
                     </p>
                 </div>
@@ -105,12 +104,27 @@
             <!-- TODO v-for -->
             <div class="comment" v-for="(comment, index) in commentList" :key="index">
                 <div class="row">
-                    <img :src="comment.user.avatar" style="width: 7vh; height: 7vh; border-radius: 50%; cursor: pointer;" />
+                    <img :src="comment.user.avatar" style="width: 4em; height: 4em; border-radius: 50%; cursor: pointer;" />
                     <div class="col">
                         <h5 class="username" style="cursor: pointer;">{{ comment.user.nickname }}</h5>
+                        <div class="row" v-if="comment.parent_comment"
+                            style="background-color: whitesmoke; margin-left: auto; padding: 1em; padding-bottom: 0;">
+                            <img :src="comment.parent_comment.user.avatar"
+                                style="width: 3em; height: 3em; border-radius: 50%; cursor: pointer;" />
+                            <div class="col">
+                                <h5 class="username" style="cursor: pointer; font-size: medium;">{{
+                                    comment.parent_comment.user.nickname }}
+                                </h5>
+                                <p style="word-break: break-all; word-wrap: break-word; font-size: medium;">
+                                    {{ comment.parent_comment.content }}</p>
+                                <div class="row" style="margin-left:auto">
+                                    <p style="font-size: smaller;">{{ comment.parent_comment.created_at }}</p>
+                                </div>
+                            </div>
+                        </div>
                         <p style="word-break: break-all; word-wrap: break-word">
                             {{ comment.content }}</p>
-                        <div class="row" style="margin-left: 0.5vh;">
+                        <div class="row" style="margin-left: auto;">
                             <p style="font-size: small;">{{ comment.created_at }}</p>
                             <a class="btn btn-link" style="margin-top: -0.6vh; margin-left: 3vh;"
                                 @click="showReply(index)">回复</a>
@@ -166,12 +180,7 @@ export default {
             model: '',
             others: '',
             commentList: [],
-            mycomment: 1, // 是否是我的评论
-            commentnum: 1,
             commentcontent: '',
-            commenter: 'me',
-            comment: 'commenwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwt',
-            commenttime: '2023-01-06 20:52:23',
             show: -1,
             pic: ''
         }
@@ -202,10 +211,8 @@ export default {
                     GetComment(this.picid)
                         .then((res) => {
                             console.log(res)
-                            if (res.status == 200) {
-                                // Notification({ title: '成功', message: res.data.msg, type: 'success', duration: 2000 })
-                                this.commentList = res.data.comment_list
-                            }
+                            // Notification({ title: '成功', message: res.data.msg, type: 'success', duration: 2000 })
+                            this.commentList = res.data.comment_list
                         })
                         .catch((err) => {
                             console.log(err)
@@ -226,10 +233,8 @@ export default {
                 })
                     .then((res) => {
                         console.log(res)
-                        if (res.status == 200) {
-                            Notification({ title: '成功', message: res.data.msg, type: 'success', duration: 2000 })
-                            this.hasFollowed = 0
-                        }
+                        Notification({ title: '成功', message: res.data.msg, type: 'success', duration: 2000 })
+                        this.hasFollowed = 0
                     })
                     .catch((err) => {
                         console.log(err)
@@ -241,10 +246,8 @@ export default {
                 })
                     .then((res) => {
                         console.log(res)
-                        if (res.status == 200) {
-                            Notification({ title: '成功', message: res.data.msg, type: 'success', duration: 2000 })
-                            this.hasFollowed = 1
-                        }
+                        Notification({ title: '成功', message: res.data.msg, type: 'success', duration: 2000 })
+                        this.hasFollowed = 1
                     })
                     .catch((err) => {
                         console.log(err)
@@ -279,21 +282,18 @@ export default {
             })
                 .then((res) => {
                     console.log(res)
-                    if (res.status == 200) {
-                        Notification({ title: '成功', message: res.data.msg, type: 'success', duration: 2000 })
-                        GetComment(1)
-                            .then((res) => {
-                                console.log(res)
-                                if (res.status == 200) {
-                                    // Notification({ title: '成功', message: res.data.msg, type: 'success', duration: 2000 })
-                                    this.commentList = res.data.comment_list
-                                }
-                            })
-                            .catch((err) => {
-                                console.log(err)
-                                Notification({ title: '失败', message: err.response.data.msg, type: 'error', duration: 2000 })
-                            })
-                    }
+                    Notification({ title: '成功', message: res.data.msg, type: 'success', duration: 2000 })
+                    GetComment(this.picid)
+                        .then((res) => {
+                            console.log(res)
+                            // Notification({ title: '成功', message: res.data.msg, type: 'success', duration: 2000 })
+                            this.commentList = res.data.comment_list
+                            this.commentcontent = ''
+                        })
+                        .catch((err) => {
+                            console.log(err)
+                            Notification({ title: '失败', message: err.response.data.msg, type: 'error', duration: 2000 })
+                        })
 
                 })
                 .catch((err) => {
@@ -302,27 +302,22 @@ export default {
                 })
         },
         deleteComment(id) {
-            // TODO 删除评论，重新获取
             DelComment({
                 comment_id: id
             })
                 .then((res) => {
                     console.log(res)
-                    if (res.status == 200) {
-                        Notification({ title: '成功', message: res.data.msg, type: 'success', duration: 2000 })
-                        GetComment(1)
-                            .then((res) => {
-                                console.log(res)
-                                if (res.status == 200) {
-                                    // Notification({ title: '成功', message: res.data.msg, type: 'success', duration: 2000 })
-                                    this.commentList = res.data.comment_list
-                                }
-                            })
-                            .catch((err) => {
-                                console.log(err)
-                                Notification({ title: '失败', message: err.response.data.msg, type: 'error', duration: 2000 })
-                            })
-                    }
+                    Notification({ title: '成功', message: res.data.msg, type: 'success', duration: 2000 })
+                    GetComment(this.picid)
+                        .then((res) => {
+                            console.log(res)
+                            // Notification({ title: '成功', message: res.data.msg, type: 'success', duration: 2000 })
+                            this.commentList = res.data.comment_list
+                        })
+                        .catch((err) => {
+                            console.log(err)
+                            Notification({ title: '失败', message: err.response.data.msg, type: 'error', duration: 2000 })
+                        })
                 })
                 .catch((err) => {
                     console.log(err)
@@ -331,7 +326,6 @@ export default {
 
         },
         publishReply(parent_id) {
-            // TODO 发布回复，重新获取
             NewComment({
                 prompt_id: this.picid,
                 content: this.commentcontent,
@@ -339,21 +333,18 @@ export default {
             })
                 .then((res) => {
                     console.log(res)
-                    if (res.status == 200) {
-                        Notification({ title: '成功', message: res.data.msg, type: 'success', duration: 2000 })
-                        GetComment(1)
-                            .then((res) => {
-                                console.log(res)
-                                if (res.status == 200) {
-                                    // Notification({ title: '成功', message: res.data.msg, type: 'success', duration: 2000 })
-                                    this.commentList = res.data.comment_list
-                                }
-                            })
-                            .catch((err) => {
-                                console.log(err)
-                                Notification({ title: '失败', message: err.response.data.msg, type: 'error', duration: 2000 })
-                            })
-                    }
+                    Notification({ title: '成功', message: res.data.msg, type: 'success', duration: 2000 })
+                    GetComment(this.picid)
+                        .then((res) => {
+                            console.log(res)
+                            // Notification({ title: '成功', message: res.data.msg, type: 'success', duration: 2000 })
+                            this.commentList = res.data.comment_list
+                            this.commentcontent = ''
+                        })
+                        .catch((err) => {
+                            console.log(err)
+                            Notification({ title: '失败', message: err.response.data.msg, type: 'error', duration: 2000 })
+                        })
                 })
                 .catch((err) => {
                     console.log(err)

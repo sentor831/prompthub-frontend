@@ -4,9 +4,9 @@
         <a class="navbar-brand" href="/#/">PROMPTHUB</a>
 
         <template slot="navbar-menu">
-            <li class="nav-item" style="margin-right: 40vh;">
+            <li class="nav-item" style="margin-right: 20em;">
                 <el-input class="input" placeholder="搜索..." v-model="keyword" @keyup.enter.native="goSearch()"
-                    style="width:45vh;" clearable>
+                    style="width:25em; text-align: center;" clearable>
                     <el-button slot="append" icon="el-icon-search" @click="goSearch()"></el-button>
                 </el-input>
             </li>
@@ -45,10 +45,9 @@
                 </el-popover>
             </li>
             <li class="nav-item" v-if="login !== null">
-                <!-- <img :src="attachImageUrl(avatar)" alt=""> -->
                 <el-dropdown trigger="hover">
                     <span class="el-dropdown-link">
-                        <img :src=avatar style="width: 7vh; height: 7vh; border-radius: 50%; cursor: pointer;"
+                        <img :src=avatar style="width: 4em; height: 4em; border-radius: 50%; cursor: pointer;"
                             @click="toMyself()">
                     </span>
                     <el-dropdown-menu slot="dropdown">
@@ -102,7 +101,6 @@ export default {
 
         },
         getAvatar() {
-            // TODO 获取头像
             this.avatar = this.cookie.getCookie('avatar')
         },
         goSearch() {

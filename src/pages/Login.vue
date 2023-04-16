@@ -72,22 +72,18 @@ export default {
         })
           .then((res) => {
             console.log(res)
-            if (res.status == 200) {
-              setToken(res.data.access_token)
-              setRefreshToken(res.data.refresh_token)
-              let loginInfo = {
-                userId: res.data.user.id,
-                nickName: res.data.user.nickname,
-                avatar: res.data.user.avatar
-              }
-              this.cookie.setCookie(loginInfo, 1)
-
-              this.$router.push('/')
-
-              Notification({ title: '登录成功', message: '欢迎您！', type: 'success', duration: 2000 })
-            } else {
-              Notification({ title: '登录失败', message: res.data.msg, type: 'error', duration: 2000 })
+            setToken(res.data.access_token)
+            setRefreshToken(res.data.refresh_token)
+            let loginInfo = {
+              userId: res.data.user.id,
+              nickName: res.data.user.nickname,
+              avatar: res.data.user.avatar
             }
+            this.cookie.setCookie(loginInfo, 1)
+
+            this.$router.push('/')
+
+            Notification({ title: '登录成功', message: '欢迎您！', type: 'success', duration: 2000 })
           })
           .catch((err) => {
             console.log(err)

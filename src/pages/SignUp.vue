@@ -100,22 +100,18 @@ export default {
         })
           .then((res) => {
             console.log(res)
-            if (res.status == 200) {
-              Notification({ title: '邮件发送成功', message: '快去查看吧', type: 'success', duration: 2000 })
-              this.verifyDisabled = true
-              this.timer = setInterval(() => {
-                this.gap--
-                document.getElementById('sendbtn').innerHTML = this.gap.toString() + '秒'
-                if (this.gap == 0 || this.gap < 0) {
-                  clearInterval(this.timer)
-                  this.verifyDisabled = false
-                  document.getElementById('sendbtn').innerHTML = '获取验证码'
-                  this.gap = 60
-                }
-              }, 1000)
-            } else {
-              Notification({ title: '邮件发送失败', message: res.msg, type: 'error', duration: 2000 })
-            }
+            Notification({ title: '邮件发送成功', message: '快去查看吧', type: 'success', duration: 2000 })
+            this.verifyDisabled = true
+            this.timer = setInterval(() => {
+              this.gap--
+              document.getElementById('sendbtn').innerHTML = this.gap.toString() + '秒'
+              if (this.gap == 0 || this.gap < 0) {
+                clearInterval(this.timer)
+                this.verifyDisabled = false
+                document.getElementById('sendbtn').innerHTML = '获取验证码'
+                this.gap = 60
+              }
+            }, 1000)
           })
           .catch((err) => {
             console.log(err)
@@ -132,12 +128,8 @@ export default {
       })
         .then((res) => {
           console.log(res)
-          if (res.status == 200) {
-            this.$router.push('/login')
-            Notification({ title: '注册成功', message: '快去登录吧！', type: 'success', duration: 2000 })
-          } else {
-            Notification({ title: '注册失败', message: res.msg, type: 'error', duration: 2000 })
-          }
+          this.$router.push('/login')
+          Notification({ title: '注册成功', message: '快去登录吧！', type: 'success', duration: 2000 })
         })
         .catch((err) => {
           console.log(err)
