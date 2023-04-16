@@ -62,6 +62,7 @@
 <script>
 import { DropDown, Navbar, NavLink } from '@/components';
 import { Popover } from 'element-ui';
+import { get_unread_notification_num } from '../api';
 export default {
   name: 'main-navbar',
   props: {
@@ -79,6 +80,7 @@ export default {
       keyword: this.cookie.getCookie("keyword"),
       login: null,
       noticenum: 1,
+      userId: -1,
       avatar: ''
     }
   },
@@ -90,6 +92,7 @@ export default {
   mounted() {
     this.login = this.cookie.getCookie("token")
     if (this.login !== null) {
+      this.userId = this.cookie.getCookie("userId")
       this.getNoticeNum()
       this.getAvatar()
     }
@@ -97,7 +100,13 @@ export default {
   methods: {
     getNoticeNum() {
       // TODO 获取通知数量
-
+      get_unread_notification_num().then((res) => {
+        console.log(res);
+        this.noticenum = res.data.unread_notification_num;
+      }).catch((err) => {
+        console.log(err)
+        Notification({ title: '获取通知失败', message: err.response.data.msg, type: 'error', duration: 2000 })
+      })
     },
     getAvatar() {
       this.avatar = this.cookie.getCookie('avatar')
@@ -120,7 +129,7 @@ export default {
     },
     toMyself() {
       // TODO
-      this.$router.push('/profile')
+      this.$router.push({ path: '/profile', query: { userId: this.userId } })
     },
     timer() {
       return setTimeout(() => {
