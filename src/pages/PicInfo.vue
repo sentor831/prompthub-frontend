@@ -92,7 +92,7 @@
         <div class="comments">
             <div class="row">
                 <h5>评 论 &nbsp;&nbsp;</h5>
-                <p> {{ commentnum }}</p>
+                <p> {{ commentList.length }}</p>
             </div>
             <div class="input-group mb-3">
                 <textarea class="form-control" aria-label="with texarea" placeholder="添加评论..."
@@ -103,35 +103,34 @@
                 </div>
             </div>
             <!-- TODO v-for -->
-            <div class="comment">
+            <div class="comment" v-for="(comment, index) in commentList" :key="index">
                 <div class="row">
-                    <img src="https://sucai.suoluomei.cn/sucai_zs/images/20201027152322-15.jpg"
-                        style="width: 7vh; height: 7vh; border-radius: 50%; cursor: pointer;" />
+                    <img :src="comment.user.avatar" style="width: 7vh; height: 7vh; border-radius: 50%; cursor: pointer;" />
                     <div class="col">
-                        <h5 class="username" style="cursor: pointer;">{{ commenter }}</h5>
+                        <h5 class="username" style="cursor: pointer;">{{ comment.user.nickname }}</h5>
                         <p style="word-break: break-all; word-wrap: break-word">
-                            {{ comment }}</p>
+                            {{ comment.content }}</p>
                         <div class="row" style="margin-left: 0.5vh;">
-                            <p style="font-size: small;">{{ commenttime }}</p>
+                            <p style="font-size: small;">{{ comment.created_at }}</p>
                             <a class="btn btn-link" style="margin-top: -0.6vh; margin-left: 3vh;"
-                                @click="showReply()">回复</a>
-                            <el-dropdown v-if="mycomment == 1">
+                                @click="showReply(index)">回复</a>
+                            <el-dropdown v-if="comment.belong_to == true">
                                 <span class="el-dropdown-link">
                                     <el-button type="text" icon="el-icon-edit"
                                         style="padding: 0; margin-left: 3vh;"></el-button>
                                 </span>
                                 <el-dropdown-menu slot="dropdown">
-                                    <el-dropdown-item @click.native="deleteComment()">删除</el-dropdown-item>
+                                    <el-dropdown-item @click.native="deleteComment(comment.id)">删除</el-dropdown-item>
                                 </el-dropdown-menu>
                             </el-dropdown>
                         </div>
-                        <div class="row" v-show="show">
+                        <div class="row" v-show="index === show">
                             <div class="input-group mb-3" style="margin-right:2vh">
                                 <textarea class="form-control" aria-label="with texarea" placeholder="回复..."
                                     v-model="commentcontent"></textarea>
                                 <div class="input-group-append">
                                     <button class="btn btn-primary" type="button" id="button-addon2" style="margin: 0;"
-                                        @click="publishReply()">发布</button>
+                                        @click="publishReply(comment.id)">发布</button>
                                 </div>
                             </div>
                         </div>
@@ -145,7 +144,7 @@
 <script>
 import Clipboard from 'clipboard'
 import { Notification } from 'element-ui';
-import { followOthers, NewComment, DelComment, GetComment, GetP } from '../api';
+import { followOthers, NewComment, DelComment, GetComment, get_prompt } from '../api';
 export default {
     name: 'picinfo',
     bodyClass: 'picinfo-page',
@@ -164,14 +163,14 @@ export default {
             height: '',
             model: '',
             others: '',
-            comentList: [],
+            commentList: [],
             mycomment: 1, // 是否是我的评论
             commentnum: 1,
             commentcontent: '',
             commenter: 'me',
             comment: 'commenwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwt',
             commenttime: '2023-01-06 20:52:23',
-            show: false,
+            show: -1,
             pic: ''
         }
     },
@@ -183,25 +182,25 @@ export default {
     methods: {
         getPicInfo() {
             // TODO
-            GetP(1)
+            get_prompt(3)
                 .then((res) => {
                     console.log(res)
-                    this.pic = 'http://' + res.data.prompt.picture
+                    this.pic = res.data.prompt.picture
                     this.uploaderId = res.data.prompt.uploader.id
                     this.uploader = res.data.prompt.uploader.nickname
                     this.uploadtime = res.data.prompt.created_at
-                    this.hasFollowed = 1
+                    this.hasFollowed = res.data.is_following
                     this.prompts = res.data.prompt.prompt
                     this.model = res.data.prompt.model
                     this.width = res.data.prompt.width
                     this.height = res.data.prompt.height
                     this.others = res.data.prompt.prompt_attribute
-                    GetComment(1)
+                    GetComment(3)
                         .then((res) => {
                             console.log(res)
                             if (res.status == 200) {
                                 // Notification({ title: '成功', message: res.data.msg, type: 'success', duration: 2000 })
-                                this.commentList = res.data.coment_list
+                                this.commentList = res.data.comment_list
                             }
                         })
                         .catch((err) => {
@@ -260,8 +259,8 @@ export default {
                 clipboard.destroy() // 释放内存
             })
         },
-        showReply() {
-            this.show = !this.show
+        showReply(index) {
+            this.show = index
         },
         chooseBag() {
             // TODO 加入所选定的收藏夹checkList
@@ -269,7 +268,6 @@ export default {
             this.dialogVisible = false
         },
         publishComment() {
-            // TODO 发布评论，重新获取
             NewComment({
                 prompt_id: 1,
                 content: this.commentcontent,
@@ -279,31 +277,86 @@ export default {
                     console.log(res)
                     if (res.status == 200) {
                         Notification({ title: '成功', message: res.data.msg, type: 'success', duration: 2000 })
+                        GetComment(1)
+                            .then((res) => {
+                                console.log(res)
+                                if (res.status == 200) {
+                                    // Notification({ title: '成功', message: res.data.msg, type: 'success', duration: 2000 })
+                                    this.commentList = res.data.comment_list
+                                }
+                            })
+                            .catch((err) => {
+                                console.log(err)
+                                Notification({ title: '失败', message: err.response.data.msg, type: 'error', duration: 2000 })
+                            })
                     }
+
                 })
                 .catch((err) => {
                     console.log(err)
                     Notification({ title: '失败', message: err.response.data.msg, type: 'error', duration: 2000 })
                 })
         },
-        deleteComment() {
+        deleteComment(id) {
             // TODO 删除评论，重新获取
             DelComment({
-                comment_id: 0
+                comment_id: id
             })
                 .then((res) => {
                     console.log(res)
                     if (res.status == 200) {
                         Notification({ title: '成功', message: res.data.msg, type: 'success', duration: 2000 })
+                        GetComment(1)
+                            .then((res) => {
+                                console.log(res)
+                                if (res.status == 200) {
+                                    // Notification({ title: '成功', message: res.data.msg, type: 'success', duration: 2000 })
+                                    this.commentList = res.data.comment_list
+                                }
+                            })
+                            .catch((err) => {
+                                console.log(err)
+                                Notification({ title: '失败', message: err.response.data.msg, type: 'error', duration: 2000 })
+                            })
                     }
                 })
                 .catch((err) => {
                     console.log(err)
                     Notification({ title: '失败', message: err.response.data.msg, type: 'error', duration: 2000 })
                 })
+
         },
-        publishReply() {
+        publishReply(parent_id) {
             // TODO 发布回复，重新获取
+            NewComment({
+                prompt_id: 1,
+                content: this.commentcontent,
+                parent_comment_id: parent_id
+            })
+                .then((res) => {
+                    console.log(res)
+                    if (res.status == 200) {
+                        Notification({ title: '成功', message: res.data.msg, type: 'success', duration: 2000 })
+                        GetComment(1)
+                            .then((res) => {
+                                console.log(res)
+                                if (res.status == 200) {
+                                    // Notification({ title: '成功', message: res.data.msg, type: 'success', duration: 2000 })
+                                    this.commentList = res.data.comment_list
+                                }
+                            })
+                            .catch((err) => {
+                                console.log(err)
+                                Notification({ title: '失败', message: err.response.data.msg, type: 'error', duration: 2000 })
+                            })
+                    }
+                })
+                .catch((err) => {
+                    console.log(err)
+                    Notification({ title: '失败', message: err.response.data.msg, type: 'error', duration: 2000 })
+                })
+                .finally(() => this.show = -1)
+
         },
 
     }
