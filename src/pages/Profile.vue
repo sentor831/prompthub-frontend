@@ -18,15 +18,15 @@
         <div class="content">
           <div class="social-description">
             <h2>26</h2>
-            <p @click="toMenberList">关注</p>
+            <p @click="toMenberList" style="cursor:pointer;">关注</p>
           </div>
           <div class="social-description">
             <h2>26</h2>
-            <p @click="toMenberList">粉丝</p>
+            <p @click="toMenberList" style="cursor:pointer;">粉丝</p>
           </div>
           <div class="social-description">
             <h2>48</h2>
-            <p @click="toMenberList">赞与收藏</p>
+            <p @click="toMenberList" style="cursor:pointer;">赞与收藏</p>
           </div>
         </div>
       </div>
@@ -45,9 +45,9 @@
             class="btn btn-primary btn-round btn-lg">历史</router-link>
         </div>
         <router-view>使用router-view占位</router-view>
-
       </div>
     </div>
+    
     <!-- <Profile_subheader></Profile_subheader>
     <div class="container">
       
@@ -70,7 +70,7 @@ export default {
   },
   methods: {
     toMenberList() {
-      this.$router.push('/memberlist')
+      this.$router.push('/Profile/memberlist')
     }
   }
 };
