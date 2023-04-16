@@ -23,11 +23,10 @@ import CheckPage from './pages/CheckPage.vue';
 import Waterfall_hx from "./components/Hx_components/Waterfall_hx"
 import ProfileCarousel from "./components/Hx_components/ProfileCarousel"
 import ProfileCollection from "./components/Hx_components/ProfileCollection"
-
+import MemberList from "./components/Hx_components/MemberList"
 
 // 引入页面
 import ModInfo from "./pages/ModInfo"
-import MemberList from "./pages/MemberList"
 // 黄新引入部分end
 
 Vue.use(Router);
@@ -125,17 +124,13 @@ export default new Router({
           path: 'viewhistory',
           // component: Viewhistory
           component: Waterfall_hx
+        },
+        {
+          // 关注列表
+          path: 'memberlist',
+          component: MemberList
         }
       ]
-    },
-    {
-      path: '/memberlist',
-      name:'memberlist',
-      components: {default : MemberList, header : MainNavbar, footer : MainFooter},
-      props: {
-        header: { colorOnScroll: 400 },
-        footer: { backgroundColor: 'black' }
-      }
     },
     {
       path: '/search',
