@@ -75,10 +75,10 @@ export default {
             if (res.status == 200) {
               setToken(res.data.access_token)
               setRefreshToken(res.data.refresh_token)
-              let loginInfo = {
-                isLogin: 1
-              }
-              this.cookie.setCookie(loginInfo, 1)
+              // let loginInfo = {
+              //   isLogin: 1
+              // }
+              // this.cookie.setCookie(loginInfo, 1)
 
               this.$router.push('/')
 
