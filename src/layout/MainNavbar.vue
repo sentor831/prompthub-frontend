@@ -43,10 +43,10 @@
         </el-popover>
       </li>
       <li class="nav-item" v-if="login !== null">
-        <!-- <img :src="attachImageUrl(avator)" alt=""> -->
+        <!-- <img :src="attachImageUrl(avatar)" alt=""> -->
         <el-dropdown trigger="hover">
           <span class="el-dropdown-link">
-            <img :src=avator style="width: 7vh; height: 7vh; border-radius: 50%; cursor: pointer;" @click="toMyself()">
+            <img :src=avatar style="width: 7vh; height: 7vh; border-radius: 50%; cursor: pointer;" @click="toMyself()">
           </span>
           <el-dropdown-menu slot="dropdown">
             <el-dropdown-item icon="now-ui-icons ui-1_lock-circle-open"
@@ -80,7 +80,7 @@ export default {
       keyword: this.cookie.getCookie("keyword"),
       login: null,
       noticenum: 1,
-      avator: ''
+      avatar: ''
     }
   },
   watch: {
@@ -92,7 +92,7 @@ export default {
     this.login = this.cookie.getCookie("token")
     if (this.login !== null) {
       this.getNoticeNum()
-      this.getAvator()
+      this.getAvatar()
     }
   },
   methods: {
@@ -100,9 +100,9 @@ export default {
       // TODO 获取通知数量
 
     },
-    getAvator() {
+    getAvatar() {
       // TODO 获取头像
-      this.avator = "https://sucai.suoluomei.cn/sucai_zs/images/20201027152322-15.jpg"
+      this.avatar = this.cookie.getCookie('avatar')
     },
     handlelogOut() {
       console.log('logout')
@@ -127,7 +127,7 @@ export default {
     timer() {
       return setTimeout(() => {
         this.getNoticeNum()
-        this.getAvator()
+        this.getAvatar()
       }, 5000)
     }
   },

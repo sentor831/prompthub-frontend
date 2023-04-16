@@ -14,13 +14,13 @@ module.exports = {
         //   '^/api': ''
         // }
       },
-      '/upload': {
-        target: 'http://upload.qiniup.com/',
-        changeOrigin: true,
-        pathRewrite: {
-          '^/upload': ''
-        }
-      }
+      // '/upload': {
+      //   target: 'http://upload.qiniup.com/',
+      //   changeOrigin: true,
+      //   pathRewrite: {
+      //     '^/upload': ''
+      //   }
+      // }
     }
   }
 };

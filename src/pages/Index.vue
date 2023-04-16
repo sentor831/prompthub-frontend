@@ -204,7 +204,10 @@ export default {
   methods: {
     picInfo(item) {
       // TODO 设置cookie
-      // this.cookie.setCookie()
+      let picInfo = {
+        picId: item.id
+      }
+      this.cookie.setCookie(picInfo, 1)
       // this.$router.push({ path: '/picinfo', query: { picid: item.id } })
       this.$router.push('/picInfo')
     },

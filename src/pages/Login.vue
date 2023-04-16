@@ -56,7 +56,7 @@ export default {
   data: function () {
     return {
       email: '',
-      password: ''
+      password: '',
     }
   },
   methods: {
@@ -75,10 +75,12 @@ export default {
             if (res.status == 200) {
               setToken(res.data.access_token)
               setRefreshToken(res.data.refresh_token)
-              // let loginInfo = {
-              //   isLogin: 1
-              // }
-              // this.cookie.setCookie(loginInfo, 1)
+              let loginInfo = {
+                userId: res.data.user.id,
+                nickName: res.data.user.nickname,
+                avatar: res.data.user.avatar
+              }
+              this.cookie.setCookie(loginInfo, 1)
 
               this.$router.push('/')
 

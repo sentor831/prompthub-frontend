@@ -70,6 +70,46 @@ export const modifyPass = (params) => {
 
 }
 
+export const followOthers = (params) => {
+    return axioss.request({
+        url: `api/user/follow`,
+        data: params,
+        method: 'post'
+    })
+}
+
+export const NewComment = (params) => {
+    return axioss.request({
+        url: `api/comment/create_comment`,
+        data: params,
+        method: 'post'
+    })
+}
+
+export const DelComment = (params) => {
+    return axioss.request({
+        url: `api/comment/delete_comment`,
+        data: params,
+        method: 'delete'
+    })
+}
+
+export const GetComment = (id) => {
+    return axioss.request({
+        url: `api/comment/get_comment_list?prompt_id=${id}`,
+        // data: params,
+        method: 'get'
+    })
+}
+
+export const GetP = (id) => {
+    return axioss.request({
+        url: `api/prompt/get_prompt?id=${id}`,
+        method: 'get'
+    })
+}
+
+
 // 上传图片，获取图片key以及七牛token
 export const get_qiniu_token = (params) => {
     return axioss.request({

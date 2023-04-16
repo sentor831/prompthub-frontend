@@ -2,7 +2,7 @@
     <div class="container">
         <div class="row" style="margin-top: 14vh;">
             <div class="col-7">
-                <img src="../../public/img/dog1.jpeg" style="cursor: pointer;" />
+                <img :src="pic" style="cursor: pointer;" />
                 <div class="row">
                     <div class="col-10" style="padding-left: 3vh; margin-top: 1vh;">
                         <p>{{ uploadtime }}</p>
@@ -145,6 +145,7 @@
 <script>
 import Clipboard from 'clipboard'
 import { Notification } from 'element-ui';
+import { followOthers, NewComment, DelComment, GetComment, GetP } from '../api';
 export default {
     name: 'picinfo',
     bodyClass: 'picinfo-page',
@@ -156,13 +157,14 @@ export default {
             dialogVisible: false,
             checkList: [],
             hasFollowed: 0,
-            uploader: 'uploaffffffffffffffffffffffder',
-            uploadtime: '2023-01-05 15:09:35',
-            prompts: 'beautiful, building, jjjjjjjjjjjjjj, aaaaaaaaaaaaaaaa, uuuuuuuuuuuuuuu',
-            width: '480',
-            height: '960',
-            model: 'DALL-E',
-            others: 'some json: {seed: 100, lr: 0.001}',
+            uploader: '',
+            uploadtime: '',
+            prompts: '',
+            width: '',
+            height: '',
+            model: '',
+            others: '',
+            comentList: [],
             mycomment: 1, // 是否是我的评论
             commentnum: 1,
             commentcontent: '',
@@ -170,21 +172,81 @@ export default {
             comment: 'commenwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwt',
             commenttime: '2023-01-06 20:52:23',
             show: false,
+            pic: ''
         }
     },
     mounted() {
         // TODO 从后端获取 个人收藏夹、是否已关注；当前作品的作者、发布时间、详细信息、评论（自己的可删除）
-        this.checkList = ['收藏夹 A']
-        this.hasFollowed = 1
+        this.getPicInfo()
+        this.getCollections()
     },
     methods: {
+        getPicInfo() {
+            // TODO
+            GetP(1)
+                .then((res) => {
+                    console.log(res)
+                    this.pic = 'http://' + res.data.prompt.picture
+                    this.uploaderId = res.data.prompt.uploader.id
+                    this.uploader = res.data.prompt.uploader.nickname
+                    this.uploadtime = res.data.prompt.created_at
+                    this.hasFollowed = 1
+                    this.prompts = res.data.prompt.prompt
+                    this.model = res.data.prompt.model
+                    this.width = res.data.prompt.width
+                    this.height = res.data.prompt.height
+                    this.others = res.data.prompt.prompt_attribute
+                    GetComment(1)
+                        .then((res) => {
+                            console.log(res)
+                            if (res.status == 200) {
+                                // Notification({ title: '成功', message: res.data.msg, type: 'success', duration: 2000 })
+                                this.commentList = res.data.coment_list
+                            }
+                        })
+                        .catch((err) => {
+                            console.log(err)
+                            Notification({ title: '失败', message: err.response.data.msg, type: 'error', duration: 2000 })
+                        })
+
+                })
+
+        },
+        getCollections() {
+            // TODO
+            this.checkList = ['收藏夹 A']
+        },
         follow() {
             if (this.hasFollowed == 1) {
-                // TODO 取关
-                this.hasFollowed = 0
+                followOthers({
+                    user_id: this.uploaderId
+                })
+                    .then((res) => {
+                        console.log(res)
+                        if (res.status == 200) {
+                            Notification({ title: '成功', message: res.data.msg, type: 'success', duration: 2000 })
+                            this.hasFollowed = 0
+                        }
+                    })
+                    .catch((err) => {
+                        console.log(err)
+                        Notification({ title: '失败', message: err.response.data.msg, type: 'error', duration: 2000 })
+                    })
             } else {
-                // TODO 关注
-                this.hasFollowed = 1
+                followOthers({
+                    user_id: this.uploaderId
+                })
+                    .then((res) => {
+                        console.log(res)
+                        if (res.status == 200) {
+                            Notification({ title: '成功', message: res.data.msg, type: 'success', duration: 2000 })
+                            this.hasFollowed = 1
+                        }
+                    })
+                    .catch((err) => {
+                        console.log(err)
+                        Notification({ title: '失败', message: err.response.data.msg, type: 'error', duration: 2000 })
+                    })
             }
         },
         handleCopy() {
@@ -208,13 +270,42 @@ export default {
         },
         publishComment() {
             // TODO 发布评论，重新获取
+            NewComment({
+                prompt_id: 1,
+                content: this.commentcontent,
+                // parent_comment_id: ''
+            })
+                .then((res) => {
+                    console.log(res)
+                    if (res.status == 200) {
+                        Notification({ title: '成功', message: res.data.msg, type: 'success', duration: 2000 })
+                    }
+                })
+                .catch((err) => {
+                    console.log(err)
+                    Notification({ title: '失败', message: err.response.data.msg, type: 'error', duration: 2000 })
+                })
         },
         deleteComment() {
             // TODO 删除评论，重新获取
+            DelComment({
+                comment_id: 0
+            })
+                .then((res) => {
+                    console.log(res)
+                    if (res.status == 200) {
+                        Notification({ title: '成功', message: res.data.msg, type: 'success', duration: 2000 })
+                    }
+                })
+                .catch((err) => {
+                    console.log(err)
+                    Notification({ title: '失败', message: err.response.data.msg, type: 'error', duration: 2000 })
+                })
         },
         publishReply() {
             // TODO 发布回复，重新获取
-        }
+        },
+
     }
 }
 </script>
