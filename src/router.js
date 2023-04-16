@@ -8,6 +8,7 @@ import Profile from './pages/Profile.vue';
 import MainNavbar from './layout/MainNavbar.vue';
 import MainFooter from './layout/MainFooter.vue';
 import ForgetPass from './pages/ForgetPass.vue';
+import ModiPass from './pages/ModiPass.vue';
 import Search from './pages/Search.vue';
 import TheHeader from './components/TheHeader.vue';
 import PicInfo from './pages/PicInfo.vue';
@@ -16,6 +17,18 @@ import NoticeReply from './pages/NoticeReply.vue'
 import UploadPage from './pages/UploadPage.vue';
 import EditPage from './pages/EditPage.vue';
 import CheckPage from './pages/CheckPage.vue';
+
+// 黄新引入部分
+// 引入组件
+import Waterfall_hx from "./components/Hx_components/Waterfall_hx"
+import ProfileCarousel from "./components/Hx_components/ProfileCarousel"
+import ProfileCollection from "./components/Hx_components/ProfileCollection"
+
+
+// 引入页面
+import ModInfo from "./pages/ModInfo"
+import MemberList from "./pages/MemberList"
+// 黄新引入部分end
 
 Vue.use(Router);
 
@@ -61,13 +74,64 @@ export default new Router({
       name: 'forgetpass',
       components: { default: ForgetPass, header: TheHeader },
       props: {
-        header: { colorOnScroll: 0 }
+        header: { colorOnScroll: 400 }
+      }
+    },
+    {
+      path: '/modipass',
+      name: 'modipass',
+      components: { default: ModiPass, header: TheHeader },
+      props: {
+        header: { colorOnScroll: 400 }
+      }
+    },
+    {
+      path: '/modinfo',
+      name: 'modinfo',
+      components: { default: ModInfo, header: MainNavbar , footer: MainFooter},
+      props: {
+        header: { colorOnScroll: 400 },
+        footer: { backgroundColor: 'black' }
       }
     },
     {
       path: '/profile',
       name: 'profile',
       components: { default: Profile, header: MainNavbar, footer: MainFooter },
+      props: {
+        header: { colorOnScroll: 400 },
+        footer: { backgroundColor: 'black' }
+      },
+      children:[
+        {
+          path:"",
+          component: ProfileCarousel
+        },
+        {
+          path: 'MyHome',
+          component: ProfileCarousel
+        },
+        {
+          path: 'product',
+          // component: Thumbs
+          component: Waterfall_hx
+        },
+        {
+          path: 'collection',
+          // component: Checking
+          component: ProfileCollection
+        },
+        {
+          path: 'viewhistory',
+          // component: Viewhistory
+          component: Waterfall_hx
+        }
+      ]
+    },
+    {
+      path: '/memberlist',
+      name:'memberlist',
+      components: {default : MemberList, header : MainNavbar, footer : MainFooter},
       props: {
         header: { colorOnScroll: 400 },
         footer: { backgroundColor: 'black' }
@@ -78,7 +142,6 @@ export default new Router({
       name: 'search',
       components: { default: Search, header: TheHeader, footer: MainFooter },
       props: {
-        header: { colorOnScroll: 400 },
         footer: { backgroundColor: 'black' }
       }
     },
@@ -87,25 +150,18 @@ export default new Router({
       name: 'picinfo',
       components: { default: PicInfo, header: TheHeader, footer: MainFooter },
       props: {
-        header: { colorOnScroll: 400, transparent: true },
         footer: { backgroundColor: 'black' }
       }
     },
     {
       path: '/system',
       name: 'system-notice',
-      components: { default: NoticeSystem, header: TheHeader },
-      props: {
-        header: { colorOnScroll: 400 }
-      }
+      components: { default: NoticeSystem, header: TheHeader }
     },
     {
       path: '/reply',
       name: 'reply-notice',
-      components: { default: NoticeReply, header: TheHeader },
-      props: {
-        header: { colorOnScroll: 400 }
-      }
+      components: { default: NoticeReply, header: TheHeader }
     },
     {
       path: '/upload',

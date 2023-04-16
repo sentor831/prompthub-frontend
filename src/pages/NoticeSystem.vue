@@ -6,9 +6,14 @@
                 <div class="col">
                     <h5 style="text-align: left; margin-left: 2vh;">系 统 通 知</h5>
                     <ul class="list-group list-group-flush" style="overflow-y: auto; height: 75vh;">
-                        <li class="list-group-item" style="cursor: pointer;">
-                            <h4>审核通过</h4>
-                            <p>您的作品（id：xxx）通过审核。</p>
+                        <!-- TODO v-for -->
+                        <li class="list-group-item">
+                            <div class="row">
+                                <h4 class="noticeTitle" style="margin-left: 2vh;" @click="jumptoPic()">审核通过</h4>
+                                <i class="now-ui-icons ui-1_simple-remove" style="margin-left: auto; cursor: pointer;"
+                                    @click="deleteNotice()"></i>
+                            </div>
+                            <p>您的作品（id：111）通过审核。</p>
                             <p style="text-align: right; font-size: small;">2023-01-06 20:52:23</p>
                         </li>
                     </ul>
@@ -29,11 +34,38 @@ export default {
     },
     data: function () {
         return {
-
+            noticeList: []
         }
     },
+    mounted() {
+        this.getNoticeList()
+    },
+    methods: {
+        getNoticeList() {
+            // TODO
+
+        },
+        jumptoPic() {
+            // TODO
+            this.$router.push({ path: '/picinfo' })
+        },
+        deleteNotice() {
+            // TODO
+
+            this.getNoticeList()
+        }
+    }
 }
 
 </script>
 
-<style></style>
+<style>
+.noticeTitle {
+    cursor: pointer;
+    ;
+}
+
+.noticeTitle:hover {
+    color: darkblue
+}
+</style>
