@@ -1,6 +1,43 @@
 <template>
     <div class="SubCheckBox">
-        <img src='../../../public/img/dog1.jpeg' width="180vh" class="img-thumbnail">
+        <!-- <img src='../../../public/img/dog1.jpeg' width="180vh" class="img-thumbnail"> -->
+        <el-upload
+  action="#"
+  list-type="picture-card"
+  :auto-upload="false">
+    <i slot="default" class="el-icon-plus"></i>
+    <div slot="file" slot-scope="{file}">
+      <img
+        class="el-upload-list__item-thumbnail"
+        :src="file.url" alt=""
+      >
+      <span class="el-upload-list__item-actions">
+        <span
+          class="el-upload-list__item-preview"
+          @click="handlePictureCardPreview(file)"
+        >
+          <i class="el-icon-zoom-in"></i>
+        </span>
+        <span
+          v-if="!disabled"
+          class="el-upload-list__item-delete"
+          @click="handleDownload(file)"
+        >
+          <i class="el-icon-download"></i>
+        </span>
+        <span
+          v-if="!disabled"
+          class="el-upload-list__item-delete"
+          @click="handleRemove(file)"
+        >
+          <i class="el-icon-delete"></i>
+        </span>
+      </span>
+    </div>
+</el-upload>
+<el-dialog :visible.sync="dialogVisible">
+  <img width="100%" :src="dialogImageUrl" alt="">
+</el-dialog>
         <div class="CheckText">
             <div class="SubCheckText1">
                 <p class="CheckDescribe">{{ Prompt }}</p>
@@ -19,12 +56,15 @@
                 </p>
             </div>
         </div>
-        <button type="button" class="btn btn-default" 
+        <!-- <button type="button" class="btn btn-default" 
         style="width:13vh; height:5vh; margin-left:-10vh; margin-top:7vh; background: #F2F4F8; color:#505050" 
         @click=Edit()>
         <img src='../../../public/img/edit.png' width="22vh" style="margin-left:-3vh">
             编 辑
-        </button>
+        </button> -->
+        <el-button type="info" icon="el-icon-edit" 
+        style="height:5vh; margin:7vh 0 0 -12vh; background-color: #F2F4F8; color:#505050"
+        @click=Edit()> 编辑 </el-button>
     </div>
 </template>
   
@@ -44,7 +84,7 @@ export default {
       },
       methods:{
         Edit(){
-          alert("编辑作品")
+            this.$router.push('/edit'); 
         }
       }
   }

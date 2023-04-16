@@ -134,6 +134,7 @@ export default new Router({
         footer: { backgroundColor: 'black' }
       }
     },
+
   ],
   scrollBehavior: to => {
     if (to.hash) {

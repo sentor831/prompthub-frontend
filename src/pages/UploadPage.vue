@@ -10,12 +10,17 @@
               class="Upload"
               drag
               action="http://upload.qiniu.com/putb64/-1"
+              :on-preview="handlePreview"
+              :on-remove="handleRemove"
+              :file-list="fileList"
+              list-type="picture"
               :http-request="UploadHttpRequest">
               <!-- <i class="el-icon-upload"></i> -->
               <img src='../../public/img/upload.png' width="75vh" style="margin:12vh 0 1vh 0; ">
               <div class="el-upload__text">将文件拖到此处，或<em>点击上传</em></div>
               <!-- <div class="el-upload__tip" slot="tip">只能上传jpg/png文件，且不超过500kb</div> -->
             </el-upload>
+            <el-button type="primary" disabled="isUpload()" style="margin:-5vh 0 0 91vh">确认上传</el-button>
           <br><br>
         </div>
     </div>
@@ -37,9 +42,22 @@ export default {
           uploadHeaders: {}
         }
     },
+  computed: {
+      "imgUrl"() {
+        return document.querySelector("#app > div > div > div > div > ul > li > img").src;
+      }
+  },
   methods:{
     Upload(){
       alert("上传图片")
+    },
+    isUpload(){
+      if (document.querySelector("#app > div > div > div > div > ul > li > img") == null){
+        return true;
+      }
+      else{
+        return false;
+      }
     },
     UploadHttpRequest(options){
       this.isShowLoading = true;
@@ -124,12 +142,13 @@ export default {
     margin: 0 auto;
   }
   .Upload{
-    width:90vh;
+    width:70vh;
     height:40vh;
     /* background: #FFFFFF;
     border: 2px dashed #BFBFBF; */
     margin: 0 auto;
     margin-top: 5vh;
+    margin-bottom: 8vh;
   }
   .text1{
     font-family: 'Roboto';
@@ -141,7 +160,7 @@ export default {
     color: #BFBFBF;
     margin-top:1vh;
   }
-  .el-upload-dragger {
+  /* .el-upload-dragger {
     background-color: #ffffff;
     border: 2px dashed #BFBFBF;
     border-radius: 6px;
@@ -152,5 +171,19 @@ export default {
     text-align: center;
     cursor: pointer;
     overflow: hidden;
+    margin-left: -10vh;
+} */
+.el-upload-list--picture .el-upload-list__item {
+    overflow: hidden;
+    z-index: 0;
+    background-color: #fff;
+    border: 1px solid #c0ccda;
+    border-radius: 6px;
+    -webkit-box-sizing: border-box;
+    box-sizing: border-box;
+    margin-top: 10px;
+    margin-left: -10vh;
+    padding: 10px 10px 10px 90px;
+    height: 92px;
 }
 </style>
