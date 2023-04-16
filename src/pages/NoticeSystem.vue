@@ -6,15 +6,17 @@
                 <div class="col">
                     <h5 style="text-align: left; margin-left: 2vh;">系 统 通 知</h5>
                     <ul class="list-group list-group-flush" style="overflow-y: auto; height: 75vh;">
-                        <!-- TODO v-for -->
-                        <li class="list-group-item">
+                        <li class="list-group-item" v-for="(item, index) in noticeList" :key="index">
                             <div class="row">
-                                <h4 class="noticeTitle" style="margin-left: 2vh;" @click="jumptoPic()">审核通过</h4>
+                                <h4 class="noticeTitle" style="margin-left: 2vh;" @click="jumptoPic(item.prompt_id)"> {{
+                                    item.title }}</h4>
                                 <i class="now-ui-icons ui-1_simple-remove" style="margin-left: auto; cursor: pointer;"
-                                    @click="deleteNotice()"></i>
+                                    @click="deleteNotice(item.id)"></i>
                             </div>
-                            <p>您的作品（id：111）通过审核。</p>
-                            <p style="text-align: right; font-size: small;">2023-01-06 20:52:23</p>
+                            <i v-if="item.status === 1" class="el-icon-plus"></i>
+                            <p v-if="item.status === 1">[NEW]</p>
+                            <p> {{ item.content }} </p>
+                            <p style="text-align: right; font-size: small;"> {{ item.created_at }}</p>
                         </li>
                     </ul>
                 </div>
@@ -26,6 +28,7 @@
 
 <script>
 import NoticeSideBar from '../components/NoticeSideBar.vue';
+import { get_notification_list, delete_notification, get_unread_notification_num } from '../api';
 export default {
     name: 'notice-system',
     bodyClass: 'notice-system-page',
@@ -34,7 +37,9 @@ export default {
     },
     data: function () {
         return {
-            noticeList: []
+            noticeList: [],
+            page: 1,
+            per_page: 30,
         }
     },
     mounted() {
@@ -42,16 +47,21 @@ export default {
     },
     methods: {
         getNoticeList() {
-            // TODO
-
+            get_notification_list(0, this.per_page, this.page)
+                .then((res) => {
+                    this.noticeList = res.data.notification_list
+                }).catch((err) => {
+                    console.log(err)
+                    Notification({ title: '失败', message: err.response.data.msg, type: 'error', duration: 2000 })
+                })
         },
-        jumptoPic() {
-            // TODO
-            this.$router.push({ path: '/picinfo' })
+        jumptoPic(id) {
+            this.$router.push({ path: '/picinfo', query: { picid: id } })
         },
-        deleteNotice() {
-            // TODO
-
+        deleteNotice(id) {
+            delete_notification({
+                id,
+            })
             this.getNoticeList()
         }
     }

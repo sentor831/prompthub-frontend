@@ -26,16 +26,21 @@
         </vue-waterfall-easy>
       </div> -->
 
+      <!-- TODO: 按钮还是滚动条到底部 -->
       <Waterfall :list="imgsArr" style="margin-top:20px" :breakpoints="breakpoints">
         <template #item="{ item }">
-          <div @click="picInfo(item.prompt.id)" style="cursor: pointer;"
+          <div @click="picInfo(item.id)" style="cursor: pointer;"
             class="bg-gray-900 rounded-lg shadow-md overflow-hidden transition-all duration-300 ease-linear hover:shadow-lg hover:shadow-gray-600 group">
             <div class="overflow-hidden">
-              <LazyImg :url="item.prompt.picture" class="pic"></LazyImg>
+              <!-- <LazyImg :url="item.picture" class="pic"></LazyImg> -->
+              <img :src="item.picture" class="pic" />
             </div>
           </div>
         </template>
       </Waterfall>
+      <div style="text-align: center;">
+        <el-button btn btn-primary @click="getData" style="margin-bottom: 1em ;">加载更多</el-button>
+      </div>
 
     </div>
 
@@ -58,7 +63,7 @@ export default {
   components: {
     Parallax,
     Waterfall,
-    LazyImg,
+    // LazyImg,
   },
   data() {
     return {
@@ -81,14 +86,14 @@ export default {
     this.getData();
   },
   methods: {
-    picInfo(item) {
-      // TODO 设置cookie
+    picInfo(id) {
+      // TODO 设置cookie 
       let picInfo = {
-        picId: item.id
+        picId: id
       }
       this.cookie.setCookie(picInfo, 1)
-      // this.$router.push({ path: '/picinfo', query: { picid: item.id } })
-      this.$router.push('/picInfo')
+      this.$router.push({ path: '/picinfo', query: { picid: id } })
+      // this.$router.push('/picInfo')
     },
     chooseHot() {
       this.btntypeH = 'primary'
@@ -111,15 +116,27 @@ export default {
       // TODO 个性化推荐
     },
     getData() {
-      hot_prompt_list(30, this.page)
+      const loading = this.$loading({
+        lock: true,
+        text: 'Loading',
+        spinner: 'el-icon-loading',
+        background: 'rgba(0, 0, 0, 0.7)'
+      })
+
+      hot_prompt_list(28, this.page)
         .then((res) => {
           this.imgsArr = this.imgsArr.concat(res.data.prompt_list)
+          console.log(res.data.has_next);
           if (!res.data.has_next) {
             this.$refs.waterfall.waterfallOver();
           }
         })
         .catch((err) => { })
+        .finally(() => { loading.close() })
+
       this.page += 1;
+
+
       // if (this.page == 6) {
       //   this.$refs.waterfall.waterfallOver();
       // } else {

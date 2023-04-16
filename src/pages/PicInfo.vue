@@ -31,7 +31,7 @@
             <div class="col" style="margin-left: 5vh;">
                 <div class="row">
                     <div class="col col-md-auto">
-                        <img src="https://sucai.suoluomei.cn/sucai_zs/images/20201027152322-15.jpg"
+                        <img :src="uploader_avatar"
                             style="width: 10vh; height: 10vh; border-radius: 50%; cursor: pointer;" />
                     </div>
                     <div class="col col-md-auto" style=" padding-top: 3vh;">
@@ -156,8 +156,10 @@ export default {
             dialogVisible: false,
             checkList: [],
             hasFollowed: 0,
+            picid: 0,
             uploader: '',
             uploadtime: '',
+            uploader_avatar: '',
             prompts: '',
             width: '',
             height: '',
@@ -176,17 +178,19 @@ export default {
     },
     mounted() {
         // TODO 从后端获取 个人收藏夹、是否已关注；当前作品的作者、发布时间、详细信息、评论（自己的可删除）
+        this.picid = this.$route.query.picid;
         this.getPicInfo()
         this.getCollections()
     },
     methods: {
         getPicInfo() {
             // TODO
-            get_prompt(3)
+            get_prompt(this.picid)
                 .then((res) => {
                     console.log(res)
                     this.pic = res.data.prompt.picture
                     this.uploaderId = res.data.prompt.uploader.id
+                    this.uploader_avatar = res.data.prompt.uploader.avatar
                     this.uploader = res.data.prompt.uploader.nickname
                     this.uploadtime = res.data.prompt.created_at
                     this.hasFollowed = res.data.is_following
@@ -195,7 +199,7 @@ export default {
                     this.width = res.data.prompt.width
                     this.height = res.data.prompt.height
                     this.others = res.data.prompt.prompt_attribute
-                    GetComment(3)
+                    GetComment(this.picid)
                         .then((res) => {
                             console.log(res)
                             if (res.status == 200) {
@@ -269,7 +273,7 @@ export default {
         },
         publishComment() {
             NewComment({
-                prompt_id: 1,
+                prompt_id: this.picid,
                 content: this.commentcontent,
                 // parent_comment_id: ''
             })
@@ -329,7 +333,7 @@ export default {
         publishReply(parent_id) {
             // TODO 发布回复，重新获取
             NewComment({
-                prompt_id: 1,
+                prompt_id: this.picid,
                 content: this.commentcontent,
                 parent_comment_id: parent_id
             })

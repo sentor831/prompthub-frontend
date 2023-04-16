@@ -123,7 +123,7 @@ export const add_to_collection = (params) => {
 }
 
 // 取消收藏
-export const romve_from_collection = (params) => {
+export const remove_from_collection = (params) => {
     return axioss.request({
         url: `api/collection/remove_from_collection`,
         method: 'post',
@@ -159,40 +159,36 @@ export const modify_collection = (params) => {
 }
 
 // 获取收藏夹列表
-export const get_collection_list = (params) => {
+export const get_collection_list = (id) => {
     return axioss.request({
-        url: `api/collection/get_collection_list`,
-        method: 'get',
-        data: params
+        url: `api/collection/get_collection_list?fetch_user_id=${id}`,
+        method: 'get'
     })
 }
 
 // 获取收藏夹中收藏列表
-export const get_collection_record_list = (params) => {
+export const get_collection_record_list = (id, per_page, page_index) => {
     return axioss.request({
-        url: `api/collection/get_collection_record_list`,
-        method: 'get',
-        data: params
+        url: `api/collection/get_collection_record_list?id=${id}&per_page=${per_page}&page_index=${page_index}`,
+        method: 'get'
     })
 }
 
 
 // ---------------4.7消息通知接口编写--------------
 // 获取消息列表
-export const get_notification_list = (params) => {
+export const get_notification_list = (nf_type, per_page, page_index) => {
     return axioss.request({
-        url: `api/notificatio/get_notification_list`,
-        method: 'get',
-        data: params
+        url: `api/notification/get_notification_list?nf_type=${nf_type}&per_page=${per_page}&page_index=${page_index}`,
+        method: 'get'
     })
 }
 
 // 获取未读消息数量
-export const get_unread_notification_num = (params) => {
+export const get_unread_notification_num = () => {
     return axioss.request({
-        url: `api/notificatio/get_unread_notification_num`,
-        method: 'get',
-        data: params
+        url: `api/notification/get_unread_notification_num`,
+        method: 'get'
     })
 }
 
@@ -200,7 +196,7 @@ export const get_unread_notification_num = (params) => {
 // 更新通知列表
 export const update_notification = (params) => {
     return axioss.request({
-        url: `api/notificatio/update_notification`,
+        url: `api/notification/update_notification`,
         method: 'post',
         data: params
     })
@@ -209,7 +205,7 @@ export const update_notification = (params) => {
 // 删除通知
 export const delete_notification = (params) => {
     return axioss.request({
-        url: `api/notificatio/delete_notification`,
+        url: `api/notification/delete_notification`,
         method: 'delete',
         data: params
     })
