@@ -18,6 +18,18 @@ import UploadPage from './pages/UploadPage.vue';
 import EditPage from './pages/EditPage.vue';
 import CheckPage from './pages/CheckPage.vue';
 
+// 黄新引入部分
+// 引入组件
+import Waterfall_hx from "./components/Hx_components/Waterfall_hx"
+import ProfileCarousel from "./components/Hx_components/ProfileCarousel"
+import ProfileCollection from "./components/Hx_components/ProfileCollection"
+
+
+// 引入页面
+import ModInfo from "./pages/ModInfo"
+import MemberList from "./pages/MemberList"
+// 黄新引入部分end
+
 Vue.use(Router);
 
 export default new Router({
@@ -74,9 +86,52 @@ export default new Router({
       }
     },
     {
+      path: '/modinfo',
+      name: 'modinfo',
+      components: { default: ModInfo, header: MainNavbar , footer: MainFooter},
+      props: {
+        header: { colorOnScroll: 400 },
+        footer: { backgroundColor: 'black' }
+      }
+    },
+    {
       path: '/profile',
       name: 'profile',
       components: { default: Profile, header: MainNavbar, footer: MainFooter },
+      props: {
+        header: { colorOnScroll: 400 },
+        footer: { backgroundColor: 'black' }
+      },
+      children:[
+        {
+          path:"",
+          component: ProfileCarousel
+        },
+        {
+          path: 'MyHome',
+          component: ProfileCarousel
+        },
+        {
+          path: 'product',
+          // component: Thumbs
+          component: Waterfall_hx
+        },
+        {
+          path: 'collection',
+          // component: Checking
+          component: ProfileCollection
+        },
+        {
+          path: 'viewhistory',
+          // component: Viewhistory
+          component: Waterfall_hx
+        }
+      ]
+    },
+    {
+      path: '/memberlist',
+      name:'memberlist',
+      components: {default : MemberList, header : MainNavbar, footer : MainFooter},
       props: {
         header: { colorOnScroll: 400 },
         footer: { backgroundColor: 'black' }
