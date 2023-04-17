@@ -1,117 +1,100 @@
 <template>
-  <div>
-    <el-container style="height: 800px; border: 1px solid #eee">
-      <!-- 原rgb为(238,241,246) -->
-      <el-aside width="220px" style="background-color: rgb(255, 255, 255)">
-        <el-menu :default-openeds="['1', '2']">
-          <el-submenu index="0">
-            <template slot="title"
-              ><i class="el-icon-plus" @click="createCollectionVisible = true"></i
-              >新建收藏</template
-            >
-          </el-submenu>
-          <el-submenu index="1">
-            <template slot="title"><i class="el-icon-folder"></i>私密收藏夹</template>
-            <el-menu-item-group>
-              <el-menu-item
-                v-for="(item, index) in private_collection_list"
-                :key="index"
-                @click="showCollection(item.id)"
-              >
-                {{ item.name }}
-              </el-menu-item>
-            </el-menu-item-group>
-          </el-submenu>
-          <el-submenu index="2">
-            <template slot="title"><i class="el-icon-folder"></i>公开收藏夹</template>
-            <el-menu-item-group>
-              <el-menu-item
-                v-for="(item, index) in public_collection_list"
-                :key="index"
-                @click="showCollection(item.id)"
-              >
-                {{ item.name }}
-              </el-menu-item>
-            </el-menu-item-group>
-          </el-submenu>
-        </el-menu>
-      </el-aside>
+    <div>
+        <el-container style="height: 800px; border: 1px solid #eee">
+            <!-- 原rgb为(238,241,246) -->
+            <el-aside width="220px" style="background-color: rgb(255, 255, 255)">
+                <el-menu :default-openeds="['1', '2']">
+                    <el-submenu index="0">
+                        <template slot="title"><i class="el-icon-plus"
+                                @click="createCollectionVisible = true"></i>新建收藏</template>
+                    </el-submenu>
+                    <el-submenu index="1">
+                        <template slot="title"><i class="el-icon-folder"></i>私密收藏夹</template>
+                        <el-menu-item-group>
+                            <el-menu-item v-for="(item, index) in private_collection_list" :key="index"
+                                @click="showCollection(item.id)">
+                                {{ item.name }}
+                            </el-menu-item>
+                        </el-menu-item-group>
+                    </el-submenu>
+                    <el-submenu index="2">
+                        <template slot="title"><i class="el-icon-folder"></i>公开收藏夹</template>
+                        <el-menu-item-group>
+                            <el-menu-item v-for="(item, index) in public_collection_list" :key="index"
+                                @click="showCollection(item.id)">
+                                {{ item.name }}
+                            </el-menu-item>
+                        </el-menu-item-group>
+                    </el-submenu>
+                </el-menu>
+            </el-aside>
 
-      <!-- 创建收藏 -->
+            <!-- 创建收藏 -->
 
-      <el-dialog
-        title="新建收藏夹"
-        :visible.sync="createCollectionVisible"
-        width="33%"
-        center
-      >
-        <div class="dialogdiv" style="height: auto; overflow-y: auto; overflow-x: hidden">
-          <el-form ref="form" :model="form" label-width="120px" label-position="left">
-            <el-form-item label="收藏夹名称">
-              <el-input v-model="form.name"></el-input>
-            </el-form-item>
-            <el-form-item label="是否公开">
-              <el-switch v-model="form.visibility"></el-switch>
-            </el-form-item>
-          </el-form>
-        </div>
+            <el-dialog title="新建收藏夹" :visible.sync="createCollectionVisible" width="33%" center>
+                <div class="dialogdiv" style="height: auto; overflow-y: auto; overflow-x: hidden">
+                    <el-form ref="form" :model="form" label-width="120px" label-position="left">
+                        <el-form-item label="收藏夹名称">
+                            <el-input v-model="form.name"></el-input>
+                        </el-form-item>
+                        <el-form-item label="是否公开">
+                            <el-switch v-model="form.visibility"></el-switch>
+                        </el-form-item>
+                    </el-form>
+                </div>
 
-        <span slot="footer" class="dialog-footer">
-          <el-button @click="createCollectionVisible = false">取 消</el-button>
-          <el-button type="primary" @click="submitCreateCollection()">确 定</el-button>
-        </span>
-      </el-dialog>
+                <span slot="footer" class="dialog-footer">
+                    <el-button @click="createCollectionVisible = false">取 消</el-button>
+                    <el-button type="primary" @click="submitCreateCollection()">确 定</el-button>
+                </span>
+            </el-dialog>
 
-      <el-container>
-        <el-header
-          style="text-align: right; font-size: 15px; background-color: rgb(244, 245, 247)"
-        >
-          <el-dropdown>
-            <i class="el-icon-setting" style="margin-right: 10px"> 设置</i>
-            <el-dropdown-menu slot="dropdown">
-              <el-dropdown-item>修改名称</el-dropdown-item>
-              <el-dropdown-item>类型</el-dropdown-item>
-              <el-dropdown-item>删除</el-dropdown-item>
-            </el-dropdown-menu>
-          </el-dropdown>
-        </el-header>
+            <el-container>
+                <el-header style="text-align: right; font-size: 15px; background-color: rgb(244, 245, 247)">
+                    <el-dropdown>
+                        <i class="el-icon-setting" style="margin-right: 10px"> 设置</i>
+                        <el-dropdown-menu slot="dropdown">
+                            <el-dropdown-item>修改名称</el-dropdown-item>
+                            <el-dropdown-item>类型</el-dropdown-item>
+                            <el-dropdown-item>删除</el-dropdown-item>
+                        </el-dropdown-menu>
+                    </el-dropdown>
+                </el-header>
 
-        <!-- <el-main>
-                                                                    <Waterfall :list="list" style="margin-top:20px" width="320" :breakpoints="breakpoints" lazyload="false">
-                                                                      <template #item="{ item, url }">
-                                                                        <div @click="picInfo(item)" style="cursor: pointer;"
-                                                                          class="bg-gray-900 rounded-lg shadow-md overflow-hidden transition-all duration-300 ease-linear hover:shadow-lg hover:shadow-gray-600 group">
-                                                                          <div class="overflow-hidden">
-                                                                            <LazyImg :url="url" class="pic"></LazyImg>
-                                                                          </div>
-                                                                        </div>
-                                                                      </template>
-                                                                    </Waterfall>
-                                                                  </el-main> -->
-      </el-container>
-    </el-container>
+                <!-- <el-main>
+          <Waterfall :list="list" style="margin-top:20px" width="320" :breakpoints="breakpoints" lazyload="false">
+            <template #item="{ item, url }">
+              <div @click="picInfo(item)" style="cursor: pointer;"
+                class="bg-gray-900 rounded-lg shadow-md overflow-hidden transition-all duration-300 ease-linear hover:shadow-lg hover:shadow-gray-600 group">
+                <div class="overflow-hidden">
+                  <LazyImg :url="url" class="pic"></LazyImg>
+                </div>
+              </div>
+            </template>
+          </Waterfall>
+        </el-main> -->
+            </el-container>
+        </el-container>
 
-    <el-container>
-      <el-header
-        style="text-align: right; font-size: 15px; background-color: rgb(244, 245, 247)"
-      >
-        <el-dropdown>
-          <i class="el-icon-setting" style="margin-right: 10px"> 设置</i>
-          <el-dropdown-menu slot="dropdown">
-            <el-dropdown-item>
-              <div @click="dialogVisible = true">修改名称</div>
-            </el-dropdown-item>
-            <el-dropdown-item>
-              <div @click="dialogVisible_type = true">类型</div>
-            </el-dropdown-item>
-            <el-dropdown-item>
-              <div @click="deleteCollection">删除</div>
-            </el-dropdown-item>
-          </el-dropdown-menu>
-        </el-dropdown>
-      </el-header>
+        <el-container>
+            <el-header style="text-align: right; font-size: 15px; background-color: rgb(244, 245, 247)">
+                <el-dropdown>
+                    <i class="el-icon-setting" style="margin-right: 10px"> 设置</i>
+                    <el-dropdown-menu slot="dropdown">
+                        <el-dropdown-item>
+                            <div @click="dialogVisible = true">修改名称</div>
+                        </el-dropdown-item>
+                        <el-dropdown-item>
+                            <div @click="dialogVisible_type = true">类型</div>
+                        </el-dropdown-item>
+                        <el-dropdown-item>
+                            <div @click="deleteCollection">删除</div>
+                        </el-dropdown-item>
+                    </el-dropdown-menu>
+                </el-dropdown>
+            </el-header>
 
-      <!-- <el-main>
+            <!-- <el-main>
       <Waterfall :list="list" style="margin-top:20px" width="320" :breakpoints="breakpoints" lazyload="false">
         <template #item="{ item, url }">
           <div @click="picInfo(item)" style="cursor: pointer;"
@@ -123,41 +106,28 @@
         </template>
       </Waterfall>
     </el-main> -->
-    </el-container>
+        </el-container>
 
-    <!-- 这一部分是弹出修改名称的对话框 -->
-    <el-dialog
-      title="提示"
-      :visible.sync="dialogVisible"
-      width="30%"
-      :before-close="handleCloseAlert"
-    >
-      <span>请输入新的名称:</span>
-      <br />
-      <el-input
-        v-model="collection_name"
-        style="width: 400px; margin-top: 20px"
-      ></el-input>
-      <span slot="footer" class="dialog-footer">
-        <el-button @click="dialogVisible = false">取 消</el-button>
-        <el-button type="primary" @click="dialogVisible = false">确 定</el-button>
-      </span>
-    </el-dialog>
+        <!-- 这一部分是弹出修改名称的对话框 -->
+        <el-dialog title="提示" :visible.sync="dialogVisible" width="30%" :before-close="handleCloseAlert">
+            <span>请输入新的名称:</span>
+            <br />
+            <el-input v-model="collection_name" style="width: 400px; margin-top: 20px"></el-input>
+            <span slot="footer" class="dialog-footer">
+                <el-button @click="dialogVisible = false">取 消</el-button>
+                <el-button type="primary" @click="dialogVisible = false">确 定</el-button>
+            </span>
+        </el-dialog>
 
-    <!-- 这一部分是弹出改变类型的对话框 -->
-    <el-dialog
-      title="提示"
-      :visible.sync="dialogVisible_type"
-      width="30%"
-      :before-close="handleCloseAlert"
-    >
-      <span>您确定更改文件夹类型？</span>
-      <span slot="footer" class="dialog-footer">
-        <el-button @click="dialogVisible_type = false">取 消</el-button>
-        <el-button type="primary" @click="dialogVisible_type = false">确 定</el-button>
-      </span>
-    </el-dialog>
-  </div>
+        <!-- 这一部分是弹出改变类型的对话框 -->
+        <el-dialog title="提示" :visible.sync="dialogVisible_type" width="30%" :before-close="handleCloseAlert">
+            <span>您确定更改文件夹类型？</span>
+            <span slot="footer" class="dialog-footer">
+                <el-button @click="dialogVisible_type = false">取 消</el-button>
+                <el-button type="primary" @click="dialogVisible_type = false">确 定</el-button>
+            </span>
+        </el-dialog>
+    </div>
 </template>
 
 <script>
@@ -166,119 +136,121 @@ import "vue-waterfall-plugin/dist/style.css";
 import { get_collection_list, create_collection } from "../../api";
 import { Notification } from "element-ui";
 export default {
-  name: "ProfileColleciton",
-  data() {
-    return {
-      form: {
-        name: "",
-        visibility: true,
-      },
-      imgsArr: [], //存放所有已加载图片的数组（即当前页面会加载的所有图片）
-      fetchImgsArr: [], //存放每次滚动时下一批要加载的图片的数组
-      dialogVisible: false,
-      dialogVisible_type: false,
-      collection_name: "",
-      createCollectionVisible: false,
-      private_collection_list: [],
-      public_collection_list: [],
-      userId: -1,
-    };
-  },
-  components: {
-    //Waterfall,
-    //LazyImg
-  },
-  mounted() {
-    this.userId = this.$route.query.userId;
-    this.getCollectionInfo();
-  },
+    name: "ProfileColleciton",
+    data() {
+        return {
+            form: {
+                name: "",
+                visibility: true,
+            },
+            imgsArr: [], //存放所有已加载图片的数组（即当前页面会加载的所有图片）
+            fetchImgsArr: [], //存放每次滚动时下一批要加载的图片的数组
+            dialogVisible: false,
+            dialogVisible_type: false,
+            collection_name: "",
+            createCollectionVisible: false,
+            private_collection_list: [],
+            public_collection_list: [],
+            userId: -1,
+        };
+    },
+    components: {
+        //Waterfall,
+        //LazyImg
+    },
+    mounted() {
+        this.userId = this.$route.query.userId;
+        if (this.userId === undefined) {
+            this.userId = 1
+        }
+        this.getCollectionInfo();
+    },
 
-  methods: {
-    handleOpen(key, keyPath) {
-      console.log(key, keyPath);
+    methods: {
+        handleOpen(key, keyPath) {
+            console.log(key, keyPath);
+        },
+        handleClose(key, keyPath) {
+            console.log(key, keyPath);
+        },
+        picInfo(item) {
+            this.$router.push("/picinfo");
+        },
+        getCollectionInfo() {
+            this.private_collection_list = [];
+            this.public_collection_list = [];
+            get_collection_list(this.userId)
+                .then((res) => {
+                    for (let i = 0; i < res.data.collection_list.length; i++) {
+                        const item = res.data.collection_list[i];
+                        if (item.visibility == 1) {
+                            this.private_collection_list = this.private_collection_list.concat(item);
+                        } else {
+                            this.public_collection_list = this.public_collection_list.concat(item);
+                        }
+                    }
+                })
+                .catch((err) => {
+                    Notification({
+                        title: "失败",
+                        message: err.response.data.msg,
+                        type: "error",
+                        duration: 2000,
+                    });
+                });
+        },
+        submitCreateCollection() {
+            let name = this.form.name;
+            console.log(this.form.visibility);
+            let visibility = this.form.visibility === true ? 0 : 1;
+            create_collection({
+                name,
+                visibility,
+            })
+                .then((res) => {
+                    Notification({
+                        title: "成功",
+                        message: res.data.msg,
+                        type: "success",
+                        duration: 2000,
+                    });
+                })
+                .catch((err) => {
+                    console.log(err);
+                    Notification({
+                        title: "失败",
+                        message: err.response.data.msg,
+                        type: "error",
+                        duration: 2000,
+                    });
+                })
+                .finally(() => {
+                    this.createCollectionVisible = false;
+                    this.getCollectionInfo();
+                });
+        },
+        handleCloseAlert(done) {
+            this.$confirm("确认关闭？")
+                .then((_) => {
+                    done();
+                })
+                .catch((_) => { });
+        },
+        deleteCollection() {
+            console.log("ok");
+        },
     },
-    handleClose(key, keyPath) {
-      console.log(key, keyPath);
-    },
-    picInfo(item) {
-      // this.cookie.setCookie()
-      this.$router.push("/picinfo");
-    },
-    getCollectionInfo() {
-      this.private_collection_list = [];
-      this.public_collection_list = [];
-      get_collection_list(1)
-        .then((res) => {
-          for (let i = 0; i < res.data.collection_list.length; i++) {
-            const item = res.data.collection_list[i];
-            if (item.visibility == 1) {
-              this.private_collection_list = this.private_collection_list.concat(item);
-            } else {
-              this.public_collection_list = this.public_collection_list.concat(item);
-            }
-          }
-        })
-        .catch((err) => {
-          Notification({
-            title: "失败",
-            message: err.response.data.msg,
-            type: "error",
-            duration: 2000,
-          });
-        });
-    },
-    submitCreateCollection() {
-      let name = this.form.name;
-      console.log(this.form.visibility);
-      let visibility = this.form.visibility === true ? 0 : 1;
-      create_collection({
-        name,
-        visibility,
-      })
-        .then((res) => {
-          Notification({
-            title: "成功",
-            message: res.data.msg,
-            type: "success",
-            duration: 2000,
-          });
-        })
-        .catch((err) => {
-          console.log(err);
-          Notification({
-            title: "失败",
-            message: err.response.data.msg,
-            type: "error",
-            duration: 2000,
-          });
-        })
-        .finally(() => {
-          this.createCollectionVisible = false;
-          this.getCollectionInfo();
-        });
-    },
-  },
-  handleCloseAlert(done) {
-    this.$confirm("确认关闭？")
-      .then((_) => {
-        done();
-      })
-      .catch((_) => {});
-  },
-  deleteCollection() {
-    console.log("ok");
-  },
 };
 </script>
 
 <style scoped>
 .el-header {
-  background-color: #b3c0d1;
-  color: #333;
-  line-height: 60px;
+    background-color: #b3c0d1;
+    color: #333;
+    line-height: 60px;
 }
 
 .el-aside {
-  color: #333;
+    color: #333;
 }
 </style>

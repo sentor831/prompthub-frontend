@@ -16,7 +16,7 @@
                             <i v-if="item.status === 1" class="el-icon-plus"></i>
                             <p v-if="item.status === 1">[NEW]</p>
                             <p> {{ item.content }} </p>
-                            <p style="text-align: right; font-size: small;"> {{ item.created_at }}</p>
+                            <p style="text-align: right; font-size: small;"> {{ dispTime(item.created_at) }}</p>
                         </li>
                     </ul>
                 </div>
@@ -29,6 +29,7 @@
 <script>
 import NoticeSideBar from '../components/NoticeSideBar.vue';
 import { get_notification_list, delete_notification, get_unread_notification_num } from '../api';
+import { formatTime } from '../api/utils';
 export default {
     name: 'notice-system',
     bodyClass: 'notice-system-page',
@@ -46,6 +47,9 @@ export default {
         this.getNoticeList()
     },
     methods: {
+        dispTime(t, detailed) {
+            return formatTime(t, detailed)
+        },
         getNoticeList() {
             get_notification_list(0, this.per_page, this.page)
                 .then((res) => {

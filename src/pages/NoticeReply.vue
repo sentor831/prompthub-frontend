@@ -16,7 +16,7 @@
                                     @click="deleteNotice(item.id)"></i>
                             </div>
                             <p>{{ item.content }}</p>
-                            <p style="text-align: right; font-size: small;"> {{ item.created_at }}</p>
+                            <p style="text-align: right; font-size: small;"> {{ dispTime(item.created_at, true) }}</p>
                         </li>
                     </ul>
                 </div>
@@ -29,7 +29,7 @@
 import NoticeSideBar from '../components/NoticeSideBar.vue';
 import Card from '../components/Cards/Card.vue';
 import { get_notification_list, delete_notification, get_unread_notification_num } from '../api';
-
+import { formatTime } from '../api/utils';
 export default {
     name: 'noticereply',
     bodyClass: 'notice-reply-page',
@@ -47,6 +47,9 @@ export default {
         this.getNoticeList()
     },
     methods: {
+        dispTime(t, detailed) {
+            return formatTime(t, detailed)
+        },
         getNoticeList() {
             get_notification_list(1, this.per_page, this.page)
                 .then((res) => {

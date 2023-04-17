@@ -118,14 +118,14 @@
                                 <p style="word-break: break-all; word-wrap: break-word; font-size: medium;">
                                     {{ comment.parent_comment.content }}</p>
                                 <div class="row" style="margin-left:auto">
-                                    <p style="font-size: smaller;">{{ comment.parent_comment.created_at }}</p>
+                                    <p style="font-size: smaller;">{{ dispTime(comment.parent_comment.created_at) }}</p>
                                 </div>
                             </div>
                         </div>
                         <p style="word-break: break-all; word-wrap: break-word">
                             {{ comment.content }}</p>
                         <div class="row" style="margin-left: auto;">
-                            <p style="font-size: small;">{{ comment.created_at }}</p>
+                            <p style="font-size: small;">{{ dispTime(comment.created_at) }}</p>
                             <a class="btn btn-link" style="margin-top: -0.6vh; margin-left: 3vh;"
                                 @click="showReply(index)">回复</a>
                             <el-dropdown v-if="comment.belong_to == true">
@@ -158,12 +158,12 @@
 <script>
 import Clipboard from 'clipboard'
 import { Notification } from 'element-ui';
+import { syntaxHighlight, formatTime } from '../api/utils'
 import { followOthers, NewComment, DelComment, GetComment, get_prompt } from '../api';
 export default {
     name: 'picinfo',
     bodyClass: 'picinfo-page',
     components: {
-
     },
     data() {
         return {
@@ -192,6 +192,9 @@ export default {
         this.getCollections()
     },
     methods: {
+        jsonBeautifulPrint(jsonString) {
+            return syntaxHighlight(jsonString)
+        },
         getPicInfo() {
             // TODO
             get_prompt(this.picid)
@@ -221,6 +224,9 @@ export default {
 
                 })
 
+        },
+        dispTime(t, detailed) {
+            return formatTime(t, detailed)
         },
         getCollections() {
             // TODO
