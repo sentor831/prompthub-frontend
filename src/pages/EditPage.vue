@@ -20,11 +20,12 @@
                 <!-- 图片上传 -->
                 <el-upload 
                 v-else
-                style="margin: 0 0 0 40vh"
+                
                 action="#"
-                class="uploader-avatar" 
-                list-type="picture"
-                :auto-upload="false" 
+                :http-request="UploadHttpRequest"
+                drag
+                class="Upload" 
+                list-type="picture" 
                 :show-file-list="false"
                 :on-change="imgPreview">
                     <i class="el-icon-plus avatar-uploader-icon"></i>
@@ -53,15 +54,9 @@
             </div>
             <br><br>
             
-            <div class="GroupBox">
-                <p class="Characters">标 签</p>
-                <!-- <input type="text" class="ModelInput" placeholder="请输入图片标签" v-model="Label"> -->
-                <el-input class="ModelInput" placeholder="请输入图片标签" v-model="Label" clearable></el-input>
-            </div>
-            <br><br>
 
             <div class="GroupBox">
-                <button type="button" class="btn btn-primary" style="width:15vh; margin-left:20vh; background:#00A1D6" @click=Subbmit()>立即上传</button>
+                <button type="button" class="btn btn-primary" style="width:15vh; margin-left:20vh; background:#00A1D6" @click=Submit()>立即上传</button>
                 <button type="button" class="btn btn-primary" style="width:15vh; margin-left:5vh; background:#FFFFFF; color:#000000" @click="SaveDraft()">存草稿</button>
             </div>
             <br><br>
@@ -71,6 +66,8 @@
 </template>
 
 <script>
+import axios from 'axios'
+import { get_qiniu_token, create_prompt } from '../api/index.js'
 export default {
     name: 'EditPage',
     bodyClass: 'profile-page',
@@ -84,7 +81,8 @@ export default {
             Label:'',
             imgUrl: '',
             dialogVisible: false,
-            dialogUrl: ''
+            dialogUrl: '',
+            key: ''
         }
     },
     methods: {
@@ -100,6 +98,73 @@ export default {
         del: function(){
             this.imgUrl =  '';
             this.dialogUrl = '';
+        },
+
+        Submit() {
+            create_prompt({
+                "picture": this.key, 
+                "prompt": this.Prompt,
+                "model": this.Model,
+                "width": 512,
+                "height": 512,
+                prompt_attribute: {}
+            })
+        },
+
+        UploadHttpRequest(options){
+            console.log('.................')
+            this.isShowLoading = true;
+            let fileReader = new FileReader();
+            let _this = this;
+            let file = options.file
+            // 开始读取上传文件
+            if (file){
+                // console.log('--------------------------')
+                // console.log(file)
+                fileReader.readAsDataURL(file);
+            };
+            // 文件读取成功后触发
+            fileReader.onload = (event) => {
+                console.log(event.target)
+                let imageSrc = event.target.result;
+                // console.log(imageSrc)
+                // 上传到七牛云
+                // console.log('upload success')
+                this.xRayUpload(imageSrc, options, file)
+                // _this.UploadHttpRequest(imgSrc, options, file)
+            };
+        },
+        xRayUpload(data, options, file) {
+            get_qiniu_token().then(res => {
+                // console.log(res);
+                const formdata = new FormData()
+                formdata.append('file', this.base64ToBlob(data))
+                formdata.append('token', res.data.token)
+                formdata.append('key', res.data.key)
+                // console.log(data)
+                axios.post('http:///upload-z1.qiniup.com', formdata, {
+                        headers: { "Content-Type": "multipart/form-data" },
+                        withCredentials: false
+                }).then(res => {
+                console.log('success')
+                // console.log(res)
+                console.log(res.data.key)
+                this.key = res.data.key
+                }).catch(err => { 
+                console.log(err)
+                })
+            })
+        },
+        base64ToBlob(base64) {
+            var arr = base64.split(',');
+            var mime = arr[0].match(/:(.*?);/)[1];
+            var bstr = atob(arr[1]);
+            var n = bstr.length;
+            var u8arr = new Uint8Array(n);
+            while (n--) {
+                u8arr[n] = bstr.charCodeAt(n);
+            }
+            return new Blob([u8arr], { type: mime });
         }
     }
 }
