@@ -5,7 +5,7 @@
                 <img :src="pic" style="cursor: pointer; width: 100%" />
                 <div class="row">
                     <div class="col" style="padding-left: 3vh; margin-top: 1vh;">
-                        <p>{{ uploadtime }}</p>
+                        <p>{{ dispTime(uploadtime) }}</p>
                     </div>
                     <div class="col" style="text-align: right;">
                         <a class="btn btn-primary" @click="dialogVisible = true">+ 收藏</a>

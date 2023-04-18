@@ -140,7 +140,7 @@ export default {
         },
         toMyself() {
             // TODO
-            this.$router.push('/profile')
+            this.$router.push({ path: '/profile', query: { userId: this.userId } })
         },
         timer() {
             return setTimeout(() => {

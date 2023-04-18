@@ -92,13 +92,13 @@ export default {
             this.$router.push('/profile/memberlist')
         },
         toPieceList() {
-            this.$router.push({ path: 'profile/product', query: { userId: this.userId } })
+            this.$router.push({ path: '/profile/product', query: { userId: this.userId } })
         },
         toCollection() {
-            this.$router.push({ path: 'profile/collection', query: { userId: this.userId } })
+            this.$router.push({ path: '/profile/collection', query: { userId: this.userId } })
         },
         toHistory() {
-            this.$router.push({ path: 'profile/history', query: { userId: this.userId } })
+            this.$router.push({ path: '/profile/history', query: { userId: this.userId } })
         }
     }
 };
