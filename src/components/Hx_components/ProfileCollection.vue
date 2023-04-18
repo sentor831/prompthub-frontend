@@ -3,11 +3,11 @@
         <el-container style="height: 800px; border: 1px solid #eee">
             <!-- 原rgb为(238,241,246) -->
             <el-aside width="220px" style="background-color: rgb(255, 255, 255)">
+                <div style="text-align: center;">
+                    <p style="width: 80%;" class="btn btn-primary" @click="createCollectionVisible = true">新建收藏</p>
+                </div>
+                
                 <el-menu :default-openeds="['1', '2']">
-                    <el-submenu index="0">
-                        <template slot="title"><i class="el-icon-plus"
-                                @click="createCollectionVisible = true"></i>新建收藏</template>
-                    </el-submenu>
                     <el-submenu index="1">
                         <template slot="title"><i class="el-icon-folder"></i>私密收藏夹</template>
                         <el-menu-item-group>

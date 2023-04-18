@@ -293,12 +293,10 @@ export const personized_prompt_list = (per_page, page_index) => {
 }
 // ***************************************黄新，http请求接口end*************************
 
-
-
-
-
-
-
-
-
-
+// *********** Extra API ********************
+export const getName = (id) => {
+    return axioss.request({
+        url: `api/user/get_name?id=${id}`,
+        method: 'get'
+    })
+}
