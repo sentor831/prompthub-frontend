@@ -14,11 +14,11 @@ module.exports = {
         //   '^/api': ''
         // }
       },
-      '/upload': {
-        target: 'http://upload.qiniup.com/',
+      '/img': {
+        target: 'http://rsj4gl54w.hb-bkt.clouddn.com/',
         changeOrigin: true,
         pathRewrite: {
-          '^/upload': ''
+          '^/img': ''
         }
       }
     }
