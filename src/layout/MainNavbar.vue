@@ -19,18 +19,40 @@
           <p> 加 入</p>
         </a>
       </li>
-      <li class="nav-item" v-if="login !== null" style="margin-right: 5vh; cursor: pointer;" @click="toCreate()">
+
+      <li class="nav-item" v-if="login !== null" style="margin-right: 3vw; cursor: pointer;" @click="toManage()">
+        <div v-popover:popover3 style="margin-top: 2vh">
+          <i class="el-icon-document-checked" style="font-size: 20px;"></i>
+        </div>
+        <el-popover ref="popover3" popper-class="popover" placement="bottom" trigger="hover">
+          <div class="popover-body">
+            管理作品
+          </div>
+        </el-popover>
+      </li>
+
+      <li class="nav-item" v-if="login !== null" style="margin-right: 3vw; cursor: pointer;" @click="toCreate()">
+        <!-- <el-dropdown trigger="hover">
+          <span class="el-dropdown-link">
+            <i class="el-icon-brush" style="font-size: 20px; margin-top: 2vh"></i>
+          </span>
+          <el-dropdown-menu slot="dropdown">
+            <el-dropdown-item icon="el-icon-upload2" @click.native="toCreate">上传作品</el-dropdown-item>
+            <el-dropdown-item icon="el-icon-document-checked" @click.native="toManage">管理作品</el-dropdown-item>
+          </el-dropdown-menu>
+        </el-dropdown> -->
+
         <div v-popover:popover1 style="margin-top: 2vh">
           <i class="el-icon-brush" style="font-size: 20px;"></i>
         </div>
         <el-popover ref="popover1" popper-class="popover" placement="bottom" trigger="hover">
           <div class="popover-body">
-            创作中心
+            上传作品
           </div>
         </el-popover>
       </li>
 
-      <li class="nav-item" v-if="login !== null" style="margin-right: 5vh; cursor: pointer;" @click="toNotice()">
+      <li class="nav-item" v-if="login !== null" style="margin-right: 3vw; cursor: pointer;" @click="toNotice()">
         <div v-popover:popover2 style="margin-top: 2vh">
           <el-badge :hidden="noticenum == 0" :value=noticenum>
             <i class="el-icon-bell" style="font-size: 20px;"></i>
@@ -121,7 +143,10 @@ export default {
       this.$router.push('/modipass')
     },
     toCreate() {
-      this.$router.push('/upload')
+      this.$router.push('/edit')
+    },
+    toManage() {
+      this.$router.push('/check')
     },
     toNotice() {
       this.$router.push('/system')

@@ -184,7 +184,7 @@ export default new Router({
     {
       path: '/check',
       name: 'check',
-      components: { default: CheckPage, header: TheHeader, footer: MainFooter },
+      components: { default: CheckPage, header: TheHeader },
       props: {
         header: { colorOnScroll: 0 },
         footer: { backgroundColor: 'black' }

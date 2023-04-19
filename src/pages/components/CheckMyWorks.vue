@@ -1,131 +1,154 @@
 <template>
-    <div class="SubCheckBox">
-        <!-- <img src='../../../public/img/dog1.jpeg' width="180vh" class="img-thumbnail"> -->
-        <el-upload
-  action="#"
-  list-type="picture-card"
-  :auto-upload="false">
-    <i slot="default" class="el-icon-plus"></i>
-    <div slot="file" slot-scope="{file}">
-      <img
-        class="el-upload-list__item-thumbnail"
-        :src="file.url" alt=""
-      >
-      <span class="el-upload-list__item-actions">
-        <span
-          class="el-upload-list__item-preview"
-          @click="handlePictureCardPreview(file)"
-        >
-          <i class="el-icon-zoom-in"></i>
+  <div class="SubCheckBox">
+    <div class="row">
+      <img :src=picture width="180vh" class="img-thumbnail">
+      <!-- <el-upload action="#" list-type="picture-card" :auto-upload="false">
+      <i slot="default" class="el-icon-plus"></i>
+      <div slot="file" slot-scope="{file}">
+        <img class="el-upload-list__item-thumbnail" :src="file.url" alt="">
+        <span class="el-upload-list__item-actions">
+          <span class="el-upload-list__item-preview" @click="handlePictureCardPreview(file)">
+            <i class="el-icon-zoom-in"></i>
+          </span>
+          <span v-if="!disabled" class="el-upload-list__item-delete" @click="handleDownload(file)">
+            <i class="el-icon-download"></i>
+          </span>
+          <span v-if="!disabled" class="el-upload-list__item-delete" @click="handleRemove(file)">
+            <i class="el-icon-delete"></i>
+          </span>
         </span>
-        <span
-          v-if="!disabled"
-          class="el-upload-list__item-delete"
-          @click="handleDownload(file)"
-        >
-          <i class="el-icon-download"></i>
-        </span>
-        <span
-          v-if="!disabled"
-          class="el-upload-list__item-delete"
-          @click="handleRemove(file)"
-        >
-          <i class="el-icon-delete"></i>
-        </span>
-      </span>
-    </div>
-</el-upload>
-<el-dialog :visible.sync="dialogVisible">
-  <img width="100%" :src="dialogImageUrl" alt="">
-</el-dialog>
-        <div class="CheckText">
-            <div class="SubCheckText1">
-                <p class="CheckDescribe">{{ Prompt }}</p>
-            </div>
-            <div class="SubCheckText2">
-                <p class="CheckDescribe">模型：{{ Model }}</p>
-            </div>
-            <div class="SubCheckText3">
-                <p class="CheckDescribe">上传日期：{{ UploadDate }}
-                    <span class="CheckDescribe" style="color:#BFBFBF" v-if="isUnderReview">
-                        <el-divider direction="vertical"></el-divider>
-                        <img src='../../../public/img/under-review.png' width="22vh" style="margin-top:-0.3vh">
-                        <span class="CheckDescribe" style="color:#00A1D6"> 审核中</span>
-                    </span>
-                    
-                </p>
-            </div>
+      </div>
+    </el-upload> -->
+      <!-- <el-dialog :visible.sync="dialogVisible">
+      <img width="100%" :src="dialogImageUrl" alt="">
+    </el-dialog> -->
+      <div class="CheckText">
+        <div class="prompts">
+          <p class="CheckDescribe">{{ prompt }}</p>
         </div>
-        <!-- <button type="button" class="btn btn-default" 
-        style="width:13vh; height:5vh; margin-left:-10vh; margin-top:7vh; background: #F2F4F8; color:#505050" 
-        @click=Edit()>
-        <img src='../../../public/img/edit.png' width="22vh" style="margin-left:-3vh">
-            编 辑
-        </button> -->
-        <el-button type="info" icon="el-icon-edit" 
-        style="height:5vh; margin:7vh 0 0 -12vh; background-color: #F2F4F8; color:#505050"
-        @click=Edit()> 编辑 </el-button>
+        <div style="margin-top:1vh">
+          <p class="CheckDescribe">{{ dispTime(uploadTime) }}
+            <span class="CheckDescribe" style="color:#BFBFBF" v-if="status === 2">
+              <el-divider direction="vertical"></el-divider>
+              <img src='../../../public/img/under-review.png' width="22">
+              <span class="CheckDescribe" style="color:#00A1D6">审核中</span>
+            </span>
+            <span class="CheckDescribe" style="color:#BFBFBF" v-else-if="status === 1">
+              <el-divider direction="vertical"></el-divider>
+              <img src='../../../public/img/under-review.png' width="22">
+              <span class="CheckDescribe" style="color:crimson">未通过审核</span>
+            </span>
+            <span class="CheckDescribe" style="color:#BFBFBF" v-else-if="status === 0">
+              <el-divider direction="vertical"></el-divider>
+              <img src='../../../public/img/under-review.png' width="22">
+              <span class="CheckDescribe" style="color:green">已通过审核</span>
+            </span>
+          </p>
+        </div>
+      </div>
+      <div class="col">
+        <el-button type="default" icon="el-icon-edit" @click=editWork() style="margin-left:auto; margin-right:auto">
+          编辑 </el-button>
+        <el-button type="danger" icon="el-icon-delete" style="margin-top: 1vh;margin-left:auto; margin-right:auto"
+          @click=deleteWork()>
+          删除 </el-button>
+      </div>
     </div>
+  </div>
 </template>
   
 <script>
+import { formatTime } from "../../api/utils";
+import { delete_prompt } from "../../api";
+import { Notification } from "element-ui";
 export default {
-      name: 'MyWorks',
-      bodyClass: 'profile-page',
-      components:{
-      },
-      data(){
-          return{
-            Prompt:'Prompt; Prompt; Prompt; Prompt; Prompt; Prompt; Prompt; Prompt; ',
-            Model:'Stable Diffusion',
-            UploadDate:'2023-04-08',
-            isUnderReview:true,
-          }
-      },
-      methods:{
-        Edit(){
-            this.$router.push('/edit'); 
-        }
-      }
+  name: 'MyWorks',
+  bodyClass: 'profile-page',
+  components: {
+  },
+  props: {
+    prompt: String,
+    picture: String,
+    uploadTime: String,
+    picid: Number,
+    status: Number
+  },
+  data() {
+    return {
+      isUnderReview: true,
+    }
+  },
+  mounted() {
+    console.log(this.status)
+  },
+  inject: ['pageFlush'],
+  methods: {
+    dispTime(t, detailed) {
+      return formatTime(t, detailed)
+    },
+    editWork() {
+      this.$router.push({ path: '/edit', query: { picid: this.picid } });
+    },
+    deleteWork() {
+      delete_prompt({
+        id: this.picid
+      })
+        .then((res) => {
+          console.log(res)
+          Notification({ title: '删除成功', message: '', type: 'success', duration: 2000 })
+          this.pageFlush()
+        })
+        .catch((err) => {
+          console.log(err)
+          Notification({ title: '删除失败', message: err.response.data.msg, type: 'error', duration: 2000 })
+        })
+    }
   }
+}
 </script>
   
 <style>
-    .SubCheckBox{
-        display: flex;
-        padding: 2vh 0 2vh 5vh
-        /* justify-content: space-around; */
-    }
-    .CheckDescribe{
-        font-family: 'Inter';
-        font-style: normal;
-        font-weight: 400;
-        font-size: 2vh;
-        /* line-height: 10vh; */
-        color: #505050;
-    }
-    .CheckText{
-        margin-left: 3vh;
-        margin-top: 1vh;
-        width: 60vh;
-        height: 18vh;
-    }
-    .SubCheckText1{
-        border: 1.5px solid #BFBFBF;
-        border-radius: 4px;
-        width:40vh;
-        height: 9vh;
-        overflow-y:auto;
-    }
-    .SubCheckText2{
-        width: 40vh;
-        height: 4vh;
-        margin-top: 1vh;
-    }
-    .SubCheckText3{
-        width: 40vh;
-        height: 4vh;
-        margin-top: 1vh;
-    }
-    
+.SubCheckBox {
+  display: flex;
+  padding: 2vh 0 2vh 2vw
+    /* justify-content: space-around; */
+}
+
+.CheckDescribe {
+  font-family: 'Inter';
+  font-style: normal;
+  font-weight: 400;
+  font-size: 2vh;
+  /* line-height: 10vh; */
+  color: #505050;
+}
+
+.CheckText {
+  margin-left: 3vw;
+  /* margin-top: 1vh; */
+  width: 30vw;
+  height: 18vh;
+}
+
+.prompts {
+  border: thin solid gainsboro;
+  border-radius: 4px;
+  width: 25vw;
+  height: 13vh;
+  overflow-y: auto;
+  padding: 1%;
+}
+
+.SubCheckText2 {
+  width: 40vh;
+  height: 4vh;
+  margin-top: 1vh;
+
+}
+
+.SubCheckText3 {
+  width: 40vh;
+  height: 4vh;
+  margin-top: 1vh;
+}
 </style>

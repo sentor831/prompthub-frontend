@@ -4,7 +4,7 @@
         <a class="navbar-brand" href="/#/">PROMPTHUB</a>
 
         <template slot="navbar-menu">
-            <li class="nav-item" style="margin-right: 20em;">
+            <li class="nav-item" style="margin-right: 15em;">
                 <el-input class="input" placeholder="搜索..." v-model="keyword" @keyup.enter.native="goSearch()"
                     style="width:25em; text-align: center;" clearable>
                     <el-button slot="append" icon="el-icon-search" @click="goSearch()"></el-button>
@@ -21,7 +21,18 @@
                 </a>
             </li>
 
-            <li class="nav-item" v-if="login !== null" style="margin-right: 5vh; cursor: pointer;" @click="toCreate()">
+            <li class="nav-item" v-if="login !== null" style="margin-right: 3vw; cursor: pointer;" @click="toManage()">
+                <div v-popover:popover3 style="margin-top: 2vh">
+                    <i class="el-icon-document-checked" style="font-size: 20px;"></i>
+                </div>
+                <el-popover ref="popover3" popper-class="popover" placement="bottom" trigger="hover">
+                    <div class="popover-body">
+                        管理作品
+                    </div>
+                </el-popover>
+            </li>
+
+            <li class="nav-item" v-if="login !== null" style="margin-right: 3vw; cursor: pointer;" @click="toCreate()">
                 <div v-popover:popover1 style="margin-top: 2vh">
                     <i class="el-icon-brush" style="font-size: 20px;"></i>
                 </div>
@@ -32,7 +43,7 @@
                 </el-popover>
             </li>
 
-            <li class="nav-item" v-if="login !== null" style="margin-right: 5vh; cursor: pointer;" @click="toNotice()">
+            <li class="nav-item" v-if="login !== null" style="margin-right: 3vw; cursor: pointer;" @click="toNotice()">
                 <div v-popover:popover2 style="margin-top: 2vh">
                     <el-badge :hidden="noticenum == 0" :value=noticenum>
                         <i class="el-icon-bell" style="font-size: 20px;"></i>
@@ -132,7 +143,10 @@ export default {
             this.$router.push('/modipass')
         },
         toCreate() {
-            this.$router.push('/upload')
+            this.$router.push('/edit')
+        },
+        toManage() {
+            this.$router.push('/check')
         },
         toNotice() {
             this.$router.push('/system')

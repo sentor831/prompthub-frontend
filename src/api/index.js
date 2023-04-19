@@ -17,7 +17,7 @@ const axioss = new HttpRequest('')
 // =======================> 用户 API
 // 登录
 export const login = (params) => {
-    return axioss.request({
+    return axios.request({
         url: `/api/auth/user_obtain_token`,
         data: params,
         method: 'post'
@@ -75,6 +75,36 @@ export const followOthers = (params) => {
         url: `api/user/follow`,
         data: params,
         method: 'post'
+    })
+}
+
+export const getSelfPublished = (per_page, page_index) => {
+    return axioss.request({
+        url: `api/user/get_self_published_prompt?per_page=${per_page}&page_index=${page_index}`,
+        method: 'get'
+    })
+}
+
+// 获取自己上传的各种状态的作品
+export const getAuditRecordList = (per_page, page_index, status) => {
+    return axioss.request({
+        url: `api/user/get_audit_record_list?per_page=${per_page}&page_index=${page_index}&status=${status}`,
+        method: 'get'
+    })
+}
+
+export const deleteAuditRecord = (params) => {
+    return axioss.request({
+        url: `api/user/delete_audit_record`,
+        data: params,
+        method: 'delete'
+    })
+}
+
+export const getEditingPrompt = (id) => {
+    return axioss.request({
+        url: `api/prompt/get_editing_prompt?id=${id}`,
+        method: 'get'
     })
 }
 

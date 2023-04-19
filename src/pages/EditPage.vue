@@ -1,7 +1,7 @@
 <template>
     <div class="MainBack" style="text-align: center;">
         <!-- <div class="SecondBack"> -->
-        <div class="card" style="width: 60vw; padding: 5%;">
+        <div class="card" style="width: 60vw; padding: 5%; margin-top: 5vh;">
             <div class="col">
                 <div class="GroupBox">
                     <p>图 片</p>
@@ -32,34 +32,32 @@
                 <el-form style="margin-top: 3vh">
                     <el-form-item label="Prompt">
                         <el-input type="textarea" :autosize="{ minRows: 5 }" placeholder="请输入Prompt"
-                            v-model="prompt"></el-input>
-                    </el-form-item>
-                </el-form>
-                <el-form :inline="true">
-                    <el-form-item label="宽度">
-                        <el-input v-model="width" placeholder="宽度"></el-input>
-                    </el-form-item>
-                    <el-form-item label="高度">
-                        <el-input v-model="height" placeholder="高度"></el-input>
-                    </el-form-item>
-                </el-form>
-                <el-form :inline="true">
-                    <el-form-item label="模型">
-                        <el-select v-model="modelName" placeholder="请选择模型">
-                            <el-option label="DALL-E" value="1"></el-option>
-                            <el-option label="Midjourney" value="2"></el-option>
-                            <el-option label="Stable Diffusion" value="3"></el-option>
-                            <el-option label="其他模型" value="4"></el-option>
-                        </el-select>
-                    </el-form-item>
-                    <el-form-item :prop="model" :rules="{ required: true, message: '不能为空', trigger: 'blur' }">
-                        <el-input :disabled="modelName !== '4'" placeholder="模型名称" v-model="form.model"></el-input>
+                            v-model="form.prompt"></el-input>
                     </el-form-item>
                 </el-form>
 
-                <el-form :model="dynamicValidateForm" ref="dynamicValidateForm" :inline="true">
-                    <el-row v-for="(attribute, index) in dynamicValidateForm.attributes" :key="attribute.key">
-                        <el-form-item label="新属性" :prop="'attributes.' + index + '.value'" :rules="{
+                <el-form :model="form" ref="form" :inline="true">
+                    <el-form-item label="宽度" :rules="{ required: true, message: '不能为空', trigger: 'blur' }" prop="width">
+                        <el-input v-model="form.width" placeholder="宽度"></el-input>
+                    </el-form-item>
+                    <el-form-item label="高度" :rules="{ required: true, message: '不能为空', trigger: 'blur' }" prop="height">
+                        <el-input v-model="form.height" placeholder="高度"></el-input>
+                    </el-form-item>
+                    <el-form-item label="模型">
+                        <el-select v-model="form.modelName" placeholder="请选择模型">
+                            <el-option label="DALL-E" value="DALL-E"></el-option>
+                            <el-option label="Midjourney" value="Midjourney"></el-option>
+                            <el-option label="Stable Diffusion" value="Stable Diffusion"></el-option>
+                            <el-option label="其他模型" value=""></el-option>
+                        </el-select>
+                    </el-form-item>
+                    <el-form-item v-if="form.modelName === ''" prop="model"
+                        :rules="{ required: true, message: '不能为空', trigger: 'blur' }">
+                        <el-input :disabled="form.modelName !== ''" placeholder="模型名称" v-model="form.model"></el-input>
+                    </el-form-item>
+
+                    <el-row v-for="(attribute, index) in form.attributes" :key="index">
+                        <el-form-item label="新属性" :prop="'attributes[' + index + '].name'" :rules="{
                             required: true, message: '不能为空', trigger: 'blur'
                         }">
                             <el-input v-model="attribute.name" placeholder="属性名称"></el-input>
@@ -75,7 +73,7 @@
                     </el-row>
                 </el-form>
                 <el-button @click="addAttribute()" type="button">增加属性</el-button>
-                <el-button type="primary" @click=Submit()>立即上传</el-button>
+                <el-button type="primary" @click="submitForm('form')">立即上传</el-button>
                 <!-- <button type="button" class="btn btn-primary" style="width:10vw; background:#FFFFFF; color:#000000"
                     @click="SaveDraft()">存草稿</button> -->
             </div>
@@ -85,7 +83,8 @@
 
 <script>
 import axios from 'axios'
-import { get_qiniu_token, create_prompt } from '../api/index.js'
+import { get_qiniu_token, create_prompt, edit_prompt, getEditingPrompt } from '../api/index.js'
+import { Notification } from 'element-ui'
 export default {
     name: 'EditPage',
     bodyClass: 'profile-page',
@@ -94,25 +93,61 @@ export default {
     data() {
         return {
             picture: '',
-            prompt: '',
-            width: '',
-            height: '',
-            modelName: '',
             form: {
-                model: ''
-
-            },
-            dynamicValidateForm: {
+                prompt: '',
+                width: '',
+                height: '',
+                modelName: '选择模型',
+                model: '',
                 attributes: [],
             },
             label: '',
             imgUrl: '',
             dialogVisible: false,
             dialogUrl: '',
-            key: ''
+            key: '',
+            attrJson: {},
+            first: true,
+            picid: -1
+        }
+    },
+    mounted() {
+        if (this.$route.query.picid) {
+            this.first = false
+            this.picid = this.$route.query.picid
+            getEditingPrompt(this.picid)
+                .then((res) => {
+                    console.log(res)
+                    this.imgUrl = res.data.prompt.picture
+                    this.form.prompt = res.data.prompt.prompt
+                    this.form.width = res.data.prompt.width
+                    this.form.height = res.data.prompt.height
+                    if (['DALL-E', 'Midjourney', 'Stable Diffusion'].indexOf(res.data.prompt.model) === -1) {
+                        this.form.modelName = ''
+                        this.form.model = res.data.prompt.model
+                    } else {
+                        this.form.modelName = res.data.prompt.model
+                    }
+                    let toJson = this.strToJson(res.data.prompt.prompt_attribute)
+                    let keys = Object.keys(toJson[0])
+                    for (var i = 0; i < keys.length; i++) {
+                        this.form.attributes.push({
+                            name: keys[i],
+                            value: toJson[0][keys[i]]
+                        })
+                    }
+                })
+                .catch((err) => {
+                    console.log(err)
+                    Notification({ title: '获取作品信息失败', message: err.response.data.msg, type: 'error', duration: 2000 })
+                })
         }
     },
     methods: {
+        strToJson: function (str) {
+            var json = eval('[' + str + ']');
+            return json;
+        },
         //图片缩略图
         imgPreview: function (file) {
             //生成临时缩略图
@@ -128,29 +163,73 @@ export default {
         },
 
         addAttribute() {
-            this.dynamicValidateForm.attributes.push({
+            this.form.attributes.push({
                 name: '',
                 value: '',
-                key: Date.now()
+                // key: Date.now()
             });
         },
         removeAttribute(item) {
-            var index = this.dynamicValidateForm.attributes.indexOf(item)
+            var index = this.form.attributes.indexOf(item)
             if (index !== -1) {
-                this.dynamicValidateForm.attributes.splice(index, 1)
+                this.form.attributes.splice(index, 1)
             }
         },
-        Submit() {
-            create_prompt({
-                "picture": this.key,
-                "prompt": this.Prompt,
-                "model": this.Model,
-                "width": 512,
-                "height": 512,
-                prompt_attribute: {}
-            })
-        },
+        submitForm(formName) {
+            this.$refs[formName].validate((valid) => {
+                if (valid) {
+                    //使用for循环编辑数组，向jsonObject中赋值
+                    for (let itemindex = 0; itemindex < this.form.attributes.length; itemindex++) {
+                        //$set()方法第一个参数是对象，第二个参数是key值，第三个参数是value值
+                        this.$set(this.attrJson, this.form.attributes[itemindex].name, this.form.attributes[itemindex].value);
+                    }
+                    console.log(this.attrJson)
+                    console.log(JSON.stringify(this.attrJson))
+                    let model = ''
+                    if (this.form.modelName !== '') {
+                        model = this.form.modelName
+                    } else {
+                        model = this.form.model
+                    }
+                    if (this.first == false) {
+                        edit_prompt({
+                            "picture": this.key,
+                            "prompt": this.form.prompt,
+                            "model": model,
+                            "width": this.form.width,
+                            "height": this.form.height,
+                            prompt_attribute: this.attrJson
+                        }).then((res => {
+                            let id = res.data.id;
+                            console.log(res)
+                            Notification({ title: '修改成功', message: '请等待审核', type: 'success', duration: 2000 })
+                        })).catch((err) => {
+                            console.log(err)
+                        })
+                    } else {
+                        create_prompt({
+                            "picture": this.key,
+                            "prompt": this.form.prompt,
+                            "model": model,
+                            "width": this.form.width,
+                            "height": this.form.height,
+                            prompt_attribute: this.attrJson
+                        }).then((res => {
+                            let id = res.data.id;
+                            console.log(res)
+                            Notification({ title: '上传成功', message: '请等待审核', type: 'success', duration: 2000 })
+                        })).catch((err) => {
+                            console.log(err)
+                        })
+                    }
 
+                } else {
+                    console.log('error submit!!');
+                    Notification({ title: '上传失败', message: '请填写缺少项', type: 'error', duration: 2000 })
+                    return false;
+                }
+            });
+        },
         UploadHttpRequest(options) {
             console.log('.................')
             this.isShowLoading = true;
@@ -316,40 +395,5 @@ export default {
     border: 2px dashed #BFBFBF;
     margin: 0 0 0 30%;
     /* box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25); */
-}
-
-.PromptInput {
-    /* border: 1.5px solid #BFBFBF; */
-    /* border-radius: 8px; */
-    width: 90vh;
-    height: 20vh;
-    margin: 0 0 0 7.5vh;
-    resize: none;
-}
-
-.ModelInput {
-    /* border: 1.5px solid #BFBFBF; */
-    /* border-radius: 8px; */
-    width: 90vh;
-    height: 5vh;
-    margin: 0 0 0 9.5vh;
-    resize: none;
-}
-
-.button1 {
-    margin-left: 20vh;
-    width: 123px;
-    height: 42px;
-    background: #00A1D6;
-    border-radius: 5px;
-}
-
-.button2 {
-    margin-left: 5vh;
-    width: 123px;
-    height: 42px;
-    background: #FFFFFF;
-    border: 1px solid #BFBFBF;
-    border-radius: 5px;
 }
 </style>
