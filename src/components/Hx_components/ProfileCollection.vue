@@ -1,5 +1,8 @@
 <template>
     <div>
+        <el-main>
+        <h2> 收藏 </h2>
+    </el-main>
         <el-container style="height: 800px; border: 1px solid #eee">
             <!-- 原rgb为(238,241,246) -->
             <el-aside width="220px" style="background-color: rgb(255, 255, 255)">

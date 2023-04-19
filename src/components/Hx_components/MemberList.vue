@@ -1,30 +1,36 @@
 <template>
     <div>
-        <div class="MemberList-table">
-            <el-table :data="tableData" style="width: 100%" :header-cell-style="{ textAlign: 'center' }"
-                :cell-style="{ textAlign: 'center' }">
-                <el-table-column label="头像" style="width: 60%">
-                    <template slot-scope="scope">
-                        <div class="photo-container">
-                            <img :src="scope.row.avatar" />
-                        </div>
-                        <!-- width="100" height="100" -->
-                        <!-- <span style="margin-left: 10px">{{ scope.row.date }}</span> -->
-                    </template>
-                </el-table-column>
-                <el-table-column label="用户名" style="width: 20%">
-                    <template slot-scope="scope">
-                        <div slot="reference" class="name-wrapper">
-                            <p style="font-size: 200%;">{{ scope.row.nickname }}</p>
-                        </div>
-                    </template>
-                </el-table-column>
-                <el-table-column label="操作" style="width: 20%">
-                    <template slot-scope="scope">
-                        <el-button size="mini" type="danger" @click="handleOpen(scope.$index, scope.row)">查看信息</el-button>
-                    </template>
-                </el-table-column>
-            </el-table>
+        <el-main>
+            <h2>{{ title() }}</h2>
+        </el-main>
+        <div>
+            <div class="MemberList-table">
+                <el-table :data="tableData" style="width: 100%" :header-cell-style="{ textAlign: 'center' }"
+                    :cell-style="{ textAlign: 'center' }">
+                    <el-table-column label="头像" style="width: 60%">
+                        <template slot-scope="scope">
+                            <div class="photo-container">
+                                <img :src="scope.row.avatar" />
+                            </div>
+                            <!-- width="100" height="100" -->
+                            <!-- <span style="margin-left: 10px">{{ scope.row.date }}</span> -->
+                        </template>
+                    </el-table-column>
+                    <el-table-column label="用户名" style="width: 20%">
+                        <template slot-scope="scope">
+                            <div slot="reference" class="name-wrapper">
+                                <p style="font-size: 200%;">{{ scope.row.nickname }}</p>
+                            </div>
+                        </template>
+                    </el-table-column>
+                    <el-table-column label="操作" style="width: 20%">
+                        <template slot-scope="scope">
+                            <el-button size="mini" type="danger"
+                                @click="handleOpen(scope.$index, scope.row)">查看信息</el-button>
+                        </template>
+                    </el-table-column>
+                </el-table>
+            </div>
         </div>
     </div>
 </template>
@@ -55,6 +61,9 @@ export default {
         this.getData()
     },
     methods: {
+        title() {
+            if (this.type == 0) { return "关注列表" } else { return "粉丝列表" }
+        },
         getData() {
             this.userId = this.$route.query.userId;
             this.type = this.$route.query.type;
@@ -77,9 +86,11 @@ export default {
             }
         },
         handleOpen(index, row) {
-            this.$router.push({ path : '/profile',query: {
-                userId : row.id
-            }})
+            this.$router.push({
+                path: '/profile', query: {
+                    userId: row.id
+                }
+            })
         },
     }
 };

@@ -1,6 +1,6 @@
 <template>
     <div>
-
+        
         <div class="page-header clear-filter" filter-color="orange">
             <!-- 背景 -->
             <parallax class="page-header-image" style="background-image:url('img/bg5.jpg')">
@@ -94,6 +94,9 @@ export default {
     methods: {
         setup() {
             this.userId = this.$route.query.userId;
+            if (this.userId == undefined){
+                this.userId = this.cookie.getCookie("userId");
+            }
             getName(this.userId).then((res) => {
                 this.nickname = res.data.user.nickname
                 this.avatar = res.data.user.avatar

@@ -1,6 +1,7 @@
 <template>
     <div>
         <el-main>
+            <h2> 历史记录 </h2>
             <Waterfall :list="tableData" style="margin-top:20px" width=320 :breakpoints="breakpoints">
                 <template #item="{ item }">
                     <div @click="picInfo(item.prompt.id)" style="cursor: pointer;"
