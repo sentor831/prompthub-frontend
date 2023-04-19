@@ -23,6 +23,7 @@ import CheckPage from './pages/CheckPage.vue';
 import Waterfall_hx from "./components/Hx_components/Waterfall_hx"
 import ProfileCarousel from "./components/Hx_components/ProfileCarousel"
 import ProfileCollection from "./components/Hx_components/ProfileCollection"
+import history from "./components/Hx_components/history"
 import MemberList from "./components/Hx_components/MemberList"
 
 // 引入页面
@@ -119,6 +120,10 @@ export default new Router({
           path: 'collection',
           // component: Checking
           component: ProfileCollection
+        },
+        {
+          path: 'history',
+          component: history
         },
         {
           path: 'viewhistory',

@@ -213,11 +213,10 @@ export const delete_notification = (params) => {
 
 // ---------------- 4.8历史记录功能接口---------------
 // 获取历史记录列表
-export const get_history_list = (params) => {
+export const get_history_list = () => {
     return axioss.request({
-        url: `api/history/get_history_list`,
+        url: `api/history/get_history_list?per_page=100`,
         method: 'get',
-        data: params
     })
 }
 
