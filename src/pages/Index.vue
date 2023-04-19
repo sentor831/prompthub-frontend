@@ -78,7 +78,13 @@ export default {
             stateH: 1,
             stateR: 0,
             list: [],
-            breakpoints: { 3000: { rowPerView: 4 }, }
+            options: {
+                breakpoints: { 3000: { rowPerView: 4 }, },
+                animationDuration: 1000,
+                // 动画延迟
+                animationDelay: 300,
+            },
+            breakpoints: { 3000: { rowPerView: 4 }, },
         }
     },
     mounted() {
@@ -124,7 +130,7 @@ export default {
                 background: 'rgba(0, 0, 0, 0.7)'
             })
 
-            hot_prompt_list(28, this.page)
+            hot_prompt_list(4 * 32, this.page)
                 .then((res) => {
                     for (let i = 0; i < res.data.prompt_list.length; ++i) {
                         res.data.prompt_list[i].src = res.data.prompt_list[i].picture;
