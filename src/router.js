@@ -88,7 +88,7 @@ export default new Router({
     {
       path: '/modinfo',
       name: 'modinfo',
-      components: { default: ModInfo, header: MainNavbar , footer: MainFooter},
+      components: { default: ModInfo, header: MainNavbar, footer: MainFooter },
       props: {
         header: { colorOnScroll: 400 },
         footer: { backgroundColor: 'black' }
@@ -102,9 +102,9 @@ export default new Router({
         header: { colorOnScroll: 400 },
         footer: { backgroundColor: 'black' }
       },
-      children:[
+      children: [
         {
-          path:"",
+          path: "",
           component: ProfileCarousel
         },
         {
@@ -166,7 +166,7 @@ export default new Router({
     {
       path: '/upload',
       name: 'upload',
-      components: { default: UploadPage, header: TheHeader, footer: MainFooter },
+      components: { default: UploadPage, header: TheHeader },
       props: {
         header: { colorOnScroll: 0 },
         footer: { backgroundColor: 'black' }
