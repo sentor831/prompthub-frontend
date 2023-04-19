@@ -27,7 +27,7 @@
       </div> -->
 
             <!-- TODO: 按钮还是滚动条到底部 -->
-            <Waterfall :list="imgsArr" style="margin-top:20px" :breakpoints="breakpoints" animationDuration=100>
+            <Waterfall :list="imgsArr" style="margin-top:20px" :breakpoints="breakpoints">
                 <template #item="{ item, url }">
                     <div @click="picInfo(item.id)" style="cursor: pointer;"
                         class="bg-gray-900 rounded-lg shadow-md overflow-hidden transition-all duration-300 ease-linear hover:shadow-lg hover:shadow-gray-600 group">

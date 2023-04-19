@@ -303,21 +303,29 @@ export const getName = (id) => {
 
 export const getFollowingNumber = (id) => {
     return axioss.request({
-        url: `api/user/get_following?id=${id}`,
+        url: `api/user/get_user_following_num?user_id=${id}`,
         method: 'get'
     })
 }
 
 export const getFollowedNumber = (id) => {
     return axioss.request({
-        url: `api/user/get_followed?id=${id}`,
+        url: `api/user/get_user_follower_num?user_id=${id}`,
         method: 'get'
     })
 }
 
 export const getProductNumber = (id) => {
     return axioss.request({
-        url: `api/user/get_product?id=${id}`,
+        url: `api/user/get_published_prompt_num?user_id=${id}`,
+        method: 'get'
+    })
+}
+
+
+export const getAllCollectionList = (id) => {
+    return axioss.request({
+        url: `api/collection/get_user_prompt_collection_relation?prompt_id=${id}`,
         method: 'get'
     })
 }

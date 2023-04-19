@@ -12,12 +12,12 @@
                     </div>
                 </div>
 
-                <el-dialog title="添加到收藏夹" :visible.sync="dialogVisible" width="25%" center>
+                <el-dialog title="添加到收藏夹" :visible.sync="dialogVisible" width="30%" center>
                     <div class="dialogdiv" style="height: 30vh; overflow-y: auto; overflow-x: hidden;">
                         <el-checkbox-group v-model="checkList" style="margin-left: 5%;">
-                            <el-checkbox class="row" label="收藏夹 A"></el-checkbox>
-                            <el-checkbox class="row" label="收藏夹 B"></el-checkbox>
-                            <el-checkbox class="row" label="收藏夹 C"></el-checkbox>
+                            <el-checkbox class="row" v-for="(item, index) in collectionRelation" :key="index"
+                                :label="index"> {{
+                                    dispVis(item.visibility) }} {{ item.name }}</el-checkbox>
                         </el-checkbox-group>
                     </div>
 
@@ -159,7 +159,7 @@
 import Clipboard from 'clipboard'
 import { Notification } from 'element-ui';
 import { syntaxHighlight, formatTime } from '../api/utils'
-import { followOthers, NewComment, DelComment, GetComment, get_prompt } from '../api';
+import { followOthers, NewComment, DelComment, GetComment, get_prompt, getAllCollectionList } from '../api';
 export default {
     name: 'picinfo',
     bodyClass: 'picinfo-page',
@@ -182,7 +182,8 @@ export default {
             commentList: [],
             commentcontent: '',
             show: -1,
-            pic: ''
+            pic: '',
+            collectionRelation: []
         }
     },
     mounted() {
@@ -194,6 +195,13 @@ export default {
     methods: {
         jsonBeautifulPrint(jsonString) {
             return syntaxHighlight(jsonString)
+        },
+        dispVis(v) {
+            if (v == 0) {
+                return "[公开] "
+            } else {
+                return "[私有] "
+            }
         },
         getPicInfo() {
             // TODO
@@ -229,8 +237,20 @@ export default {
             return formatTime(t, detailed)
         },
         getCollections() {
-            // TODO
-            this.checkList = ['收藏夹 A']
+            // this.checkList = ['收藏夹 A']
+            getAllCollectionList(this.picid).then((res) => {
+                this.collectionRelation = res.data.collection_list
+                // add already in Collection
+                this.collectionRelation.forEach((item, index) => {
+                    if (item.prompt_is_in) {
+                        this.checkList = this.checkList.concat(index);
+                    }
+                })
+            }).catch((err) => {
+                console.log(err)
+                Notification({ title: '失败', message: err.response.data.msg, type: 'error', duration: 2000 })
+            })
+
         },
         follow() {
             if (this.hasFollowed == 1) {

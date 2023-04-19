@@ -61,7 +61,7 @@
     </div>
 </template>
 <script>
-import { getName, getFollowedNumber, getFollowingNumber } from '../api/index'
+import { getName, getFollowedNumber, getFollowingNumber, getProductNumber } from '../api/index'
 
 
 export default {
@@ -85,15 +85,15 @@ export default {
                 Notification({ title: '获取通知失败', message: err.response.data.msg, type: 'error', duration: 2000 })
             })
 
-        getFollowedNumber(this.userId).then((res) => this.followed = res.data.number)
+        getFollowedNumber(this.userId).then((res) => this.followed = res.data.follower_num)
             .catch((err) => {
                 Notification({ title: '获取被关注数量失败', message: err.response.data.msg, type: 'error', duration: 2000 })
             })
-        getFollowingNumber(this.userId).then((res) => this.following = res.data.number)
+        getFollowingNumber(this.userId).then((res) => this.following = res.data.following_num)
             .catch((err) => {
                 Notification({ title: '获取关注数量失败', message: err.response.data.msg, type: 'error', duration: 2000 })
             })
-        getProductsNumber(this.userId).then((res) => this.products = res.data.number)
+        getProductNumber(this.userId).then((res) => this.products = res.data.prompt_num)
             .catch((err) => {
                 Notification({ title: '获取作品数量失败', message: err.response.data.msg, type: 'error', duration: 2000 })
             })
