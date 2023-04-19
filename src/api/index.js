@@ -296,7 +296,7 @@ export const personized_prompt_list = (per_page, page_index) => {
 // *********** Extra API ********************
 export const getName = (id) => {
     return axioss.request({
-        url: `api/user/get_name?id=${id}`,
+        url: `api/user/get_user_simple_dict?id=${id}`,
         method: 'get'
     })
 }
@@ -322,10 +322,31 @@ export const getProductNumber = (id) => {
     })
 }
 
-
 export const getAllCollectionList = (id) => {
     return axioss.request({
         url: `api/collection/get_user_prompt_collection_relation?prompt_id=${id}`,
         method: 'get'
+    })
+}
+
+export const getUserfollowingList = (id) => {
+    return axioss.request({
+        url: `api/user/get_user_following_list?user_id=${id}&per_page=999`,
+        method: 'get'
+    })
+}
+
+export const getUserfollowerList = (id) => {
+    return axioss.request({
+        url: `api/user/get_user_follower_list?user_id=${id}&per_page=999`,
+        method: 'get'
+    })
+}
+
+export const ManageCollectionRecord = (params) => {
+    return axioss.request({
+        url: `api/collection/manage_collection_records`,
+        method: 'post',
+        data: params
     })
 }

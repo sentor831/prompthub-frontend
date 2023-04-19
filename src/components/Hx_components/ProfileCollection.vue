@@ -6,9 +6,9 @@
                 <div style="text-align: center;">
                     <p style="width: 80%;" class="btn btn-primary" @click="createCollectionVisible = true">新建收藏</p>
                 </div>
-                
+
                 <el-menu :default-openeds="['1', '2']">
-                    <el-submenu index="1">
+                    <el-submenu index="1" v-if="isMe()">
                         <template slot="title"><i class="el-icon-folder"></i>私密收藏夹</template>
                         <el-menu-item-group>
                             <el-menu-item v-for="(item, index) in private_collection_list" :key="index"
@@ -62,17 +62,30 @@
                 </el-header>
 
                 <!-- <el-main>
-          <Waterfall :list="list" style="margin-top:20px" width="320" :breakpoints="breakpoints" lazyload="false">
-            <template #item="{ item, url }">
-              <div @click="picInfo(item)" style="cursor: pointer;"
-                class="bg-gray-900 rounded-lg shadow-md overflow-hidden transition-all duration-300 ease-linear hover:shadow-lg hover:shadow-gray-600 group">
-                <div class="overflow-hidden">
-                  <LazyImg :url="url" class="pic"></LazyImg>
-                </div>
-              </div>
-            </template>
-          </Waterfall>
-        </el-main> -->
+                    <Waterfall :list="list" style="margin-top:20px" width="320" :breakpoints="breakpoints" lazyload="false">
+                        <template #item="{ item, url }">
+                        <div @click="picInfo(item)" style="cursor: pointer;"
+                            class="bg-gray-900 rounded-lg shadow-md overflow-hidden transition-all duration-300 ease-linear hover:shadow-lg hover:shadow-gray-600 group">
+                            <div class="overflow-hidden">
+                            <LazyImg :url="url" class="pic"></LazyImg>
+                            </div>
+                        </div>
+                        </template>
+                    </Waterfall>
+                </el-main> -->
+                <el-main>
+                    <Waterfall :list="collectionRecordList" style="margin-top:20px" width=320 :breakpoints="breakpoints">
+                        <template #item="{ item }">
+                            <div @click="picInfo(item.prompt.id)" style="cursor: pointer;"
+                                class="bg-gray-900 rounded-lg shadow-md overflow-hidden transition-all duration-300 ease-linear hover:shadow-lg hover:shadow-gray-600 group">
+                                <div class="overflow-hidden">
+                                    <LazyImg :url="item.prompt.picture" class="pic"></LazyImg>
+                                </div>
+                            </div>
+                        </template>
+                    </Waterfall>
+                </el-main>
+
             </el-container>
         </el-container>
 
@@ -133,12 +146,13 @@
 <script>
 import { LazyImg, Waterfall } from "vue-waterfall-plugin";
 import "vue-waterfall-plugin/dist/style.css";
-import { get_collection_list, create_collection } from "../../api";
+import { get_collection_list, create_collection, get_collection_record_list } from "../../api";
 import { Notification } from "element-ui";
 export default {
     name: "ProfileColleciton",
     data() {
         return {
+            breakpoints: { 3000: { rowPerView: 4 }, },
             form: {
                 name: "",
                 visibility: true,
@@ -151,30 +165,41 @@ export default {
             createCollectionVisible: false,
             private_collection_list: [],
             public_collection_list: [],
+            collectionRecordList: [],
             userId: -1,
         };
     },
     components: {
-        //Waterfall,
-        //LazyImg
+        Waterfall,
+        LazyImg
     },
     mounted() {
         this.userId = this.$route.query.userId;
         if (this.userId === undefined) {
-            this.userId = 1
+            this.userId = -1
         }
         this.getCollectionInfo();
     },
 
     methods: {
+        isMe() {
+            console.log(this.userId);
+            console.log(this.cookie.getCookie("userId"));
+            return this.userId == this.cookie.getCookie("userId");
+        },
         handleOpen(key, keyPath) {
             console.log(key, keyPath);
         },
         handleClose(key, keyPath) {
             console.log(key, keyPath);
         },
-        picInfo(item) {
-            this.$router.push("/picinfo");
+        picInfo(id) {
+            let picInfo = {
+                picId: id
+            }
+            this.cookie.setCookie(picInfo, 1)
+            this.$router.push({ path: '/picinfo', query: { picid: id } })
+            // this.$router.push('/picInfo')
         },
         getCollectionInfo() {
             this.private_collection_list = [];
@@ -238,6 +263,19 @@ export default {
         },
         deleteCollection() {
             console.log("ok");
+        },
+        showCollection(id) {
+            get_collection_record_list(id, 99999, 1).then((res) => {
+                this.collectionRecordList = res.data.collection_record_list;
+            }).catch((err) => {
+                console.log(err);
+                Notification({
+                    title: "失败",
+                    message: err.response.data.msg,
+                    type: "error",
+                    duration: 2000,
+                });
+            })
         },
     },
 };

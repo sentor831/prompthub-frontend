@@ -16,7 +16,7 @@
                     <div class="dialogdiv" style="height: 30vh; overflow-y: auto; overflow-x: hidden;">
                         <el-checkbox-group v-model="checkList" style="margin-left: 5%;">
                             <el-checkbox class="row" v-for="(item, index) in collectionRelation" :key="index"
-                                :label="index"> {{
+                                :label="item.name"> {{
                                     dispVis(item.visibility) }} {{ item.name }}</el-checkbox>
                         </el-checkbox-group>
                     </div>
@@ -159,7 +159,7 @@
 import Clipboard from 'clipboard'
 import { Notification } from 'element-ui';
 import { syntaxHighlight, formatTime } from '../api/utils'
-import { followOthers, NewComment, DelComment, GetComment, get_prompt, getAllCollectionList } from '../api';
+import { followOthers, NewComment, DelComment, GetComment, get_prompt, getAllCollectionList, ManageCollectionRecord } from '../api';
 export default {
     name: 'picinfo',
     bodyClass: 'picinfo-page',
@@ -243,7 +243,7 @@ export default {
                 // add already in Collection
                 this.collectionRelation.forEach((item, index) => {
                     if (item.prompt_is_in) {
-                        this.checkList = this.checkList.concat(index);
+                        this.checkList = this.checkList.concat(item.name);
                     }
                 })
             }).catch((err) => {
@@ -296,9 +296,24 @@ export default {
             this.show = index
         },
         chooseBag() {
-            // TODO 加入所选定的收藏夹checkList
-            console.log(this.checkList)
             this.dialogVisible = false
+            //Post API
+            let ls = [] // collection_id & is_in
+            this.collectionRelation.forEach((item) => {
+                let is_in = this.checkList.indexOf(item.name) > -1;
+                ls = ls.concat({
+                    "collection_id": item.id,
+                    is_in,
+                })
+            })
+            ManageCollectionRecord({
+                "prompt_id": this.picid,
+                "collection_list": ls,
+            }).then((res) => {
+                Notification({ title: '收藏成功', message: res.msg, type: 'success', duration: 2000 })
+            }).catch((err) => {
+                Notification({ title: '失败', message: err.response.data.msg, type: 'error', duration: 2000 })
+            })
         },
         publishComment() {
             NewComment({

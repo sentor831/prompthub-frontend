@@ -18,15 +18,15 @@
                 <div class="content">
                     <div class="social-description">
                         <h2>{{ following }}</h2>
-                        <p @click="toMemberList" style="cursor:pointer;">关注</p>
+                        <p @click="toMemberList(0)" style="cursor:pointer;">关注</p>
                     </div>
                     <div class="social-description">
                         <h2>{{ followed }}</h2>
-                        <p @click="toMemberList" style="cursor:pointer;">粉丝</p>
+                        <p @click="toMemberList(1)" style="cursor:pointer;">粉丝</p>
                     </div>
                     <div class="social-description">
                         <h2>{{ products }}</h2>
-                        <p @click="toMemberList" style="cursor:pointer;">作品</p>
+                        <p @click="toMemberList(2)" style="cursor:pointer;">作品</p>
                     </div>
                 </div>
             </div>
@@ -51,6 +51,7 @@
             </div>
         </div>
 
+        
         <!-- <Profile_subheader></Profile_subheader>
     <div class="container">
       
@@ -78,34 +79,43 @@ export default {
         }
     },
     mounted() {
-        this.userId = this.$route.query.userId;
-        this.avatar = this.cookie.getCookie('avatar')
-        getName(this.userId).then((res) => this.nickname = res.data.nickname)
-            .catch((err) => {
-                Notification({ title: '获取通知失败', message: err.response.data.msg, type: 'error', duration: 2000 })
-            })
-
-        getFollowedNumber(this.userId).then((res) => this.followed = res.data.follower_num)
-            .catch((err) => {
-                Notification({ title: '获取被关注数量失败', message: err.response.data.msg, type: 'error', duration: 2000 })
-            })
-        getFollowingNumber(this.userId).then((res) => this.following = res.data.following_num)
-            .catch((err) => {
-                Notification({ title: '获取关注数量失败', message: err.response.data.msg, type: 'error', duration: 2000 })
-            })
-        getProductNumber(this.userId).then((res) => this.products = res.data.prompt_num)
-            .catch((err) => {
-                Notification({ title: '获取作品数量失败', message: err.response.data.msg, type: 'error', duration: 2000 })
-            })
-
+        this.setup()
+    },
+    watch: {
+        // 监听路由发生改变
+        $route() {
+            this.setup()
+        }
     },
     components: {
         // Tabs,
         // TabPane
     },
     methods: {
-        toMemberList() {
-            this.$router.push('/profile/memberlist')
+        setup() {
+            this.userId = this.$route.query.userId;
+            getName(this.userId).then((res) => {
+                this.nickname = res.data.user.nickname
+                this.avatar = res.data.user.avatar
+            })
+                .catch((err) => {
+                    Notification({ title: '获取通知失败', message: err.response.data.msg, type: 'error', duration: 2000 })
+                })
+            getFollowedNumber(this.userId).then((res) => this.followed = res.data.follower_num)
+                .catch((err) => {
+                    Notification({ title: '获取被关注数量失败', message: err.response.data.msg, type: 'error', duration: 2000 })
+                })
+            getFollowingNumber(this.userId).then((res) => this.following = res.data.following_num)
+                .catch((err) => {
+                    Notification({ title: '获取关注数量失败', message: err.response.data.msg, type: 'error', duration: 2000 })
+                })
+            getProductNumber(this.userId).then((res) => this.products = res.data.prompt_num)
+                .catch((err) => {
+                    Notification({ title: '获取作品数量失败', message: err.response.data.msg, type: 'error', duration: 2000 })
+                })
+        },
+        toMemberList(type) {
+            this.$router.push({ path: '/profile/memberlist', query: { userId: this.userId, type: type } })
         },
         toPieceList() {
             this.$router.push({ path: '/profile/product', query: { userId: this.userId } })

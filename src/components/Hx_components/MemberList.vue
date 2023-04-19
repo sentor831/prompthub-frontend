@@ -1,89 +1,93 @@
 <template>
-  <div>
-  <div class="MemberList-table">
-    <el-table
-    :data="tableData"
-    style="width: 100%"
-    :header-cell-style="{ textAlign: 'center' }"
-    :cell-style="{ textAlign: 'center' }"
-    >
-    <el-table-column
-      label="头像"
-      style="width: 20%">
-      <template slot-scope="scope">
-        <img :src="scope.row.picture" width="100" height="100" style="margin-left:0; padding: 1vh" />
-        <!-- <span style="margin-left: 10px">{{ scope.row.date }}</span> -->
-      </template>
-    </el-table-column>
-    <el-table-column
-      label="用户名"
-      style="width: 20%">
-      <template slot-scope="scope">
-          <div slot="reference" class="name-wrapper">
-            <el-tag size="medium">{{ scope.row.name }}</el-tag>
-          </div>
-      </template>
-    </el-table-column>
-    <el-table-column label="操作" style="width: 20%">
-      <template slot-scope="scope">
-        <el-button
-          size="mini"
-          type="danger"
-          @click="handleDelete(scope.$index, scope.row)">取消关注</el-button>
-      </template>
-    </el-table-column>
-    </el-table>
-  </div>
-</div>
-
+    <div>
+        <div class="MemberList-table">
+            <el-table :data="tableData" style="width: 100%" :header-cell-style="{ textAlign: 'center' }"
+                :cell-style="{ textAlign: 'center' }">
+                <el-table-column label="头像" style="width: 60%">
+                    <template slot-scope="scope">
+                        <div class="photo-container">
+                            <img :src="scope.row.avatar" />
+                        </div>
+                        <!-- width="100" height="100" -->
+                        <!-- <span style="margin-left: 10px">{{ scope.row.date }}</span> -->
+                    </template>
+                </el-table-column>
+                <el-table-column label="用户名" style="width: 20%">
+                    <template slot-scope="scope">
+                        <div slot="reference" class="name-wrapper">
+                            <p style="font-size: 200%;">{{ scope.row.nickname }}</p>
+                        </div>
+                    </template>
+                </el-table-column>
+                <el-table-column label="操作" style="width: 20%">
+                    <template slot-scope="scope">
+                        <el-button size="mini" type="danger" @click="handleOpen(scope.$index, scope.row)">查看信息</el-button>
+                    </template>
+                </el-table-column>
+            </el-table>
+        </div>
+    </div>
 </template>
 
 <script>
-
+import { getUserfollowerList, getUserfollowingList } from '../../api';
 
 export default {
-  name: 'Memberlist',
-  components: {
-    
-  },
-  data() {
-      return {
-        tableData: [{
-          picture: 'https://sucai.suoluomei.cn/sucai_zs/images/20201027152321-13.jpg',
-          name: '王小虎',
-          address: '上海市普陀区金沙江路 1518 弄'
-        }, {
-          picture: 'https://sucai.suoluomei.cn/sucai_zs/images/20201027152321-13.jpg',
-          name: '王小虎',
-          address: '上海市普陀区金沙江路 1517 弄'
-        }, {
-          picture: 'https://sucai.suoluomei.cn/sucai_zs/images/20201027152321-13.jpg',
-          name: '王小虎',
-          address: '上海市普陀区金沙江路 1519 弄'
-        }, {
-          picture: 'https://sucai.suoluomei.cn/sucai_zs/images/20201027152321-13.jpg',
-          name: '王小虎',
-          address: '上海市普陀区金沙江路 1516 弄'
-        }]
-      }
+    name: 'Memberlist',
+    components: {
+
     },
-  methods:{
-    toMenberList(){
-      this.$router.push('/memberlist')
+    data() {
+        return {
+            tableData: [],
+            userId: 0,
+            type: 0,
+        }
     },
-    handleEdit(index, row) {
-        console.log(index, row);
-      },
-    handleDelete(index, row) {
-        console.log(index, row);
+    watch: {
+        // 监听路由发生改变
+        $route() {
+            this.getData()
+        }
+    },
+    mounted() {
+        //mounted
+        this.getData()
+    },
+    methods: {
+        getData() {
+            this.userId = this.$route.query.userId;
+            this.type = this.$route.query.type;
+            if (this.type == 0) {
+                getUserfollowingList(this.userId).then((res) => {
+                    console.log(res.data);
+                    this.tableData = res.data.following_list;
+                }).catch((err) => {
+                    Notification({ title: '页面出错', message: err.response.data.msg, type: 'error', duration: 2000 })
+                })
+
+            }
+            if (this.type == 1) {
+                getUserfollowerList(this.userId).then((res) => {
+                    console.log(res.data);
+                    this.tableData = res.data.follower_list
+                }).catch((err) => {
+                    Notification({ title: '页面出错', message: err.response.data.msg, type: 'error', duration: 2000 })
+                })
+            }
+        },
+        handleOpen(index, row) {
+            this.$router.push({ path : '/profile',query: {
+                userId : row.id
+            }})
+        },
     }
-  }
 };
 </script>
 
 <style scoped>
 .MemberList-table {
-  width : 100%;
-  margin : auto;
+    width: 100%;
+    margin: auto;
 }
 </style>
