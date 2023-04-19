@@ -250,6 +250,12 @@ export const get_history_list = () => {
     })
 }
 
+export const get_my_prompt_list = (id) => {
+    return axioss.request({
+        url: `api/user/get_published_prompt_list?user_id=${id}&per_page=99999`,
+        method: 'get',
+    })
+}
 // 删除历史记录
 export const delete_history = (params) => {
     return axioss.request({

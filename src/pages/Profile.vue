@@ -1,6 +1,6 @@
 <template>
     <div>
-        
+
         <div class="page-header clear-filter" filter-color="orange">
             <!-- 背景 -->
             <parallax class="page-header-image" style="background-image:url('img/bg5.jpg')">
@@ -26,7 +26,7 @@
                     </div>
                     <div class="social-description">
                         <h2>{{ products }}</h2>
-                        <p @click="toMemberList(2)" style="cursor:pointer;">作品</p>
+                        <p @click="toProduct()" style="cursor:pointer;">作品</p>
                     </div>
                 </div>
             </div>
@@ -51,7 +51,7 @@
             </div>
         </div>
 
-        
+
         <!-- <Profile_subheader></Profile_subheader>
     <div class="container">
       
@@ -94,7 +94,7 @@ export default {
     methods: {
         setup() {
             this.userId = this.$route.query.userId;
-            if (this.userId == undefined){
+            if (this.userId == undefined) {
                 this.userId = this.cookie.getCookie("userId");
             }
             getName(this.userId).then((res) => {
@@ -120,8 +120,11 @@ export default {
         toMemberList(type) {
             this.$router.push({ path: '/profile/memberlist', query: { userId: this.userId, type: type } })
         },
+        toProduct(){
+            this.$router.push({ path: '/profile/prompts', query: { userId: this.userId } })
+        },
         toPieceList() {
-            this.$router.push({ path: '/profile/product', query: { userId: this.userId } })
+            this.$router.push({ path: '/profile/prompts', query: { userId: this.userId } })
         },
         toCollection() {
             this.$router.push({ path: '/profile/collection', query: { userId: this.userId } })
