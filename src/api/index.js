@@ -300,3 +300,24 @@ export const getName = (id) => {
         method: 'get'
     })
 }
+
+export const getFollowingNumber = (id) => {
+    return axioss.request({
+        url: `api/user/get_following?id=${id}`,
+        method: 'get'
+    })
+}
+
+export const getFollowedNumber = (id) => {
+    return axioss.request({
+        url: `api/user/get_followed?id=${id}`,
+        method: 'get'
+    })
+}
+
+export const getProductNumber = (id) => {
+    return axioss.request({
+        url: `api/user/get_product?id=${id}`,
+        method: 'get'
+    })
+}

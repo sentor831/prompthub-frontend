@@ -17,16 +17,16 @@
                 <!-- 下面的三列内容 -->
                 <div class="content">
                     <div class="social-description">
-                        <h2>26</h2>
+                        <h2>{{ following }}</h2>
                         <p @click="toMemberList" style="cursor:pointer;">关注</p>
                     </div>
                     <div class="social-description">
-                        <h2>26</h2>
+                        <h2>{{ followed }}</h2>
                         <p @click="toMemberList" style="cursor:pointer;">粉丝</p>
                     </div>
                     <div class="social-description">
-                        <h2>48</h2>
-                        <p @click="toMemberList" style="cursor:pointer;">赞与收藏</p>
+                        <h2>{{ products }}</h2>
+                        <p @click="toMemberList" style="cursor:pointer;">作品</p>
                     </div>
                 </div>
             </div>
@@ -61,7 +61,7 @@
     </div>
 </template>
 <script>
-import { getName } from '../api/index'
+import { getName, getFollowedNumber, getFollowingNumber } from '../api/index'
 
 
 export default {
@@ -72,6 +72,9 @@ export default {
             userId: -1,
             nickname: '',
             avatar: '',
+            following: 20,
+            followed: 20,
+            products: 0,
         }
     },
     mounted() {
@@ -81,7 +84,20 @@ export default {
             .catch((err) => {
                 Notification({ title: '获取通知失败', message: err.response.data.msg, type: 'error', duration: 2000 })
             })
-        // 获取 关注数量 粉丝数量
+
+        getFollowedNumber(this.userId).then((res) => this.followed = res.data.number)
+            .catch((err) => {
+                Notification({ title: '获取被关注数量失败', message: err.response.data.msg, type: 'error', duration: 2000 })
+            })
+        getFollowingNumber(this.userId).then((res) => this.following = res.data.number)
+            .catch((err) => {
+                Notification({ title: '获取关注数量失败', message: err.response.data.msg, type: 'error', duration: 2000 })
+            })
+        getProductsNumber(this.userId).then((res) => this.products = res.data.number)
+            .catch((err) => {
+                Notification({ title: '获取作品数量失败', message: err.response.data.msg, type: 'error', duration: 2000 })
+            })
+
     },
     components: {
         // Tabs,
