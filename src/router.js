@@ -25,7 +25,7 @@ import ProfileCarousel from "./components/Hx_components/ProfileCarousel"
 import ProfileCollection from "./components/Hx_components/ProfileCollection"
 import history from "./components/Hx_components/history"
 import MemberList from "./components/Hx_components/MemberList"
-
+import ownedPrompts from "./components/Hx_components/ownedPrompts"
 // 引入页面
 import ModInfo from "./pages/ModInfo"
 // 黄新引入部分end
@@ -124,6 +124,10 @@ export default new Router({
         {
           path: 'history',
           component: history
+        },
+        {
+          path: 'prompts',
+          component: ownedPrompts
         },
         {
           path: 'viewhistory',
