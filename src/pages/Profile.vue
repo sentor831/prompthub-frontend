@@ -47,8 +47,8 @@
                     <p class="btn btn-primary btn-round btn-lg" @click="toCollection" style="cursor:pointer">收藏</p>
                     <p class="btn btn-primary btn-round btn-lg" @click="toHistory" style="cursor:pointer">历史</p>
                 </div>
-                <router-view>使用router-view占位</router-view>
             </div>
+            <router-view>使用router-view占位</router-view>
         </div>
 
 
