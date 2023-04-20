@@ -303,11 +303,21 @@ export const get_prompt = (id) => {
 
 // --------------- 4.10 关键字搜索--------------
 // 关键字搜索
-export const search_prompt_keyword = (params) => {
+export const search_prompt_keyword = (params, reject) => {
+    console.log(params);
+    let baseUrl = `api/prompt_list/search_prompt_keyword?`
+    baseUrl = baseUrl + `keyword=${params.keyword}`
+    if (params.models != undefined) {
+        baseUrl = baseUrl + `&models=${params.models}`
+    }
+    if (params.sortBy == undefined){
+        params.sortBy = 'hot'
+    }
+    baseUrl = baseUrl + `&sorted_by=${params.sortBy}`
+    baseUrl = baseUrl + `&per_page=666`
     return axioss.request({
-        url: `api/prompt_list/search_prompt_keyword`,
+        url: baseUrl,
         method: 'get',
-        data: params
     })
 }
 
