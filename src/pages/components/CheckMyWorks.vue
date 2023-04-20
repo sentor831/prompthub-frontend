@@ -2,26 +2,6 @@
   <div class="SubCheckBox">
     <div class="row">
       <img :src=picture width="180vh" class="img-thumbnail">
-      <!-- <el-upload action="#" list-type="picture-card" :auto-upload="false">
-      <i slot="default" class="el-icon-plus"></i>
-      <div slot="file" slot-scope="{file}">
-        <img class="el-upload-list__item-thumbnail" :src="file.url" alt="">
-        <span class="el-upload-list__item-actions">
-          <span class="el-upload-list__item-preview" @click="handlePictureCardPreview(file)">
-            <i class="el-icon-zoom-in"></i>
-          </span>
-          <span v-if="!disabled" class="el-upload-list__item-delete" @click="handleDownload(file)">
-            <i class="el-icon-download"></i>
-          </span>
-          <span v-if="!disabled" class="el-upload-list__item-delete" @click="handleRemove(file)">
-            <i class="el-icon-delete"></i>
-          </span>
-        </span>
-      </div>
-    </el-upload> -->
-      <!-- <el-dialog :visible.sync="dialogVisible">
-      <img width="100%" :src="dialogImageUrl" alt="">
-    </el-dialog> -->
       <div class="CheckText">
         <div class="prompts">
           <p class="CheckDescribe">{{ prompt }}</p>
@@ -30,17 +10,17 @@
           <p class="CheckDescribe">{{ dispTime(uploadTime) }}
             <span class="CheckDescribe" style="color:#BFBFBF" v-if="status === 2">
               <el-divider direction="vertical"></el-divider>
-              <img src='../../../public/img/under-review.png' width="22">
+              <img src='../../../public/img/under-review.png' width="20">
               <span class="CheckDescribe" style="color:#00A1D6">审核中</span>
             </span>
             <span class="CheckDescribe" style="color:#BFBFBF" v-else-if="status === 1">
               <el-divider direction="vertical"></el-divider>
-              <img src='../../../public/img/under-review.png' width="22">
+              <i class="el-icon-close" style="color:crimson"></i>
               <span class="CheckDescribe" style="color:crimson">未通过审核</span>
             </span>
             <span class="CheckDescribe" style="color:#BFBFBF" v-else-if="status === 0">
               <el-divider direction="vertical"></el-divider>
-              <img src='../../../public/img/under-review.png' width="22">
+              <i class="el-icon-check" style="color:green"></i>
               <span class="CheckDescribe" style="color:green">已通过审核</span>
             </span>
           </p>

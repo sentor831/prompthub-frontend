@@ -181,7 +181,8 @@ export default {
                     //使用for循环编辑数组，向jsonObject中赋值
                     for (let itemindex = 0; itemindex < this.form.attributes.length; itemindex++) {
                         //$set()方法第一个参数是对象，第二个参数是key值，第三个参数是value值
-                        this.$set(this.attrJson, this.form.attributes[itemindex].name, this.form.attributes[itemindex].value);
+                        // TODO
+                        this.$set(this.attrJson, this.form.attributes[itemindex].name, eval(this.form.attributes[itemindex].value));
                     }
                     console.log(this.attrJson)
                     console.log(JSON.stringify(this.attrJson))
