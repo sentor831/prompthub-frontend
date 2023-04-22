@@ -31,6 +31,11 @@
                     </el-table-column>
                 </el-table>
             </div>
+            <div class="block" style="text-align: center">
+                <el-pagination layout="prev, pager, next" :total="totalNum" :current-page="currentPage"
+                    :page-size="pageSize" @current-change="handleCurrentChange">
+                </el-pagination>
+            </div>
         </div>
     </div>
 </template>
@@ -48,6 +53,9 @@ export default {
             tableData: [],
             userId: 0,
             type: 0,
+            totalNum: 0,
+            currentPage: 1,
+            pageSize: 10
         }
     },
     watch: {
@@ -68,7 +76,7 @@ export default {
             this.userId = this.$route.query.userId;
             this.type = this.$route.query.type;
             if (this.type == 0) {
-                getUserfollowingList(this.userId).then((res) => {
+                getUserfollowingList(this.userId, this.pageSize, this.currentPage).then((res) => {
                     console.log(res.data);
                     this.tableData = res.data.following_list;
                 }).catch((err) => {
@@ -77,7 +85,7 @@ export default {
 
             }
             if (this.type == 1) {
-                getUserfollowerList(this.userId).then((res) => {
+                getUserfollowerList(this.userId, this.pageSize, this.currentPage).then((res) => {
                     console.log(res.data);
                     this.tableData = res.data.follower_list
                 }).catch((err) => {

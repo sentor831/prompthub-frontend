@@ -86,13 +86,10 @@ export default new Router({
       }
     },
     {
+      // 修改个人信息
       path: '/modinfo',
       name: 'modinfo',
-      components: { default: ModInfo, header: MainNavbar, footer: MainFooter },
-      props: {
-        header: { colorOnScroll: 400 },
-        footer: { backgroundColor: 'black' }
-      }
+      components: { default: ModInfo, header: TheHeader },
     },
     {
       path: '/profile',

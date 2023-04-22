@@ -59,7 +59,7 @@ export default {
                     this.noticeList = res.data.notification_list
                 }).catch((err) => {
                     console.log(err)
-                    Notification({ title: '失败', message: err.response.data.msg, type: 'error', duration: 2000 })
+                    Notification({ title: '获取通知列表失败', message: err.response.data.msg, type: 'error', duration: 2000 })
                 })
         },
         jumptoPic(id, status) {
@@ -79,8 +79,10 @@ export default {
                 .catch((err) => {
                     console.log(err)
                     Notification({ title: '删除失败', message: err.response.data.msg, type: 'error', duration: 2000 })
+                })
+                .finally(() => {
+                    this.getNoticeList()
                 });
-            this.getNoticeList()
         }
     }
 }

@@ -310,7 +310,7 @@ export const search_prompt_keyword = (params, reject) => {
     if (params.models != undefined) {
         baseUrl = baseUrl + `&models=${params.models}`
     }
-    if (params.sortBy == undefined){
+    if (params.sortBy == undefined) {
         params.sortBy = 'hot'
     }
     baseUrl = baseUrl + `&sorted_by=${params.sortBy}`
@@ -339,7 +339,7 @@ export const personized_prompt_list = (per_page, page_index) => {
 // ***************************************黄新，http请求接口end*************************
 
 // *********** Extra API ********************
-export const getName = (id) => {
+export const getInfos = (id) => {
     return axioss.request({
         url: `api/user/get_user_simple_dict?id=${id}`,
         method: 'get'
@@ -374,16 +374,16 @@ export const getAllCollectionList = (id) => {
     })
 }
 
-export const getUserfollowingList = (id) => {
+export const getUserfollowingList = (id, per_page, page_index) => {
     return axioss.request({
-        url: `api/user/get_user_following_list?user_id=${id}&per_page=999`,
+        url: `api/user/get_user_following_list?user_id=${id}&per_page=${per_page}&page_index=${page_index}`,
         method: 'get'
     })
 }
 
-export const getUserfollowerList = (id) => {
+export const getUserfollowerList = (id, per_page, page_index) => {
     return axioss.request({
-        url: `api/user/get_user_follower_list?user_id=${id}&per_page=999`,
+        url: `api/user/get_user_follower_list?user_id=${id}&per_page=${per_page}&page_index=${page_index}`,
         method: 'get'
     })
 }

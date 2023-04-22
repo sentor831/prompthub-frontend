@@ -62,7 +62,7 @@
     </div>
 </template>
 <script>
-import { getName, getFollowedNumber, getFollowingNumber, getProductNumber } from '../api/index'
+import { getInfos, getFollowedNumber, getFollowingNumber, getProductNumber } from '../api/index'
 
 
 export default {
@@ -97,7 +97,7 @@ export default {
             if (this.userId == undefined) {
                 this.userId = this.cookie.getCookie("userId");
             }
-            getName(this.userId).then((res) => {
+            getInfos(this.userId).then((res) => {
                 this.nickname = res.data.user.nickname
                 this.avatar = res.data.user.avatar
             })
@@ -120,7 +120,7 @@ export default {
         toMemberList(type) {
             this.$router.push({ path: '/profile/memberlist', query: { userId: this.userId, type: type } })
         },
-        toProduct(){
+        toProduct() {
             this.$router.push({ path: '/profile/prompts', query: { userId: this.userId } })
         },
         toPieceList() {
@@ -131,7 +131,10 @@ export default {
         },
         toHistory() {
             this.$router.push({ path: '/profile/history', query: { userId: this.userId } })
-        }
+        },
+        toModInfo() {
+            this.$router.push({ path: '/profile/modinfo', query: { userId: this.userId } })
+        },
     }
 };
 </script>

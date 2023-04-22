@@ -70,6 +70,8 @@
             <img :src=avatar style="width: 4em; height: 4em; border-radius: 50%; cursor: pointer;" @click="toMyself()">
           </span>
           <el-dropdown-menu slot="dropdown">
+            <el-dropdown-item icon="now-ui-icons ui-1_settings-gear-63"
+              @click.native="toModifyInfo">修改信息</el-dropdown-item>
             <el-dropdown-item icon="now-ui-icons ui-1_lock-circle-open"
               @click.native="toModifyPass">修改密码</el-dropdown-item>
             <el-dropdown-item icon="now-ui-icons users_single-02" @click.native="handlelogOut">退出登录</el-dropdown-item>
@@ -138,6 +140,9 @@ export default {
       this.cookie.clearCookie('token')
       this.cookie.clearCookie('refresh-token')
       this.login = null
+    },
+    toModifyInfo() {
+      this.$router.push({ path: '/modinfo', query: { userId: this.userId } })
     },
     toModifyPass() {
       this.$router.push('/modipass')

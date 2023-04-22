@@ -56,7 +56,7 @@ export default {
                     this.noticeList = res.data.notification_list
                 }).catch((err) => {
                     console.log(err)
-                    Notification({ title: '失败', message: err.response.data.msg, type: 'error', duration: 2000 })
+                    Notification({ title: '获取通知列表失败', message: err.response.data.msg, type: 'error', duration: 2000 })
                 })
         },
         jumptoPic(id) {
@@ -67,7 +67,16 @@ export default {
             delete_notification({
                 id,
             })
-            this.getNoticeList()
+                .then((res) => {
+                    Notification({ title: '删除成功', message: '', type: 'success', duration: 2000 })
+                })
+                .catch((err) => {
+                    console.log(err)
+                    Notification({ title: '删除失败', message: err.response.data.msg, type: 'error', duration: 2000 })
+                })
+                .finally(() => {
+                    this.getNoticeList()
+                });
         }
     }
 }

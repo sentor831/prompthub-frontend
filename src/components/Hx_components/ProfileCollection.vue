@@ -1,8 +1,8 @@
 <template>
     <div>
         <el-main>
-        <h2> 收藏 </h2>
-    </el-main>
+            <h2> 收藏 </h2>
+        </el-main>
         <el-container style="height: 800px; border: 1px solid #eee">
             <!-- 原rgb为(238,241,246) -->
             <el-aside width="220px" style="background-color: rgb(255, 255, 255)">
@@ -52,30 +52,21 @@
                 </span>
             </el-dialog>
 
-            <el-container>
+            <el-container v-if="collectionId !== -1">
                 <el-header style="text-align: right; font-size: 15px; background-color: rgb(244, 245, 247)">
                     <el-dropdown>
-                        <i class="el-icon-setting" style="margin-right: 10px"> 设置</i>
+                        <i class="el-icon-setting" style="margin-right: 1vw">设置</i>
                         <el-dropdown-menu slot="dropdown">
-                            <el-dropdown-item>修改名称</el-dropdown-item>
-                            <el-dropdown-item>类型</el-dropdown-item>
-                            <el-dropdown-item>删除</el-dropdown-item>
+                            <el-dropdown-item>
+                                <div @click="toEdit()">编辑</div>
+                            </el-dropdown-item>
+                            <el-dropdown-item>
+                                <div @click="deleteCollection()">删除</div>
+                            </el-dropdown-item>
                         </el-dropdown-menu>
                     </el-dropdown>
                 </el-header>
 
-                <!-- <el-main>
-                    <Waterfall :list="list" style="margin-top:20px" width="320" :breakpoints="breakpoints" lazyload="false">
-                        <template #item="{ item, url }">
-                        <div @click="picInfo(item)" style="cursor: pointer;"
-                            class="bg-gray-900 rounded-lg shadow-md overflow-hidden transition-all duration-300 ease-linear hover:shadow-lg hover:shadow-gray-600 group">
-                            <div class="overflow-hidden">
-                            <LazyImg :url="url" class="pic"></LazyImg>
-                            </div>
-                        </div>
-                        </template>
-                    </Waterfall>
-                </el-main> -->
                 <el-main>
                     <Waterfall :list="collectionRecordList" style="margin-top:20px" width=320 :breakpoints="breakpoints">
                         <template #item="{ item }">
@@ -88,68 +79,38 @@
                         </template>
                     </Waterfall>
                 </el-main>
+                <div class="block" style="text-align: center">
+                    <el-pagination layout="prev, pager, next" :total="totalNum" :current-page="currentPage"
+                        :page-size="pageSize" @current-change="handleCurrentChange">
+                    </el-pagination>
+                </div>
 
             </el-container>
+            <el-dialog title="编辑收藏夹" :visible.sync="dialogVisible" width="33%" center>
+                <div class="dialogdiv" style="height: auto; overflow-y: auto; overflow-x: hidden">
+                    <el-form ref="form" :model="newform" label-width="120px" label-position="left">
+                        <el-form-item label="收藏夹名称">
+                            <el-input v-model="newform.name"></el-input>
+                        </el-form-item>
+                        <el-form-item label="是否公开">
+                            <el-switch v-model="newform.visibility"></el-switch>
+                        </el-form-item>
+                    </el-form>
+                </div>
+                <span slot="footer" class="dialog-footer">
+                    <el-button @click="dialogVisible = false">取 消</el-button>
+                    <el-button type="primary" @click="submitEditCollection()">确 定</el-button>
+                </span>
+            </el-dialog>
         </el-container>
 
-        <el-container>
-            <el-header style="text-align: right; font-size: 15px; background-color: rgb(244, 245, 247)">
-                <el-dropdown>
-                    <i class="el-icon-setting" style="margin-right: 10px"> 设置</i>
-                    <el-dropdown-menu slot="dropdown">
-                        <el-dropdown-item>
-                            <div @click="dialogVisible = true">修改名称</div>
-                        </el-dropdown-item>
-                        <el-dropdown-item>
-                            <div @click="dialogVisible_type = true">类型</div>
-                        </el-dropdown-item>
-                        <el-dropdown-item>
-                            <div @click="deleteCollection">删除</div>
-                        </el-dropdown-item>
-                    </el-dropdown-menu>
-                </el-dropdown>
-            </el-header>
-
-            <!-- <el-main>
-      <Waterfall :list="list" style="margin-top:20px" width="320" :breakpoints="breakpoints" lazyload="false">
-        <template #item="{ item, url }">
-          <div @click="picInfo(item)" style="cursor: pointer;"
-            class="bg-gray-900 rounded-lg shadow-md overflow-hidden transition-all duration-300 ease-linear hover:shadow-lg hover:shadow-gray-600 group">
-            <div class="overflow-hidden">
-              <LazyImg :url="url" class="pic"></LazyImg>
-            </div>
-          </div>
-        </template>
-      </Waterfall>
-    </el-main> -->
-        </el-container>
-
-        <!-- 这一部分是弹出修改名称的对话框 -->
-        <el-dialog title="提示" :visible.sync="dialogVisible" width="30%" :before-close="handleCloseAlert">
-            <span>请输入新的名称:</span>
-            <br />
-            <el-input v-model="collection_name" style="width: 400px; margin-top: 20px"></el-input>
-            <span slot="footer" class="dialog-footer">
-                <el-button @click="dialogVisible = false">取 消</el-button>
-                <el-button type="primary" @click="dialogVisible = false">确 定</el-button>
-            </span>
-        </el-dialog>
-
-        <!-- 这一部分是弹出改变类型的对话框 -->
-        <el-dialog title="提示" :visible.sync="dialogVisible_type" width="30%" :before-close="handleCloseAlert">
-            <span>您确定更改文件夹类型？</span>
-            <span slot="footer" class="dialog-footer">
-                <el-button @click="dialogVisible_type = false">取 消</el-button>
-                <el-button type="primary" @click="dialogVisible_type = false">确 定</el-button>
-            </span>
-        </el-dialog>
     </div>
 </template>
 
 <script>
 import { LazyImg, Waterfall } from "vue-waterfall-plugin";
 import "vue-waterfall-plugin/dist/style.css";
-import { get_collection_list, create_collection, get_collection_record_list } from "../../api";
+import { get_collection_list, create_collection, get_collection_record_list, delete_collection, modify_collection } from "../../api";
 import { Notification } from "element-ui";
 export default {
     name: "ProfileColleciton",
@@ -157,6 +118,10 @@ export default {
         return {
             breakpoints: { 3000: { rowPerView: 4 }, },
             form: {
+                name: "",
+                visibility: true,
+            },
+            newform: {
                 name: "",
                 visibility: true,
             },
@@ -170,6 +135,10 @@ export default {
             public_collection_list: [],
             collectionRecordList: [],
             userId: -1,
+            totalNum: 50,
+            currentPage: 1,
+            pageSize: 12,
+            collectionId: -1
         };
     },
     components: {
@@ -265,11 +234,62 @@ export default {
                 .catch((_) => { });
         },
         deleteCollection() {
-            console.log("ok");
+            delete_collection({
+                id: this.collectionId
+            })
+                .then((res) => {
+                    Notification({ title: '成功', message: res.data.msg, type: 'success', duration: 2000 })
+                    this.getCollectionInfo()
+                })
+                .catch((err) => {
+                    console.log(err)
+                    Notification({ title: '失败', message: err.response.data.msg, type: 'error', duration: 2000 })
+                })
+                .finally(() => {
+                    this.getCollectionInfo()
+                });
+        },
+        toEdit() {
+            this.dialogVisible = true
+            // TODO 修改信息时先显示原信息
+            this.newform.name = ''
+            this.newform.visibility = true
+        },
+        submitEditCollection() {
+            let visibility = this.newform.visibility === true ? 0 : 1;
+            modify_collection({
+                id: this.collectionId,
+                name: this.newform.name,
+                visibility: visibility
+            })
+                .then((res) => {
+                    Notification({
+                        title: "成功",
+                        message: res.data.msg,
+                        type: "success",
+                        duration: 2000,
+                    });
+                })
+                .catch((err) => {
+                    console.log(err);
+                    Notification({
+                        title: "失败",
+                        message: err.response.data.msg,
+                        type: "error",
+                        duration: 2000,
+                    });
+                })
+                .finally(() => {
+                    this.dialogVisible = false;
+                    this.getCollectionInfo();
+                });
         },
         showCollection(id) {
-            get_collection_record_list(id, 99999, 1).then((res) => {
+            this.collectionId = id
+            get_collection_record_list(id, this.pageSize, this.currentPage).then((res) => {
+                console.log(res)
                 this.collectionRecordList = res.data.collection_record_list;
+                this.totalNum = res.data.collection_record_list.length;
             }).catch((err) => {
                 console.log(err);
                 Notification({
@@ -280,6 +300,10 @@ export default {
                 });
             })
         },
+        handleCurrentChange(currentPage) {
+            this.currentPage = currentPage
+            showCollection(this.collectionId)
+        }
     },
 };
 </script>
