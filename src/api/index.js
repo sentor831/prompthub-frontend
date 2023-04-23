@@ -395,3 +395,19 @@ export const ManageCollectionRecord = (params) => {
         data: params
     })
 }
+
+export const changeAvatar = (params) => {
+    return axioss.request({
+        url: `api/user/change_avatar`,
+        method: 'post',
+        data: params
+    })
+}
+
+export const changeNickname = (params) => {
+    return axioss.request({
+        url: `api/user/change_nickname`,
+        method: 'post',
+        data: params
+    })
+}
