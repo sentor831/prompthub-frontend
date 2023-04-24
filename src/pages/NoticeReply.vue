@@ -13,7 +13,7 @@
                                     item.title }}
                                 </h4>
                                 <i class="now-ui-icons ui-1_simple-remove" style="margin-left: auto; cursor: pointer;"
-                                    @click="deleteNotice(item.id)"></i>
+                                    @click="deleteNotice(item.notification_id)"></i>
                             </div>
                             <p>{{ item.content }}</p>
                             <p style="text-align: right; font-size: small;"> {{ dispTime(item.created_at, true) }}</p>
@@ -30,6 +30,7 @@ import NoticeSideBar from '../components/NoticeSideBar.vue';
 import Card from '../components/Cards/Card.vue';
 import { get_notification_list, delete_notification, get_unread_notification_num } from '../api';
 import { formatTime } from '../api/utils';
+import { Notification } from 'element-ui';
 export default {
     name: 'noticereply',
     bodyClass: 'notice-reply-page',
@@ -65,7 +66,7 @@ export default {
 
         deleteNotice(id) {
             delete_notification({
-                id,
+                id: id,
             })
                 .then((res) => {
                     Notification({ title: '删除成功', message: '', type: 'success', duration: 2000 })

@@ -2,12 +2,13 @@
     <div>
         <el-main>
             <h2> 作品合集 </h2>
-            <Waterfall :list="tableData" style="margin-top:20px" width=320 :breakpoints="breakpoints">
+            <p v-if="noWorks === 1">暂无作品</p>
+            <Waterfall :list="tableData" style="margin-top:20px" :width="320" :breakpoints="breakpoints">
                 <template #item="{ item }">
                     <div @click="picInfo(item.id)" style="cursor: pointer;"
                         class="bg-gray-900 rounded-lg shadow-md overflow-hidden transition-all duration-300 ease-linear hover:shadow-lg hover:shadow-gray-600 group">
                         <div class="overflow-hidden">
-                            <p> {{ dispTime(item.created_at)}}</p>
+                            <p> {{ dispTime(item.created_at) }}</p>
                             <LazyImg :url="item.picture" class="pic"></LazyImg>
                         </div>
                     </div>
@@ -33,6 +34,7 @@ export default {
             breakpoints: { 3000: { rowPerView: 4 }, },
             tableData: [],
             userId: -1,
+            noWorks: 0
         }
     },
     methods: {
@@ -40,17 +42,15 @@ export default {
             return formatTime(t, detailed)
         },
         picInfo(id) {
-            let picInfo = {
-                picId: id
-            }
-            this.cookie.setCookie(picInfo, 1)
             this.$router.push({ path: '/picinfo', query: { picid: id } })
-            // this.$router.push('/picInfo')
         },
         setUp() {
             this.userId = this.$route.query.userId;
             get_my_prompt_list(this.userId).then((res) => {
                 this.tableData = res.data.prompt_list;
+                if (res.data.prompt_list.length === 0) {
+                    this.noWorks = 1
+                }
             }).catch((err) => {
                 console.log(err);
                 Notification({

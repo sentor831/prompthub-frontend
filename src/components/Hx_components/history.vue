@@ -2,7 +2,7 @@
     <div>
         <el-main>
             <h2> 历史记录 </h2>
-            <Waterfall :list="tableData" style="margin-top:20px" width=320 :breakpoints="breakpoints">
+            <Waterfall :list="tableData" style="margin-top:20px" :width="320" :breakpoints="breakpoints">
                 <template #item="{ item }">
                     <div style="cursor: pointer;"
                         class="bg-gray-900 rounded-lg shadow-md overflow-hidden transition-all duration-300 ease-linear hover:shadow-lg hover:shadow-gray-600 group">
@@ -16,7 +16,9 @@
                                         @click="deleteHistory(item.id)"></i>
                                 </div>
                             </div>
-                            <LazyImg :url="item.prompt.picture" class="pic" @click="picInfo(item.prompt.id)"></LazyImg>
+                            <div @click="picInfo(item.prompt.id)">
+                                <LazyImg :url="item.prompt.picture" class="pic"></LazyImg>
+                            </div>
                         </div>
                     </div>
                 </template>
@@ -51,12 +53,7 @@ export default {
             return formatTime(t, detailed)
         },
         picInfo(id) {
-            let picInfo = {
-                picId: id
-            }
-            this.cookie.setCookie(picInfo, 1)
             this.$router.push({ path: '/picinfo', query: { picid: id } })
-            // this.$router.push('/picInfo')
         },
         setUp() {
             get_history_list().then((res) => {

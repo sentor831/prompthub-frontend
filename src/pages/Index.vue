@@ -32,6 +32,8 @@
                     <div @click="picInfo(item.id)" style="cursor: pointer;"
                         class="bg-gray-900 rounded-lg shadow-md overflow-hidden transition-all duration-300 ease-linear hover:shadow-lg hover:shadow-gray-600 group">
                         <div class="overflow-hidden">
+                            <i v-if="item.collection_count > 0" style="color: crimson" class="el-icon-star-on">{{
+                                item.collection_count }}</i>
                             <LazyImg :url="url" class="pic"></LazyImg>
                             <!-- <img :src="url" class="pic" /> -->
                         </div>
@@ -39,8 +41,8 @@
                 </template>
             </Waterfall>
 
-            <div style="text-align: center;">
-                <el-button btn btn-primary @click="getData" style="margin-bottom: 1em ;">加载更多</el-button>
+            <div v-if="hasNext === 1" style="text-align: center;">
+                <el-button btn btn-primary @click="getData(currentType)" style="margin-bottom: 1em ;">加载更多</el-button>
             </div>
 
         </div>
@@ -57,7 +59,6 @@ import { LazyImg, Waterfall } from 'vue-waterfall-plugin'
 import 'vue-waterfall-plugin/dist/style.css'
 import { modifyPass, hot_prompt_list, personized_prompt_list } from '../api/index'
 import { Notification } from 'element-ui';
-
 export default {
     name: 'index',
     bodyClass: 'index-page',
@@ -85,29 +86,27 @@ export default {
                 animationDelay: 300,
             },
             breakpoints: { 3000: { rowPerView: 4 }, },
+            currentType: 1,
+            hasNext: 1
         }
     },
     mounted() {
         this.login = this.cookie.getCookie("token");
-        // TODO 获取热门推荐
-        this.getData();
+        this.getData(1);
     },
     methods: {
         picInfo(id) {
-            // TODO 设置cookie 
-            let picInfo = {
-                picId: id
-            }
-            this.cookie.setCookie(picInfo, 1)
             this.$router.push({ path: '/picinfo', query: { picid: id } })
-            // this.$router.push('/picInfo')
         },
         chooseHot() {
             this.btntypeH = 'primary'
             this.btntypeR = ''
             this.stateH = 1
             this.stateR = 0
-            // TODO 热门推荐
+            this.page = 1
+            this.currentType = 1
+            this.imgsArr = []
+            this.getData(1)
         },
         chooseRecommend() {
             this.stateR = 1 - this.stateR
@@ -120,30 +119,53 @@ export default {
                 this.btntypeH = 'primary'
                 this.stateH = 1
             }
-            // TODO 个性化推荐
+            this.page = 1
+            this.currentType = 2
+            this.imgsArr = []
+            this.getData(2)
         },
-        getData() {
+        getData(type) {
             const loading = this.$loading({
                 lock: true,
                 text: 'Loading',
                 spinner: 'el-icon-loading',
                 background: 'rgba(0, 0, 0, 0.7)'
             })
+            if (type === 1) {
+                hot_prompt_list(4 * 32, this.page)
+                    .then((res) => {
+                        for (let i = 0; i < res.data.prompt_list.length; ++i) {
+                            res.data.prompt_list[i].src = res.data.prompt_list[i].picture;
+                        }
+                        this.imgsArr = this.imgsArr.concat(res.data.prompt_list)
+                        console.log(res.data.has_next);
+                        if (!res.data.has_next) {
+                            this.$refs.waterfall.waterfallOver();
+                            this.hasNext = 0
+                        }
+                    })
+                    .catch((err) => { })
+                    .finally(() => { loading.close() })
+                this.page += 1;
+            } else if (type === 2) {
+                personized_prompt_list(4 * 32, this.page)
+                    .then((res) => {
+                        console.log(res)
+                        for (let i = 0; i < res.data.prompt_list.length; ++i) {
+                            res.data.prompt_list[i].src = res.data.prompt_list[i].picture;
+                        }
+                        this.imgsArr = this.imgsArr.concat(res.data.prompt_list)
+                        console.log(res.data.has_next);
+                        if (!res.data.has_next) {
+                            this.$refs.waterfall.waterfallOver();
+                            this.hasNext = 0
+                        }
+                    })
+                    .catch((err) => { })
+                    .finally(() => { loading.close() })
+                this.page += 1
+            }
 
-            hot_prompt_list(4 * 32, this.page)
-                .then((res) => {
-                    for (let i = 0; i < res.data.prompt_list.length; ++i) {
-                        res.data.prompt_list[i].src = res.data.prompt_list[i].picture;
-                    }
-                    this.imgsArr = this.imgsArr.concat(res.data.prompt_list)
-                    console.log(res.data.has_next);
-                    if (!res.data.has_next) {
-                        this.$refs.waterfall.waterfallOver();
-                    }
-                })
-                .catch((err) => { })
-                .finally(() => { loading.close() })
-            this.page += 1;
             // if (this.page == 6) {
             //   this.$refs.waterfall.waterfallOver();
             // } else {

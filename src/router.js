@@ -100,19 +100,19 @@ export default new Router({
         footer: { backgroundColor: 'black' }
       },
       children: [
-        {
-          path: "",
-          component: ProfileCarousel
-        },
-        {
-          path: 'MyHome',
-          component: ProfileCarousel
-        },
-        {
-          path: 'product',
-          // component: Thumbs
-          component: Waterfall_hx
-        },
+        // {
+        //   path: "",
+        //   component: ProfileCarousel
+        // },
+        // {
+        //   path: 'MyHome',
+        //   component: ProfileCarousel
+        // },
+        // {
+        //   path: 'product',
+        //   // component: Thumbs
+        //   component: Waterfall_hx
+        // },
         {
           path: 'collection',
           // component: Checking

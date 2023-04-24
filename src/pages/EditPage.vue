@@ -37,12 +37,12 @@
                 </el-form>
 
                 <el-form :model="form" ref="form" :inline="true">
-                    <el-form-item label="宽度" :rules="{ required: true, message: '不能为空', trigger: 'blur' }" prop="width">
+                    <!-- <el-form-item label="宽度" :rules="{ required: true, message: '不能为空', trigger: 'blur' }" prop="width">
                         <el-input v-model="form.width" placeholder="宽度"></el-input>
                     </el-form-item>
                     <el-form-item label="高度" :rules="{ required: true, message: '不能为空', trigger: 'blur' }" prop="height">
                         <el-input v-model="form.height" placeholder="高度"></el-input>
-                    </el-form-item>
+                    </el-form-item> -->
                     <el-form-item label="模型">
                         <el-select v-model="form.modelName" placeholder="请选择模型">
                             <el-option label="DALL-E" value="DALL-E"></el-option>
@@ -58,13 +58,13 @@
 
                     <el-row v-for="(attribute, index) in form.attributes" :key="index">
                         <el-form-item label="新属性" :prop="'attributes[' + index + '].name'" :rules="{
-                            required: true, message: '不能为空', trigger: 'blur'
-                        }">
+                                required: true, message: '不能为空', trigger: 'blur'
+                            }">
                             <el-input v-model="attribute.name" placeholder="属性名称"></el-input>
                         </el-form-item>
                         <el-form-item :prop="'attributes.' + index + '.value'" :rules="{
-                            required: true, message: '不能为空', trigger: 'blur'
-                        }">
+                                required: true, message: '不能为空', trigger: 'blur'
+                            }">
                             <el-input v-model="attribute.value" placeholder="属性值"></el-input>
                         </el-form-item>
                         <el-form-item>
@@ -194,6 +194,7 @@ export default {
                     }
                     if (this.first == false) {
                         edit_prompt({
+                            "id": this.picid,
                             "picture": this.key,
                             "prompt": this.form.prompt,
                             "model": model,
@@ -204,8 +205,10 @@ export default {
                             let id = res.data.id;
                             console.log(res)
                             Notification({ title: '修改成功', message: '请等待审核', type: 'success', duration: 2000 })
+                            this.$router.push('/check')
                         })).catch((err) => {
                             console.log(err)
+                            Notification({ title: '失败', message: err.response.data.msg, type: 'error', duration: 2000 })
                         })
                     } else {
                         create_prompt({
@@ -219,6 +222,7 @@ export default {
                             let id = res.data.id;
                             console.log(res)
                             Notification({ title: '上传成功', message: '请等待审核', type: 'success', duration: 2000 })
+                            this.$router.push('/check')
                         })).catch((err) => {
                             console.log(err)
                         })
@@ -291,43 +295,44 @@ export default {
 </script>
 
 <style scoped>
-.uploader-avatar>>>.el-upload {
+/* .uploader-avatar>>>.el-upload {
     background-color: #fbfdff;
     border: 1px dashed #c0ccda;
     border-radius: 6px;
     box-sizing: border-box;
-    width: 148px;
-    height: 148px;
+    width: 148px; 
+    height: 148px; 
     cursor: pointer;
     line-height: 146px;
     vertical-align: top;
     overflow: hidden;
-}
+} */
 
 .img-show {
     position: relative;
     border: 1px solid #c0ccda;
     border-radius: 6px;
     box-sizing: border-box;
-    width: 148px;
-    height: 148px;
+    width: fit-content;
+    height: fit-content;
     cursor: pointer;
-    overflow: hidden;
-    margin: 0 0 0 40vh;
+    /* overflow: hidden; */
+    margin-left: auto;
+    margin-right: auto;
 }
 
-.uploader-avatar>>>.el-upload:hover {
+/* .uploader-avatar>>>.el-upload:hover {
     border-color: #409EFF;
-}
+} */
 
-.uploader-avatar>>>i {
+/* .uploader-avatar>>>i {
     font-size: 28px;
     color: #8c939d;
-}
+} */
 
 .avatar {
-    width: 148px;
-    height: 148px;
+    /* width: 148px; */
+    height: 40vh;
     display: block;
 }
 

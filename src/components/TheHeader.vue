@@ -78,7 +78,7 @@
 <script>
 import { DropDown, Navbar, NavLink } from '@/components';
 import { Notification } from 'element-ui';
-import { get_unread_notification_num } from '../api';
+import { get_unread_notification_num, getInfos } from '../api';
 export default {
     name: "the-header",
     props: {
@@ -122,7 +122,14 @@ export default {
             })
         },
         getAvatar() {
-            this.avatar = this.cookie.getCookie('avatar')
+            getInfos(this.userId)
+                .then((res) => {
+                    this.avatar = res.data.user.avatar
+                })
+                .catch((err) => {
+                    console.log(err)
+                    Notification({ title: '获取个人信息失败', message: err.response.data.msg, type: 'error', duration: 2000 })
+                });
         },
         goSearch() {
             if (this.keyword !== '') {
@@ -159,7 +166,7 @@ export default {
         },
         toMyself() {
             // TODO
-            this.$router.push({ path: '/profile', query: { userId: this.userId } })
+            this.$router.push({ path: '/profile/prompts', query: { userId: this.userId } })
         },
         timer() {
             return setTimeout(() => {

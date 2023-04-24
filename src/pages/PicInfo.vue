@@ -31,7 +31,8 @@
             <div class="col" style="margin-left: 5vh;">
                 <div class="row">
                     <div class="col col-md-auto">
-                        <img :src="uploader_avatar" style="width: 6em; height: 6em; border-radius: 50%; cursor: pointer;" />
+                        <img :src="uploader_avatar" style="width: 6em; height: 6em; border-radius: 50%; cursor: pointer;"
+                            @click="toUploader()" />
                     </div>
                     <div class="col col-md-auto" style=" padding-top: 3vh;">
                         <h5 class="username" style="cursor: pointer;">{{ uploader }}</h5>
@@ -216,8 +217,12 @@ export default {
                     this.hasFollowed = res.data.is_following
                     this.prompts = res.data.prompt.prompt
                     this.model = res.data.prompt.model
-                    this.width = res.data.prompt.width
-                    this.height = res.data.prompt.height
+
+                    let img = new Image()
+                    img.src = res.data.prompt.picture
+                    this.width = img.width
+                    this.height = img.height
+
                     this.others = res.data.prompt.prompt_attribute
                     GetComment(this.picid)
                         .then((res) => {
@@ -251,6 +256,9 @@ export default {
                 Notification({ title: '失败', message: err.response.data.msg, type: 'error', duration: 2000 })
             })
 
+        },
+        toUploader() {
+            this.$router.push({ path: '/profile/prompts', query: { userId: this.uploaderId } })
         },
         follow() {
             if (this.hasFollowed == 1) {
@@ -310,7 +318,7 @@ export default {
                 "prompt_id": this.picid,
                 "collection_list": ls,
             }).then((res) => {
-                Notification({ title: '收藏成功', message: res.msg, type: 'success', duration: 2000 })
+                Notification({ title: '成功', message: res.msg, type: 'success', duration: 2000 })
             }).catch((err) => {
                 Notification({ title: '失败', message: err.response.data.msg, type: 'error', duration: 2000 })
             })

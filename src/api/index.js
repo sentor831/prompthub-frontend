@@ -45,7 +45,7 @@ export const register = (params) => {
 // 忘记密码发送邮件
 export const sendForgetPassEmail = (params) => {
     return axioss.request({
-        url: `/api/user/confirm_and_create`,
+        url: `/api/user/forget_password`,
         data: params,
         method: 'post'
     })
@@ -196,6 +196,14 @@ export const get_collection_list = (id) => {
     })
 }
 
+// 获取收藏夹信息
+export const get_collection_info = (collection_id) => {
+    return axioss.request({
+        url: `api/collection/get_collection_info?collection_id=${collection_id}`,
+        method: 'get'
+    })
+}
+
 // 获取收藏夹中收藏列表
 export const get_collection_record_list = (id, per_page, page_index) => {
     return axioss.request({
@@ -342,6 +350,13 @@ export const personized_prompt_list = (per_page, page_index) => {
 export const getInfos = (id) => {
     return axioss.request({
         url: `api/user/get_user_simple_dict?id=${id}`,
+        method: 'get'
+    })
+}
+
+export const getIsFollowing = (target_user_id) => {
+    return axioss.request({
+        url: `api/user/is_following?target_user_id=${target_user_id}`,
         method: 'get'
     })
 }

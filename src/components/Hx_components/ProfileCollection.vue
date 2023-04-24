@@ -6,7 +6,7 @@
         <el-container style="height: 800px; border: 1px solid #eee">
             <!-- 原rgb为(238,241,246) -->
             <el-aside width="220px" style="background-color: rgb(255, 255, 255)">
-                <div style="text-align: center;">
+                <div style="text-align: center;" v-if="isMe()">
                     <p style="width: 80%;" class="btn btn-primary" @click="createCollectionVisible = true">新建收藏</p>
                 </div>
 
@@ -54,7 +54,7 @@
 
             <el-container v-if="collectionId !== -1">
                 <el-header style="text-align: right; font-size: 15px; background-color: rgb(244, 245, 247)">
-                    <el-dropdown>
+                    <el-dropdown v-if="isMe()">
                         <i class="el-icon-setting" style="margin-right: 1vw">设置</i>
                         <el-dropdown-menu slot="dropdown">
                             <el-dropdown-item>
@@ -68,12 +68,19 @@
                 </el-header>
 
                 <el-main>
-                    <Waterfall :list="collectionRecordList" style="margin-top:20px" width=320 :breakpoints="breakpoints">
+                    <p v-if="noItems === 1">收藏夹空空如也</p>
+                    <Waterfall :list="collectionRecordList" style="margin-top:20px" :width="320" :breakpoints="breakpoints">
                         <template #item="{ item }">
-                            <div @click="picInfo(item.prompt.id)" style="cursor: pointer;"
+                            <div style="cursor: pointer;"
                                 class="bg-gray-900 rounded-lg shadow-md overflow-hidden transition-all duration-300 ease-linear hover:shadow-lg hover:shadow-gray-600 group">
                                 <div class="overflow-hidden">
-                                    <LazyImg :url="item.prompt.picture" class="pic"></LazyImg>
+                                    <i v-if="isMe()" class="now-ui-icons ui-1_simple-remove"
+                                        style="cursor: pointer; margin-top: 1vh;"
+                                        @click="deleteCollectionItem(item.id)"></i>
+                                    <div @click="picInfo(item.prompt.id)">
+                                        <LazyImg :url="item.prompt.picture" class="pic">
+                                        </LazyImg>
+                                    </div>
                                 </div>
                             </div>
                         </template>
@@ -110,7 +117,7 @@
 <script>
 import { LazyImg, Waterfall } from "vue-waterfall-plugin";
 import "vue-waterfall-plugin/dist/style.css";
-import { get_collection_list, create_collection, get_collection_record_list, delete_collection, modify_collection } from "../../api";
+import { get_collection_list, create_collection, get_collection_record_list, delete_collection, modify_collection, get_collection_info, remove_from_collection } from "../../api";
 import { Notification } from "element-ui";
 export default {
     name: "ProfileColleciton",
@@ -138,7 +145,8 @@ export default {
             totalNum: 50,
             currentPage: 1,
             pageSize: 12,
-            collectionId: -1
+            collectionId: -1,
+            noItems: 0
         };
     },
     components: {
@@ -155,8 +163,8 @@ export default {
 
     methods: {
         isMe() {
-            console.log(this.userId);
-            console.log(this.cookie.getCookie("userId"));
+            // console.log(this.userId);
+            // console.log(this.cookie.getCookie("userId"));
             return this.userId == this.cookie.getCookie("userId");
         },
         handleOpen(key, keyPath) {
@@ -166,12 +174,7 @@ export default {
             console.log(key, keyPath);
         },
         picInfo(id) {
-            let picInfo = {
-                picId: id
-            }
-            this.cookie.setCookie(picInfo, 1)
             this.$router.push({ path: '/picinfo', query: { picid: id } })
-            // this.$router.push('/picInfo')
         },
         getCollectionInfo() {
             this.private_collection_list = [];
@@ -239,7 +242,6 @@ export default {
             })
                 .then((res) => {
                     Notification({ title: '成功', message: res.data.msg, type: 'success', duration: 2000 })
-                    this.getCollectionInfo()
                 })
                 .catch((err) => {
                     console.log(err)
@@ -251,9 +253,21 @@ export default {
         },
         toEdit() {
             this.dialogVisible = true
-            // TODO 修改信息时先显示原信息
-            this.newform.name = ''
-            this.newform.visibility = true
+            get_collection_info(this.collectionId)
+                .then((res) => {
+                    this.newform.name = res.data.collection_info.name
+                    this.newform.visibility = res.data.collection_info.visibility === 0 ? true : false;
+                })
+                .catch((err) => {
+                    console.log(err);
+                    Notification({
+                        title: "失败",
+                        message: err.response.data.msg,
+                        type: "error",
+                        duration: 2000,
+                    });
+                })
+
         },
         submitEditCollection() {
             let visibility = this.newform.visibility === true ? 0 : 1;
@@ -290,6 +304,11 @@ export default {
                 console.log(res)
                 this.collectionRecordList = res.data.collection_record_list;
                 this.totalNum = res.data.collection_record_list.length;
+                if (this.totalNum === 0) {
+                    this.noItems = 1
+                } else {
+                    this.noItems = 0
+                }
             }).catch((err) => {
                 console.log(err);
                 Notification({
@@ -299,6 +318,22 @@ export default {
                     duration: 2000,
                 });
             })
+        },
+        deleteCollectionItem(id) {
+            // TODO 删除不成功
+            remove_from_collection({
+                id: id
+            })
+                .then((res) => {
+                    Notification({ title: '删除成功', message: '', type: 'success', duration: 2000 })
+                })
+                .catch((err) => {
+                    console.log(err)
+                    Notification({ title: '删除失败', message: err.response.data.msg, type: 'error', duration: 2000 })
+                })
+                .finally(() => {
+                    this.showCollection(this.collectionId)
+                });
         },
         handleCurrentChange(currentPage) {
             this.currentPage = currentPage

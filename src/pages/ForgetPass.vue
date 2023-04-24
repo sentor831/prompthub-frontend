@@ -55,7 +55,7 @@
 <script>
 import { Card, FormGroupInput, Button } from '@/components';
 import { Notification } from 'element-ui';
-import { sendForgetPassEmail, modifyPass } from '../api/index.js'
+import { sendForgetPassEmail, modifyPass, modifyForgetPass } from '../api/index.js'
 
 export default {
   name: 'forgetpass-page',
@@ -86,29 +86,30 @@ export default {
         Notification({ title: '提示', message: '请输入新确认密码', type: 'warning', duration: 2000 })
       } else if (this.password !== this.confirmpassword) {
         Notification({ title: '提示', message: '新密码与新确认密码不一致', type: 'warning', duration: 2000 })
+      } else {
+        sendForgetPassEmail({
+          email: this.email,
+        })
+          .then((res) => {
+            console.log(res)
+            Notification({ title: '邮件发送成功', message: '快去查看吧', type: 'success', duration: 2000 })
+            this.verifyDisabled = true
+            this.timer = setInterval(() => {
+              this.gap--
+              document.getElementById('sendbtn').innerHTML = this.gap.toString() + '秒'
+              if (this.gap <= 0) {
+                clearInterval(this.timer)
+                this.verifyDisabled = false
+                document.getElementById('sendbtn').innerHTML = '获取验证码'
+                this.gap = 60
+              }
+            }, 1000)
+          })
+          .catch((err) => {
+            console.log(err)
+            Notification({ title: '邮件发送失败', message: err.response.data.msg, type: 'error', duration: 2000 })
+          })
       }
-      sendForgetPassEmail({
-        email: this.email,
-      })
-        .then((res) => {
-          console.log(res)
-          Notification({ title: '邮件发送成功', message: '快去查看吧', type: 'success', duration: 2000 })
-          this.verifyDisabled = true
-          this.timer = setInterval(() => {
-            this.gap--
-            document.getElementById('sendbtn').innerHTML = this.gap.toString() + '秒'
-            if (this.gap == 0) {
-              clearInterval(this.timer)
-              this.verifyDisabled = false
-              document.getElementById('sendbtn').innerHTML = '获取验证码'
-              this.gap = 60
-            }
-          }, 1000)
-        })
-        .catch((err) => {
-          console.log(err)
-          Notification({ title: '邮件发送失败', message: err.response.data.msg, type: 'error', duration: 2000 })
-        })
     },
     handleModify() {
       modifyForgetPass({
@@ -119,6 +120,7 @@ export default {
         .then((res) => {
           console.log(res)
           this.$router.push('/login')
+          this.gap = 0
           Notification({ title: '修改密码成功', message: '快去登录吧', type: 'success', duration: 2000 })
         })
         .catch((err) => {

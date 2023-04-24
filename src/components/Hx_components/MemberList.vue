@@ -95,7 +95,7 @@ export default {
         },
         handleOpen(index, row) {
             this.$router.push({
-                path: '/profile', query: {
+                path: '/profile/prompts', query: {
                     userId: row.id
                 }
             })

@@ -14,6 +14,8 @@
                 <h3 class="title">{{ nickname }}</h3>
                 <!-- 职业介绍 -->
                 <p class="category"> Prompt Hero </p>
+                <a class="btn btn-primary" v-if="hasFollowed == 0" @click="follow()">+ 关注</a>
+                <a class="btn btn-default" v-if="hasFollowed == 1" @click="follow()">已关注</a>
                 <!-- 下面的三列内容 -->
                 <div class="content">
                     <div class="social-description">
@@ -62,8 +64,8 @@
     </div>
 </template>
 <script>
-import { getInfos, getFollowedNumber, getFollowingNumber, getProductNumber } from '../api/index'
-
+import { followOthers, getInfos, getFollowedNumber, getFollowingNumber, getProductNumber, getIsFollowing } from '../api/index'
+import { Notification } from 'element-ui';
 
 export default {
     name: 'profile',
@@ -76,6 +78,7 @@ export default {
             following: 20,
             followed: 20,
             products: 0,
+            hasFollowed: 0,
         }
     },
     mounted() {
@@ -92,17 +95,30 @@ export default {
         // TabPane
     },
     methods: {
+        isMe() {
+            return this.userId == this.cookie.getCookie("userId");
+        },
         setup() {
             this.userId = this.$route.query.userId;
             if (this.userId == undefined) {
                 this.userId = this.cookie.getCookie("userId");
             }
             getInfos(this.userId).then((res) => {
+                console.log(res)
                 this.nickname = res.data.user.nickname
                 this.avatar = res.data.user.avatar
             })
                 .catch((err) => {
                     Notification({ title: '获取通知失败', message: err.response.data.msg, type: 'error', duration: 2000 })
+                })
+            getIsFollowing(this.userId).then((res) => {
+                this.hasFollowed = res.data.is_following
+                if (this.isMe()) {
+                    this.hasFollowed = 0
+                }
+            })
+                .catch((err) => {
+                    Notification({ title: '获取关注状态失败', message: err.response.data.msg, type: 'error', duration: 2000 })
                 })
             getFollowedNumber(this.userId).then((res) => this.followed = res.data.follower_num)
                 .catch((err) => {
@@ -116,6 +132,38 @@ export default {
                 .catch((err) => {
                     Notification({ title: '获取作品数量失败', message: err.response.data.msg, type: 'error', duration: 2000 })
                 })
+        },
+        follow() {
+            if (this.isMe()) {
+                Notification({ title: '不能关注自己', message: '', type: 'warning', duration: 2000 })
+            }
+            else if (this.hasFollowed == 1) {
+                followOthers({
+                    user_id: this.userId
+                })
+                    .then((res) => {
+                        console.log(res)
+                        Notification({ title: '成功', message: res.data.msg, type: 'success', duration: 2000 })
+                        this.hasFollowed = 0
+                    })
+                    .catch((err) => {
+                        console.log(err)
+                        Notification({ title: '失败', message: err.response.data.msg, type: 'error', duration: 2000 })
+                    })
+            } else {
+                followOthers({
+                    user_id: this.userId
+                })
+                    .then((res) => {
+                        console.log(res)
+                        Notification({ title: '成功', message: res.data.msg, type: 'success', duration: 2000 })
+                        this.hasFollowed = 1
+                    })
+                    .catch((err) => {
+                        console.log(err)
+                        Notification({ title: '失败', message: err.response.data.msg, type: 'error', duration: 2000 })
+                    })
+            }
         },
         toMemberList(type) {
             this.$router.push({ path: '/profile/memberlist', query: { userId: this.userId, type: type } })

@@ -38,6 +38,7 @@
 import { Card, FormGroupInput, Button } from '@/components';
 import { Notification } from 'element-ui';
 import { modifyPass } from '../api/index.js'
+import { getRefreshToken, getToken, setRefreshToken, setToken } from '@/utils/token.js'
 
 export default {
   name: 'forgetpass-page',
@@ -65,14 +66,12 @@ export default {
         })
           .then((res) => {
             console.log(res)
-            setToken(res.data.access_token)
-            setRefreshToken(res.data.refresh_token)
             this.$router.push('/')
-            Notification({ title: '修改密码成功', message: '', type: 'success', duration: 2000 })
+            Notification({ title: '成功', message: res.data.msg, type: 'success', duration: 2000 })
           })
           .catch((err) => {
             console.log(err)
-            Notification({ title: '修改密码失败', message: err.response.data.msg, type: 'error', duration: 2000 })
+            Notification({ title: '失败', message: err.response.data.msg, type: 'error', duration: 2000 })
           })
       }
     }
