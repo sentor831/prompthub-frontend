@@ -83,7 +83,7 @@
                     </div>
                     <div class="row">
                         <p style="margin-left: 3vh">
-                            {{ others }}
+                        <pre>{{ others }}</pre>
                         </p>
                     </div>
                 </div>
@@ -223,7 +223,7 @@ export default {
                     this.width = img.width
                     this.height = img.height
 
-                    this.others = res.data.prompt.prompt_attribute
+                    this.others = eval('[' + res.data.prompt.prompt_attribute + ']')[0]
                     GetComment(this.picid)
                         .then((res) => {
                             console.log(res)
