@@ -96,7 +96,7 @@ export default new Router({
       name: 'profile',
       components: { default: Profile, header: MainNavbar, footer: MainFooter },
       props: {
-        header: { colorOnScroll: 400 },
+        header: { colorOnScroll: 300 },
         footer: { backgroundColor: 'black' }
       },
       children: [

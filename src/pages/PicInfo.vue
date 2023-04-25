@@ -8,11 +8,13 @@
                         <p>{{ dispTime(uploadtime) }}</p>
                     </div>
                     <div class="col" style="text-align: right;">
-                        <a class="btn btn-primary" @click="dialogVisible = true">+ 收藏</a>
+                        <a class="btn btn-primary" @click="toCollect()">+ 收藏</a>
                     </div>
                 </div>
 
                 <el-dialog title="添加到收藏夹" :visible.sync="dialogVisible" width="30%" center>
+                    <p style="width: 30%; margin-left: auto; margin-right: auto;" class="btn btn-primary"
+                        @click="createCollectionVisible = true">新建收藏</p>
                     <div class="dialogdiv" style="height: 30vh; overflow-y: auto; overflow-x: hidden;">
                         <el-checkbox-group v-model="checkList" style="margin-left: 5%;">
                             <el-checkbox class="row" v-for="(item, index) in collectionRelation" :key="index"
@@ -27,8 +29,26 @@
                     </span>
                 </el-dialog>
 
+                <el-dialog title="新建收藏夹" :visible.sync="createCollectionVisible" width="33%" center>
+                    <div class="dialogdiv" style="height: auto; overflow-y: auto; overflow-x: hidden">
+                        <el-form ref="form" :model="form" label-width="120px" label-position="left">
+                            <el-form-item label="收藏夹名称">
+                                <el-input v-model="form.name"></el-input>
+                            </el-form-item>
+                            <el-form-item label="是否公开">
+                                <el-switch v-model="form.visibility"></el-switch>
+                            </el-form-item>
+                        </el-form>
+                    </div>
+
+                    <span slot="footer" class="dialog-footer">
+                        <el-button @click="createCollectionVisible = false">取 消</el-button>
+                        <el-button type="primary" @click="submitCreateCollection()">确 定</el-button>
+                    </span>
+                </el-dialog>
+
             </div>
-            <div class="col" style="margin-left: 5vh;">
+            <div class="col-5">
                 <div class="row">
                     <div class="col col-md-auto">
                         <img :src="uploader_avatar" style="width: 6em; height: 6em; border-radius: 50%; cursor: pointer;"
@@ -55,34 +75,34 @@
                 </div>
                 <div>
                     <div class="row">
-                        <h5 style="margin-left: 2vh">模 型</h5>
+                        <h5 style="margin-left: 1vw">模 型</h5>
                     </div>
                     <div class="row">
-                        <p style="margin-left: 3vh">
+                        <p style="margin-left: 2vw">
                             {{ model }}
                         </p>
                     </div>
                     <div class="row">
-                        <h5 style="margin-left: 2vh">宽 度</h5>
+                        <h5 style="margin-left: 1vw">宽 度</h5>
                     </div>
                     <div class="row">
-                        <p style="margin-left: 3vh;">
+                        <p style="margin-left: 2vw;">
                             {{ width }}
                         </p>
                     </div>
                     <div class="row">
-                        <h5 style="margin-left: 2vh">高 度</h5>
+                        <h5 style="margin-left: 1vw">高 度</h5>
                     </div>
                     <div class="row">
-                        <p style="margin-left: 3vh;">
+                        <p style="margin-left: 2vw;">
                             {{ height }}
                         </p>
                     </div>
                     <div class="row">
-                        <h5 style="margin-left: 2vh">其他信息</h5>
+                        <h5 style="margin-left: 1vw">其他信息</h5>
                     </div>
-                    <div class="row">
-                        <p style="margin-left: 3vh">
+                    <div class="row" style="overflow-x: scroll;">
+                        <p style="margin-left: 2vw;">
                         <pre>{{ others }}</pre>
                         </p>
                     </div>
@@ -160,7 +180,7 @@
 import Clipboard from 'clipboard'
 import { Notification } from 'element-ui';
 import { syntaxHighlight, formatTime } from '../api/utils'
-import { followOthers, NewComment, DelComment, GetComment, get_prompt, getAllCollectionList, ManageCollectionRecord } from '../api';
+import { followOthers, NewComment, DelComment, GetComment, get_prompt, getAllCollectionList, ManageCollectionRecord, create_collection } from '../api';
 export default {
     name: 'picinfo',
     bodyClass: 'picinfo-page',
@@ -184,14 +204,23 @@ export default {
             commentcontent: '',
             show: -1,
             pic: '',
-            collectionRelation: []
+            collectionRelation: [],
+            form: {
+                name: "",
+                visibility: true,
+            },
+            createCollectionVisible: false,
+            login: null,
         }
     },
     mounted() {
         // TODO 从后端获取 个人收藏夹、是否已关注；当前作品的作者、发布时间、详细信息、评论（自己的可删除）
         this.picid = this.$route.query.picid;
         this.getPicInfo()
-        this.getCollections()
+        this.login = this.cookie.getCookie("token")
+        if (this.login !== null) {
+            this.getCollections()
+        }
     },
     methods: {
         jsonBeautifulPrint(jsonString) {
@@ -214,7 +243,6 @@ export default {
                     this.uploader_avatar = res.data.prompt.uploader.avatar
                     this.uploader = res.data.prompt.uploader.nickname
                     this.uploadtime = res.data.prompt.created_at
-                    this.hasFollowed = res.data.is_following
                     this.prompts = res.data.prompt.prompt
                     this.model = res.data.prompt.model
 
@@ -224,6 +252,13 @@ export default {
                     this.height = img.height
 
                     this.others = eval('[' + res.data.prompt.prompt_attribute + ']')[0]
+
+                    if (this.login !== null) {
+                        this.hasFollowed = res.data.is_following
+                    } else {
+                        this.hasFollowed = 0
+                    }
+
                     GetComment(this.picid)
                         .then((res) => {
                             console.log(res)
@@ -261,33 +296,38 @@ export default {
             this.$router.push({ path: '/profile/prompts', query: { userId: this.uploaderId } })
         },
         follow() {
-            if (this.hasFollowed == 1) {
-                followOthers({
-                    user_id: this.uploaderId
-                })
-                    .then((res) => {
-                        console.log(res)
-                        Notification({ title: '成功', message: res.data.msg, type: 'success', duration: 2000 })
-                        this.hasFollowed = 0
+            if (this.login !== null) {
+                if (this.hasFollowed == 1) {
+                    followOthers({
+                        user_id: this.uploaderId
                     })
-                    .catch((err) => {
-                        console.log(err)
-                        Notification({ title: '失败', message: err.response.data.msg, type: 'error', duration: 2000 })
+                        .then((res) => {
+                            console.log(res)
+                            Notification({ title: '成功', message: res.data.msg, type: 'success', duration: 2000 })
+                            this.hasFollowed = 0
+                        })
+                        .catch((err) => {
+                            console.log(err)
+                            Notification({ title: '失败', message: err.response.data.msg, type: 'error', duration: 2000 })
+                        })
+                } else {
+                    followOthers({
+                        user_id: this.uploaderId
                     })
+                        .then((res) => {
+                            console.log(res)
+                            Notification({ title: '成功', message: res.data.msg, type: 'success', duration: 2000 })
+                            this.hasFollowed = 1
+                        })
+                        .catch((err) => {
+                            console.log(err)
+                            Notification({ title: '失败', message: err.response.data.msg, type: 'error', duration: 2000 })
+                        })
+                }
             } else {
-                followOthers({
-                    user_id: this.uploaderId
-                })
-                    .then((res) => {
-                        console.log(res)
-                        Notification({ title: '成功', message: res.data.msg, type: 'success', duration: 2000 })
-                        this.hasFollowed = 1
-                    })
-                    .catch((err) => {
-                        console.log(err)
-                        Notification({ title: '失败', message: err.response.data.msg, type: 'error', duration: 2000 })
-                    })
+                Notification({ title: '请先登录', message: '', type: 'warning', duration: 2000 })
             }
+
         },
         handleCopy() {
             var clipboard = new Clipboard('#copybtn');
@@ -302,6 +342,43 @@ export default {
         },
         showReply(index) {
             this.show = index
+        },
+        toCollect() {
+            if (this.login !== null) {
+                this.dialogVisible = true
+            } else {
+                Notification({ title: '请先登录', message: '', type: 'warning', duration: 2000 })
+            }
+        },
+        submitCreateCollection() {
+            let name = this.form.name;
+            console.log(this.form.visibility);
+            let visibility = this.form.visibility === true ? 0 : 1;
+            create_collection({
+                name,
+                visibility,
+            })
+                .then((res) => {
+                    Notification({
+                        title: "成功",
+                        message: res.data.msg,
+                        type: "success",
+                        duration: 2000,
+                    });
+                })
+                .catch((err) => {
+                    console.log(err);
+                    Notification({
+                        title: "失败",
+                        message: err.response.data.msg,
+                        type: "error",
+                        duration: 2000,
+                    });
+                })
+                .finally(() => {
+                    this.createCollectionVisible = false;
+                    this.getCollections()
+                });
         },
         chooseBag() {
             this.dialogVisible = false
@@ -324,31 +401,40 @@ export default {
             })
         },
         publishComment() {
-            NewComment({
-                prompt_id: this.picid,
-                content: this.commentcontent,
-                // parent_comment_id: ''
-            })
-                .then((res) => {
-                    console.log(res)
-                    Notification({ title: '成功', message: res.data.msg, type: 'success', duration: 2000 })
-                    GetComment(this.picid)
+            if (this.login !== null) {
+                if (this.commentcontent === '') {
+                    Notification({ title: '请输入内容', message: '', type: 'warning', duration: 2000 })
+                } else {
+                    NewComment({
+                        prompt_id: this.picid,
+                        content: this.commentcontent,
+                        // parent_comment_id: ''
+                    })
                         .then((res) => {
                             console.log(res)
-                            // Notification({ title: '成功', message: res.data.msg, type: 'success', duration: 2000 })
-                            this.commentList = res.data.comment_list
-                            this.commentcontent = ''
+                            Notification({ title: '成功', message: res.data.msg, type: 'success', duration: 2000 })
+                            GetComment(this.picid)
+                                .then((res) => {
+                                    console.log(res)
+                                    // Notification({ title: '成功', message: res.data.msg, type: 'success', duration: 2000 })
+                                    this.commentList = res.data.comment_list
+                                    this.commentcontent = ''
+                                })
+                                .catch((err) => {
+                                    console.log(err)
+                                    Notification({ title: '失败', message: err.response.data.msg, type: 'error', duration: 2000 })
+                                })
+
                         })
                         .catch((err) => {
                             console.log(err)
                             Notification({ title: '失败', message: err.response.data.msg, type: 'error', duration: 2000 })
                         })
+                }
+            } else {
+                Notification({ title: '请先登录', message: '', type: 'warning', duration: 2000 })
+            }
 
-                })
-                .catch((err) => {
-                    console.log(err)
-                    Notification({ title: '失败', message: err.response.data.msg, type: 'error', duration: 2000 })
-                })
         },
         deleteComment(id) {
             DelComment({
@@ -375,31 +461,40 @@ export default {
 
         },
         publishReply(parent_id) {
-            NewComment({
-                prompt_id: this.picid,
-                content: this.commentcontent,
-                parent_comment_id: parent_id
-            })
-                .then((res) => {
-                    console.log(res)
-                    Notification({ title: '成功', message: res.data.msg, type: 'success', duration: 2000 })
-                    GetComment(this.picid)
+            if (this.login !== null) {
+                if (this.commentcontent === '') {
+                    Notification({ title: '请输入内容', message: '', type: 'warning', duration: 2000 })
+                } else {
+                    NewComment({
+                        prompt_id: this.picid,
+                        content: this.commentcontent,
+                        parent_comment_id: parent_id
+                    })
                         .then((res) => {
                             console.log(res)
-                            // Notification({ title: '成功', message: res.data.msg, type: 'success', duration: 2000 })
-                            this.commentList = res.data.comment_list
-                            this.commentcontent = ''
+                            Notification({ title: '成功', message: res.data.msg, type: 'success', duration: 2000 })
+                            GetComment(this.picid)
+                                .then((res) => {
+                                    console.log(res)
+                                    // Notification({ title: '成功', message: res.data.msg, type: 'success', duration: 2000 })
+                                    this.commentList = res.data.comment_list
+                                    this.commentcontent = ''
+                                })
+                                .catch((err) => {
+                                    console.log(err)
+                                    Notification({ title: '失败', message: err.response.data.msg, type: 'error', duration: 2000 })
+                                })
                         })
                         .catch((err) => {
                             console.log(err)
                             Notification({ title: '失败', message: err.response.data.msg, type: 'error', duration: 2000 })
                         })
-                })
-                .catch((err) => {
-                    console.log(err)
-                    Notification({ title: '失败', message: err.response.data.msg, type: 'error', duration: 2000 })
-                })
-                .finally(() => this.show = -1)
+                        .finally(() => this.show = -1)
+                }
+            } else {
+                Notification({ title: '请先登录', message: '', type: 'warning', duration: 2000 })
+            }
+
 
         },
 

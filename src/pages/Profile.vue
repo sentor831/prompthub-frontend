@@ -14,8 +14,8 @@
                 <h3 class="title">{{ nickname }}</h3>
                 <!-- 职业介绍 -->
                 <p class="category"> Prompt Hero </p>
-                <a class="btn btn-primary" v-if="hasFollowed == 0" @click="follow()">+ 关注</a>
-                <a class="btn btn-default" v-if="hasFollowed == 1" @click="follow()">已关注</a>
+                <a class="btn btn-primary" v-if="hasFollowed === 0" @click="follow()">+ 关注</a>
+                <a class="btn btn-default" v-if="hasFollowed === 1" @click="follow()">已关注</a>
                 <!-- 下面的三列内容 -->
                 <div class="content">
                     <div class="social-description">
@@ -47,7 +47,8 @@
             class="btn btn-primary btn-round btn-lg">历史</router-link> -->
                     <p class="btn btn-primary btn-round btn-lg" @click="toPieceList" style="cursor:pointer">作品</p>
                     <p class="btn btn-primary btn-round btn-lg" @click="toCollection" style="cursor:pointer">收藏</p>
-                    <p class="btn btn-primary btn-round btn-lg" @click="toHistory" style="cursor:pointer">历史</p>
+                    <p class="btn btn-primary btn-round btn-lg" v-if="isMe()" @click="toHistory" style="cursor:pointer">历史
+                    </p>
                 </div>
             </div>
             <router-view>使用router-view占位</router-view>
@@ -79,6 +80,7 @@ export default {
             followed: 20,
             products: 0,
             hasFollowed: 0,
+            login: null
         }
     },
     mounted() {
@@ -103,23 +105,26 @@ export default {
             if (this.userId == undefined) {
                 this.userId = this.cookie.getCookie("userId");
             }
+            this.login = this.cookie.getCookie("token")
             getInfos(this.userId).then((res) => {
                 console.log(res)
                 this.nickname = res.data.user.nickname
                 this.avatar = res.data.user.avatar
             })
                 .catch((err) => {
-                    Notification({ title: '获取通知失败', message: err.response.data.msg, type: 'error', duration: 2000 })
+                    Notification({ title: '获取信息失败', message: err.response.data.msg, type: 'error', duration: 2000 })
                 })
-            getIsFollowing(this.userId).then((res) => {
-                this.hasFollowed = res.data.is_following
-                if (this.isMe()) {
-                    this.hasFollowed = 0
-                }
-            })
-                .catch((err) => {
-                    Notification({ title: '获取关注状态失败', message: err.response.data.msg, type: 'error', duration: 2000 })
+            if (this.login !== null) {
+                getIsFollowing(this.userId).then((res) => {
+                    this.hasFollowed = res.data.is_following
+                    if (this.isMe()) {
+                        this.hasFollowed = 0
+                    }
                 })
+                    .catch((err) => {
+                        Notification({ title: '获取关注状态失败', message: err.response.data.msg, type: 'error', duration: 2000 })
+                    })
+            }
             getFollowedNumber(this.userId).then((res) => this.followed = res.data.follower_num)
                 .catch((err) => {
                     Notification({ title: '获取被关注数量失败', message: err.response.data.msg, type: 'error', duration: 2000 })
@@ -134,35 +139,37 @@ export default {
                 })
         },
         follow() {
-            if (this.isMe()) {
-                Notification({ title: '不能关注自己', message: '', type: 'warning', duration: 2000 })
-            }
-            else if (this.hasFollowed == 1) {
-                followOthers({
-                    user_id: this.userId
-                })
-                    .then((res) => {
-                        console.log(res)
-                        Notification({ title: '成功', message: res.data.msg, type: 'success', duration: 2000 })
-                        this.hasFollowed = 0
+            if (this.login !== null) {
+                console.log(this.hasFollowed)
+                if (this.hasFollowed == 1) {
+                    followOthers({
+                        user_id: eval(this.userId)
                     })
-                    .catch((err) => {
-                        console.log(err)
-                        Notification({ title: '失败', message: err.response.data.msg, type: 'error', duration: 2000 })
+                        .then((res) => {
+                            console.log(res)
+                            Notification({ title: '成功', message: res.data.msg, type: 'success', duration: 2000 })
+                            this.hasFollowed = 0
+                        })
+                        .catch((err) => {
+                            console.log(err)
+                            Notification({ title: '失败', message: err.response.data.msg, type: 'error', duration: 2000 })
+                        })
+                } else {
+                    followOthers({
+                        user_id: eval(this.userId)
                     })
+                        .then((res) => {
+                            console.log(res)
+                            Notification({ title: '成功', message: res.data.msg, type: 'success', duration: 2000 })
+                            this.hasFollowed = 1
+                        })
+                        .catch((err) => {
+                            console.log(err)
+                            Notification({ title: '失败', message: err.response.data.msg, type: 'error', duration: 2000 })
+                        })
+                }
             } else {
-                followOthers({
-                    user_id: this.userId
-                })
-                    .then((res) => {
-                        console.log(res)
-                        Notification({ title: '成功', message: res.data.msg, type: 'success', duration: 2000 })
-                        this.hasFollowed = 1
-                    })
-                    .catch((err) => {
-                        console.log(err)
-                        Notification({ title: '失败', message: err.response.data.msg, type: 'error', duration: 2000 })
-                    })
+                Notification({ title: '请先登录', message: '', type: 'warning', duration: 2000 })
             }
         },
         toMemberList(type) {

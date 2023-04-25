@@ -92,7 +92,7 @@ export default {
         return {
             keyword: this.cookie.getCookie("keyword"),
             login: null,
-            noticenum: 1,
+            noticenum: 0,
             userId: -1,
             avatar: ''
         }
@@ -146,6 +146,7 @@ export default {
             console.log('logout')
             this.cookie.clearCookie('token')
             this.cookie.clearCookie('refresh-token')
+            this.cookie.clearCookie('userId')
             this.login = null
         },
         toModifyInfo() {
