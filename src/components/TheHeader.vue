@@ -38,7 +38,7 @@
                 </div>
                 <el-popover ref="popover1" popper-class="popover" placement="bottom" trigger="hover">
                     <div class="popover-body">
-                        创作中心
+                        上传作品
                     </div>
                 </el-popover>
             </li>
@@ -51,7 +51,7 @@
                 </div>
                 <el-popover ref="popover2" popper-class="popover" placement="bottom" trigger="hover">
                     <div class="popover-body">
-                        通知
+                        查看通知
                     </div>
                 </el-popover>
             </li>
