@@ -174,10 +174,6 @@ export default {
         },
         goSearch() {
             if (this.keyword !== '') {
-                let searchInfo = {
-                    keyword: this.keyword,
-                }
-                this.cookie.setCookie(searchInfo, 1)
                 this.$router.push({ path: '/search', query: { keyword: this.keyword } })
             } else {
                 Notification({ title: '提示', message: '请输入搜索内容', type: 'warning', duration: 2000 })

@@ -101,7 +101,6 @@ export default {
   },
   data() {
     return {
-      keyword: this.cookie.getCookie("keyword"),
       login: null,
       noticenum: 0,
       userId: -1,
@@ -109,21 +108,23 @@ export default {
     }
   },
   watch: {
-    list() {
-      this.timer()
+    $route() {
+      this.setUp()
     }
   },
   mounted() {
-    this.login = this.cookie.getCookie("token")
-    if (this.login !== null) {
-      this.userId = this.cookie.getCookie("userId")
-      this.getNoticeNum()
-      this.getAvatar()
-    }
+    this.setUp()
   },
   methods: {
+    setUp() {
+      this.login = this.cookie.getCookie("token")
+      if (this.login !== null) {
+        this.userId = this.cookie.getCookie("userId")
+        this.getNoticeNum()
+        this.getAvatar()
+      }
+    },
     getNoticeNum() {
-      // TODO 获取通知数量
       get_unread_notification_num().then((res) => {
         console.log(res);
         this.noticenum = res.data.unread_notification_num;
@@ -166,15 +167,8 @@ export default {
       this.noticenum = 0
     },
     toMyself() {
-      // TODO
       this.$router.push({ path: '/profile/prompts', query: { userId: this.userId } })
     },
-    timer() {
-      return setTimeout(() => {
-        this.getNoticeNum()
-        this.getAvatar()
-      }, 5000)
-    }
   },
   destroyed() {
     clearTimeout(this.timer)

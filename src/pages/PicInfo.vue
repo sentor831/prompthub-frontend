@@ -162,7 +162,7 @@
                         <div class="row" v-show="index === show">
                             <div class="input-group mb-3" style="margin-right:2vh">
                                 <textarea class="form-control" aria-label="with texarea" placeholder="回复..."
-                                    v-model="commentcontent"></textarea>
+                                    v-model="replycontent"></textarea>
                                 <div class="input-group-append">
                                     <button class="btn btn-primary" type="button" id="button-addon2" style="margin: 0;"
                                         @click="publishReply(comment.id)">发布</button>
@@ -202,6 +202,7 @@ export default {
             others: '',
             commentList: [],
             commentcontent: '',
+            replycontent: '',
             show: -1,
             pic: '',
             collectionRelation: [],
@@ -462,12 +463,12 @@ export default {
         },
         publishReply(parent_id) {
             if (this.login !== null) {
-                if (this.commentcontent === '') {
+                if (this.replycontent === '') {
                     Notification({ title: '请输入内容', message: '', type: 'warning', duration: 2000 })
                 } else {
                     NewComment({
                         prompt_id: this.picid,
-                        content: this.commentcontent,
+                        content: this.replycontent,
                         parent_comment_id: parent_id
                     })
                         .then((res) => {
@@ -478,7 +479,7 @@ export default {
                                     console.log(res)
                                     // Notification({ title: '成功', message: res.data.msg, type: 'success', duration: 2000 })
                                     this.commentList = res.data.comment_list
-                                    this.commentcontent = ''
+                                    this.replycontent = ''
                                 })
                                 .catch((err) => {
                                     console.log(err)

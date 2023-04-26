@@ -90,7 +90,7 @@ export default {
     },
     data() {
         return {
-            keyword: this.cookie.getCookie("keyword"),
+            keyword: '',
             login: null,
             noticenum: 0,
             userId: -1,
@@ -98,21 +98,29 @@ export default {
         }
     },
     watch: {
-        list() {
-            this.timer()
+        // 监听路由发生改变
+        $route() {
+            this.setUp()
         }
     },
     mounted() {
-        this.login = this.cookie.getCookie("token")
-        if (this.login !== null) {
-            this.userId = this.cookie.getCookie("userId")
-            this.getNoticeNum()
-            this.getAvatar()
-        }
+        this.setUp()
     },
     methods: {
+        setUp() {
+            this.login = this.cookie.getCookie("token")
+            if (this.login !== null) {
+                this.userId = this.cookie.getCookie("userId")
+                this.getNoticeNum()
+                this.getAvatar()
+            }
+            if (this.$route.query.keyword !== undefined) {
+                this.keyword = this.$route.query.keyword
+            } else {
+                this.keyword = ''
+            }
+        },
         getNoticeNum() {
-            // TODO 获取通知数量
             get_unread_notification_num().then((res) => {
                 console.log(res);
                 this.noticenum = res.data.unread_notification_num;
@@ -133,10 +141,6 @@ export default {
         },
         goSearch() {
             if (this.keyword !== '') {
-                let searchInfo = {
-                    keyword: this.keyword,
-                }
-                this.cookie.setCookie(searchInfo, 1)
                 this.$router.push({ path: '/search', query: { keyword: this.keyword } })
             } else {
                 Notification({ title: '提示', message: '请输入搜索内容', type: 'warning', duration: 2000 })
@@ -166,15 +170,8 @@ export default {
             this.noticenum = 0
         },
         toMyself() {
-            // TODO
             this.$router.push({ path: '/profile/prompts', query: { userId: this.userId } })
         },
-        timer() {
-            return setTimeout(() => {
-                this.getNoticeNum()
-                this.getAvatar()
-            }, 5000)
-        }
     },
     destroyed() {
         clearTimeout(this.timer)
