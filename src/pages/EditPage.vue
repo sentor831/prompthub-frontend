@@ -95,8 +95,8 @@ export default {
             picture: '',
             form: {
                 prompt: '',
-                width: '',
-                height: '',
+                width: '0',
+                height: '0',
                 modelName: '选择模型',
                 model: '',
                 attributes: [],
