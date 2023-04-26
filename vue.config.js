@@ -4,7 +4,7 @@ module.exports = {
     sourceMap: process.env.NODE_ENV !== 'production'
   },
   devServer: {
-    host: 'localhost',
+    host: '0.0.0.0',
     port: 8080,
     proxy: {
       '/api': {
@@ -15,7 +15,7 @@ module.exports = {
         // }
       },
       '/img': {
-        target: 'http://rsj4gl54w.hb-bkt.clouddn.com/',
+        target: 'http://rtjsbslgo.hb-bkt.clouddn.com/',
         changeOrigin: true,
         pathRewrite: {
           '^/img': ''
