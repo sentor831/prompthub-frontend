@@ -152,6 +152,7 @@ export default {
             this.cookie.clearCookie('refresh-token')
             this.cookie.clearCookie('userId')
             this.login = null
+            this.$router.push('/')
         },
         toModifyInfo() {
             this.$router.push({ path: '/modinfo', query: { userId: this.userId } })

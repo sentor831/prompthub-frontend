@@ -116,7 +116,8 @@ export default {
                 })
             if (this.login !== null) {
                 getIsFollowing(this.userId).then((res) => {
-                    this.hasFollowed = res.data.is_following
+                    console.log(res)
+                    this.hasFollowed = res.data.is_following ? 1 : 0
                     if (this.isMe()) {
                         this.hasFollowed = 0
                     }
