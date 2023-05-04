@@ -7,7 +7,7 @@
                     <div class="col-7">
                         <CheckMyWorks v-for="(work, index) in work_list" :key="index" :picture="work.prompt.picture"
                             :prompt="work.prompt.prompt" :upload-time="work.created_at" :picid="work.prompt.id"
-                            :status="work.status">
+                            :status="work.status" @flush="getWorkList(-1)">
                         </CheckMyWorks>
                         <div class="block" style="text-align: center;">
                             <el-pagination background layout="prev, pager, next" :total="totalNum"
@@ -23,7 +23,7 @@
                     <div class="col-7">
                         <CheckMyWorks v-for="(work, index) in work_list" :key="index" :picture="work.prompt.picture"
                             :prompt="work.prompt.prompt" :upload-time="work.created_at" :picid="work.prompt.id"
-                            :status="work.status">
+                            :status="work.status" @flush="getWorkList(0)">
                         </CheckMyWorks>
                         <div class="block" style="text-align: center;">
                             <el-pagination background layout="prev, pager, next" :total="totalNum"
@@ -39,7 +39,7 @@
                     <div class="col-7">
                         <CheckMyWorks v-for="(work, index) in work_list" :key="index" :picture="work.prompt.picture"
                             :prompt="work.prompt.prompt" :upload-time="work.created_at" :picid="work.prompt.id"
-                            :status="work.status">
+                            :status="work.status" @flush="getWorkList(1)">
                         </CheckMyWorks>
                         <div class="block" style="text-align: center;">
                             <el-pagination background layout="prev, pager, next" :total="totalNum"
@@ -55,7 +55,7 @@
                     <div class="col-7">
                         <CheckMyWorks v-for="(work, index) in work_list" :key="index" :picture="work.prompt.picture"
                             :prompt="work.prompt.prompt" :upload-time="work.created_at" :picid="work.prompt.id"
-                            :status="work.status">
+                            :status="work.status" @flush="getWorkList(2)">
                         </CheckMyWorks>
                         <div class="block" style="text-align: center;">
                             <el-pagination background layout="prev, pager, next" :total="totalNum"
@@ -93,13 +93,9 @@ export default {
     mounted() {
         this.getWorkList(-1)
     },
-    provide() {
-        return {
-            pageFlush: this.getWorkList(this.status)
-        }
-    },
     methods: {
         getWorkList(status) {
+            console.log('get')
             if (status !== this.status) {
                 this.currentPage = 1
             }
@@ -108,6 +104,7 @@ export default {
                 .then((res) => {
                     console.log(res)
                     this.work_list = res.data.audit_record_list
+                    this.totalNum = this.work_list.length
                 })
                 .catch((err) => {
                     Notification({ title: '获取作品列表失败', message: err.response.data.msg, type: 'error', duration: 2000 })

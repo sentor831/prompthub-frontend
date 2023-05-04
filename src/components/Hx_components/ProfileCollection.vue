@@ -214,6 +214,8 @@ export default {
                         type: "success",
                         duration: 2000,
                     });
+                    this.form.name = ""
+                    this.visibility = true
                 })
                 .catch((err) => {
                     console.log(err);
@@ -249,6 +251,7 @@ export default {
                 })
                 .finally(() => {
                     this.getCollectionInfo()
+                    this.showCollection(-1)
                 });
         },
         toEdit() {
@@ -299,25 +302,30 @@ export default {
                 });
         },
         showCollection(id) {
-            this.collectionId = id
-            get_collection_record_list(id, this.pageSize, this.currentPage).then((res) => {
-                console.log(res)
-                this.collectionRecordList = res.data.collection_record_list;
-                this.totalNum = res.data.collection_record_list.length;
-                if (this.totalNum === 0) {
-                    this.noItems = 1
-                } else {
-                    this.noItems = 0
-                }
-            }).catch((err) => {
-                console.log(err);
-                Notification({
-                    title: "失败",
-                    message: err.response.data.msg,
-                    type: "error",
-                    duration: 2000,
-                });
-            })
+            if (id === -1) {
+                this.collectionRecordList = []
+                this.totalNum = 0
+            } else {
+                this.collectionId = id
+                get_collection_record_list(id, this.pageSize, this.currentPage).then((res) => {
+                    console.log(res)
+                    this.collectionRecordList = res.data.collection_record_list;
+                    this.totalNum = res.data.collection_record_list.length;
+                    if (this.totalNum === 0) {
+                        this.noItems = 1
+                    } else {
+                        this.noItems = 0
+                    }
+                }).catch((err) => {
+                    console.log(err);
+                    Notification({
+                        title: "失败",
+                        message: err.response.data.msg,
+                        type: "error",
+                        duration: 2000,
+                    });
+                })
+            }
         },
         deleteCollectionItem(id) {
             // TODO 删除不成功

@@ -61,7 +61,6 @@ export default {
   mounted() {
     console.log(this.status)
   },
-  inject: ['pageFlush'],
   methods: {
     dispTime(t, detailed) {
       return formatTime(t, detailed)
@@ -76,11 +75,13 @@ export default {
         .then((res) => {
           console.log(res)
           Notification({ title: '删除成功', message: '', type: 'success', duration: 2000 })
-          this.pageFlush()
         })
         .catch((err) => {
           console.log(err)
           Notification({ title: '删除失败', message: err.response.data.msg, type: 'error', duration: 2000 })
+        })
+        .finally(() => {
+          this.$emit('flush')
         })
     }
   }

@@ -29,26 +29,19 @@
                         <img width="100%" :src="dialogUrl" alt="">
                     </el-dialog>
                 </div>
-                <el-form style="margin-top: 3vh">
-                    <el-form-item label="Prompt">
-                        <el-input type="textarea" :autosize="{ minRows: 5 }" placeholder="请输入Prompt"
-                            v-model="form.prompt"></el-input>
-                    </el-form-item>
-                </el-form>
 
-                <el-form :model="form" ref="form" :inline="true">
-                    <!-- <el-form-item label="宽度" :rules="{ required: true, message: '不能为空', trigger: 'blur' }" prop="width">
-                        <el-input v-model="form.width" placeholder="宽度"></el-input>
+                <el-form :model="form" ref="form" :inline="true" style="margin-top: 3vh">
+                    <el-form-item label="Prompt" prop="prompt"
+                        :rules="{ required: true, message: '不能为空', trigger: 'blur' }">
+                        <el-input type="textarea" :autosize="{ minRows: 5 }" placeholder="请输入Prompt" v-model="form.prompt"
+                            style="width:40vw"></el-input>
                     </el-form-item>
-                    <el-form-item label="高度" :rules="{ required: true, message: '不能为空', trigger: 'blur' }" prop="height">
-                        <el-input v-model="form.height" placeholder="高度"></el-input>
-                    </el-form-item> -->
                     <el-form-item label="模型">
                         <el-select v-model="form.modelName" placeholder="请选择模型">
+                            <el-option label="其他模型" value=""></el-option>
                             <el-option label="DALL-E" value="DALL-E"></el-option>
                             <el-option label="Midjourney" value="Midjourney"></el-option>
                             <el-option label="Stable Diffusion" value="Stable Diffusion"></el-option>
-                            <el-option label="其他模型" value=""></el-option>
                         </el-select>
                     </el-form-item>
                     <el-form-item v-if="form.modelName === ''" prop="model"
@@ -93,11 +86,12 @@ export default {
     data() {
         return {
             picture: '',
+            hasPic: 0,
             form: {
                 prompt: '',
                 width: '0',
                 height: '0',
-                modelName: '选择模型',
+                modelName: '',
                 model: '',
                 attributes: [],
             },
@@ -114,6 +108,8 @@ export default {
     mounted() {
         if (this.$route.query.picid) {
             this.first = false
+            this.hasPic = 1
+            console.log('not first')
             this.picid = this.$route.query.picid
             getEditingPrompt(this.picid)
                 .then((res) => {
@@ -160,6 +156,7 @@ export default {
         del: function () {
             this.imgUrl = '';
             this.dialogUrl = '';
+            this.hasPic = 0
         },
 
         addAttribute() {
@@ -176,64 +173,68 @@ export default {
             }
         },
         submitForm(formName) {
-            this.$refs[formName].validate((valid) => {
-                if (valid) {
-                    //使用for循环编辑数组，向jsonObject中赋值
-                    for (let itemindex = 0; itemindex < this.form.attributes.length; itemindex++) {
-                        //$set()方法第一个参数是对象，第二个参数是key值，第三个参数是value值
-                        // TODO
-                        this.$set(this.attrJson, this.form.attributes[itemindex].name, eval(this.form.attributes[itemindex].value));
-                    }
-                    console.log(this.attrJson)
-                    console.log(JSON.stringify(this.attrJson))
-                    let model = ''
-                    if (this.form.modelName !== '') {
-                        model = this.form.modelName
-                    } else {
-                        model = this.form.model
-                    }
-                    if (this.first == false) {
-                        edit_prompt({
-                            "id": this.picid,
-                            "picture": this.key,
-                            "prompt": this.form.prompt,
-                            "model": model,
-                            "width": this.form.width,
-                            "height": this.form.height,
-                            prompt_attribute: this.attrJson
-                        }).then((res => {
-                            let id = res.data.id;
-                            console.log(res)
-                            Notification({ title: '修改成功', message: '请等待审核', type: 'success', duration: 2000 })
-                            this.$router.push('/check')
-                        })).catch((err) => {
-                            console.log(err)
-                            Notification({ title: '失败', message: err.response.data.msg, type: 'error', duration: 2000 })
-                        })
-                    } else {
-                        create_prompt({
-                            "picture": this.key,
-                            "prompt": this.form.prompt,
-                            "model": model,
-                            "width": this.form.width,
-                            "height": this.form.height,
-                            prompt_attribute: this.attrJson
-                        }).then((res => {
-                            let id = res.data.id;
-                            console.log(res)
-                            Notification({ title: '上传成功', message: '请等待审核', type: 'success', duration: 2000 })
-                            this.$router.push('/check')
-                        })).catch((err) => {
-                            console.log(err)
-                        })
-                    }
+            if (this.hasPic === 0) {
+                Notification({ title: '请上传图片', message: '', type: 'warning', duration: 2000 })
+            } else {
+                this.$refs[formName].validate((valid) => {
+                    if (valid) {
+                        console.log(this.form.attributes)
+                        //使用for循环编辑数组，向jsonObject中赋值
+                        for (let itemindex = 0; itemindex < this.form.attributes.length; itemindex++) {
+                            //$set()方法第一个参数是对象，第二个参数是key值，第三个参数是value值
+                            this.$set(this.attrJson, this.form.attributes[itemindex].name, this.form.attributes[itemindex].value);
+                        }
+                        console.log(this.attrJson)
+                        console.log(JSON.stringify(this.attrJson))
+                        let model = ''
+                        if (this.form.modelName !== '') {
+                            model = this.form.modelName
+                        } else {
+                            model = this.form.model
+                        }
+                        if (this.first === false) {
+                            edit_prompt({
+                                "id": this.picid,
+                                "picture": this.imgUrl,
+                                "prompt": this.form.prompt,
+                                "model": model,
+                                "width": this.form.width,
+                                "height": this.form.height,
+                                prompt_attribute: this.attrJson
+                            }).then((res => {
+                                let id = res.data.id;
+                                console.log(res)
+                                Notification({ title: '修改成功', message: '请等待审核', type: 'success', duration: 2000 })
+                                this.$router.push('/check')
+                            })).catch((err) => {
+                                console.log(err)
+                                Notification({ title: '失败', message: err.response.data.msg, type: 'error', duration: 2000 })
+                            })
+                        } else {
+                            create_prompt({
+                                "picture": this.key,
+                                "prompt": this.form.prompt,
+                                "model": model,
+                                "width": this.form.width,
+                                "height": this.form.height,
+                                prompt_attribute: this.attrJson
+                            }).then((res => {
+                                let id = res.data.id;
+                                console.log(res)
+                                Notification({ title: '上传成功', message: '请等待审核', type: 'success', duration: 2000 })
+                                this.$router.push('/check')
+                            })).catch((err) => {
+                                console.log(err)
+                            })
+                        }
 
-                } else {
-                    console.log('error submit!!');
-                    Notification({ title: '上传失败', message: '请填写缺少项', type: 'error', duration: 2000 })
-                    return false;
-                }
-            });
+                    } else {
+                        console.log('error submit!!');
+                        Notification({ title: '上传失败', message: '请填写缺少项', type: 'error', duration: 2000 })
+                        return false;
+                    }
+                });
+            }
         },
         UploadHttpRequest(options) {
             console.log('.................')
@@ -274,6 +275,7 @@ export default {
                     // console.log(res)
                     console.log(res.data.key)
                     this.key = res.data.key
+                    this.hasPic = 1
                 }).catch(err => {
                     console.log(err)
                 })
