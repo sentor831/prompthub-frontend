@@ -42,7 +42,6 @@
 <script>
 import { Parallax } from '@/components';
 import { FormGroupInput as FgInput } from '../components'
-import vueWaterfallEasy from 'vue-waterfall-easy';
 import { DropDown, Navbar, NavLink } from '@/components';
 import TheHeader from '../components/TheHeader.vue'
 import { LazyImg, Waterfall } from 'vue-waterfall-plugin'

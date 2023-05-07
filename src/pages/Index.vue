@@ -20,12 +20,6 @@
                 <el-button round v-if="login !== null" @click="chooseRecommend()" :type="btntypeR">个性化推荐</el-button>
             </el-row>
 
-            <!-- <div class="waterfall" style="height:400px; margin-top: 20px;">
-        <vue-waterfall-easy ref="waterfall" :imgsArr="imgsArr" @scrollReachBottom="getData">
-          <div class="info" slot-scope="props" style="text-align: center;">第{{ props.index + 1 }}张图片</div>
-        </vue-waterfall-easy>
-      </div> -->
-
             <!-- TODO: 按钮还是滚动条到底部 -->
             <Waterfall :list="imgsArr" style="margin-top:20px" :breakpoints="breakpoints">
                 <template #item="{ item, url }">
