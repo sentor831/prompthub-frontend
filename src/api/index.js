@@ -258,9 +258,9 @@ export const get_history_list = () => {
     })
 }
 
-export const get_my_prompt_list = (id) => {
+export const get_my_prompt_list = (id, per_page, page_index) => {
     return axioss.request({
-        url: `api/user/get_published_prompt_list?user_id=${id}&per_page=99999`,
+        url: `api/user/get_published_prompt_list?user_id=${id}&per_page=${per_page}&page_index=${page_index}`,
         method: 'get',
     })
 }
