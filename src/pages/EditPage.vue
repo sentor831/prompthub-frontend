@@ -21,7 +21,7 @@
                     </div>
                     <!-- 图片上传 -->
                     <el-upload v-else action="#" :http-request="UploadHttpRequest" drag class="Upload" list-type="picture"
-                        :show-file-list="false" :on-change="imgPreview">
+                        :show-file-list="false" :before-upload="beforeUpload">
                         <i class="el-icon-plus avatar-uploader-icon"></i>
                     </el-upload>
                     <!-- 图片显示对话框 -->
@@ -144,11 +144,6 @@ export default {
             var json = eval('[' + str + ']');
             return json;
         },
-        //图片缩略图
-        imgPreview: function (file) {
-            //生成临时缩略图
-            this.imgUrl = URL.createObjectURL(file.raw);
-        },
         enlarge: function () {
             this.dialogVisible = true;
             this.dialogUrl = this.imgUrl;
@@ -236,6 +231,16 @@ export default {
                 });
             }
         },
+        // 限制图片为jpg和png
+        beforeUpload(file) {
+            console.log(file)
+            const isJPG = file.type === 'image/jpeg';
+            const isPNG = file.type === 'image/png';
+            if (!isJPG && !isPNG) {
+                this.$message.error('上传头像图片只能是 JPG/PNG 格式!');
+            }
+            return (isJPG || isPNG);
+        },
         UploadHttpRequest(options) {
             console.log('.................')
             this.isShowLoading = true;
@@ -276,6 +281,7 @@ export default {
                     console.log(res.data.key)
                     this.key = res.data.key
                     this.hasPic = 1
+                    this.imgUrl = 'img/' + this.key
                 }).catch(err => {
                     console.log(err)
                 })
