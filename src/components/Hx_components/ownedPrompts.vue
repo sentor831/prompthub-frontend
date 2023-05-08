@@ -17,6 +17,9 @@
             <div v-if="hasNext === 1" style="text-align: center;">
                 <el-button btn btn-primary @click="getData()" style="margin-bottom: 1em ;">加载更多</el-button>
             </div>
+            <div v-else-if="noWorks === 0" style="text-align: center;">
+                <p>到底了</p>
+            </div>
         </el-main>
     </div>
 </template>
@@ -39,7 +42,13 @@ export default {
             userId: -1,
             noWorks: 0,
             page: 1,
-            hasNext: 1
+            hasNext: 0
+        }
+    },
+    watch: {
+        // 监听路由发生改变
+        $route() {
+            this.setUp()
         }
     },
     methods: {
@@ -51,7 +60,10 @@ export default {
         },
         setUp() {
             this.userId = this.$route.query.userId;
+            this.tableData = []
             this.page = 1;
+            this.noWorks = 0;
+            this.hasNext = 0;
             this.getData();
         },
         getData() {
@@ -64,11 +76,14 @@ export default {
             get_my_prompt_list(this.userId, 32, this.page).then((res) => {
                 this.tableData = this.tableData.concat(res.data.prompt_list);
                 if (!res.data.has_next) {
-                    this.$refs.waterfall.waterfallOver();
                     this.hasNext = 0
+                } else {
+                    this.hasNext = 1
                 }
                 if (res.data.prompt_list.length === 0 && this.page === 1) {
                     this.noWorks = 1
+                } else {
+                    this.page += 1
                 }
             }).catch((err) => {
                 console.log(err);
@@ -81,7 +96,7 @@ export default {
             }).finally(() => {
                 loading.close()
             })
-            this.page += 1
+
         }
     },
     mounted() {

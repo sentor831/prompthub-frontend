@@ -50,11 +50,12 @@ class HttpRequest {
             return { data, status }
         }, async (error) => {
             this.destroy(url)
-           
+
             const errorJson = JSON.parse(JSON.stringify(error))
             let response_status = errorJson.status
 
             if (response_status === 401) {
+                // router.push('/')
                 // should refresh token or re-login
                 // 当请求url已经是刷新token时
                 // 说明此时刷新失败
@@ -76,7 +77,8 @@ class HttpRequest {
                         return axios.request(reqConfig) // 再次发送之前 401 的请求
                     } catch (err) {
                         if (err.response.status === 401) {
-                            reLogin()
+                            // reLogin()
+                            router.push('/')
                         }
                         return Promise.reject(err)
                     }
@@ -84,7 +86,8 @@ class HttpRequest {
                     if (location.href.endsWith('/login')) {
                         return Promise.reject(error)
                     } else {
-                        reLogin()
+                        // reLogin()
+                        router.push('/')
                         return Promise.reject(error)
                     }
                 }

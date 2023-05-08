@@ -38,6 +38,9 @@
             <div v-if="hasNext === 1" style="text-align: center;">
                 <el-button btn btn-primary @click="getData(currentType)" style="margin-bottom: 1em ;">加载更多</el-button>
             </div>
+            <div v-else style="text-align: center;">
+                <p>到底了</p>
+            </div>
 
         </div>
 
@@ -134,8 +137,9 @@ export default {
                         this.imgsArr = this.imgsArr.concat(res.data.prompt_list)
                         console.log(res.data.has_next);
                         if (!res.data.has_next) {
-                            this.$refs.waterfall.waterfallOver();
                             this.hasNext = 0
+                        } else {
+                            this.hasNext = 1
                         }
                     })
                     .catch((err) => { })
@@ -151,20 +155,15 @@ export default {
                         this.imgsArr = this.imgsArr.concat(res.data.prompt_list)
                         console.log(res.data.has_next);
                         if (!res.data.has_next) {
-                            this.$refs.waterfall.waterfallOver();
                             this.hasNext = 0
+                        } else {
+                            this.hasNext = 1
                         }
                     })
                     .catch((err) => { })
                     .finally(() => { loading.close() })
                 this.page += 1
             }
-
-            // if (this.page == 6) {
-            //   this.$refs.waterfall.waterfallOver();
-            // } else {
-            //   this.imgsArr = this.imgsArr.concat(list);
-            // }
         },
         goSearch() {
             if (this.keyword !== '') {

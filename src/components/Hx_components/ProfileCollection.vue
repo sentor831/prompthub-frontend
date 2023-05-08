@@ -146,7 +146,8 @@ export default {
             currentPage: 1,
             pageSize: 12,
             collectionId: -1,
-            noItems: 0
+            noItems: 0,
+            firstCollection: -1
         };
     },
     components: {
@@ -154,14 +155,23 @@ export default {
         LazyImg
     },
     mounted() {
-        this.userId = this.$route.query.userId;
-        if (this.userId === undefined) {
-            this.userId = -1
-        }
-        this.getCollectionInfo();
+        this.setUp()
     },
-
+    watch: {
+        // 监听路由发生改变
+        $route() {
+            this.setUp()
+        }
+    },
     methods: {
+        setUp() {
+            this.userId = this.$route.query.userId;
+            if (this.userId === undefined) {
+                this.userId = -1
+            }
+            this.getCollectionInfo();
+
+        },
         isMe() {
             // console.log(this.userId);
             // console.log(this.cookie.getCookie("userId"));
@@ -189,6 +199,14 @@ export default {
                             this.public_collection_list = this.public_collection_list.concat(item);
                         }
                     }
+                    if (this.public_collection_list.length > 0) {
+                        this.firstCollection = this.public_collection_list[0].id
+                    } else if (isMe() && this.private_collection_list.length > 0) {
+                        this.firstCollection = this.private_collection_list[0].id
+                    } else {
+                        this.firstCollection = -1
+                    }
+                    this.showCollection(this.firstCollection);
                 })
                 .catch((err) => {
                     Notification({
@@ -308,7 +326,6 @@ export default {
             } else {
                 this.collectionId = id
                 get_collection_record_list(id, this.pageSize, this.currentPage).then((res) => {
-                    console.log(res)
                     this.collectionRecordList = res.data.collection_record_list;
                     this.totalNum = res.data.collection_record_list.length;
                     if (this.totalNum === 0) {
