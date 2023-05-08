@@ -17,7 +17,7 @@
                                 </div>
                             </div>
                             <div @click="picInfo(item.prompt.id)">
-                                <LazyImg :url="item.prompt.picture" class="pic"></LazyImg>
+                                <LazyImg :url="item.prompt.picture" alt="picture" class="pic"></LazyImg>
                             </div>
                         </div>
                     </div>

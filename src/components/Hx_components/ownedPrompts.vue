@@ -9,7 +9,7 @@
                         class="bg-gray-900 rounded-lg shadow-md overflow-hidden transition-all duration-300 ease-linear hover:shadow-lg hover:shadow-gray-600 group">
                         <div class="overflow-hidden">
                             <p> {{ dispTime(item.created_at) }}</p>
-                            <LazyImg :url="item.picture" class="pic"></LazyImg>
+                            <LazyImg :url="item.picture" class="pic" alt="picture"></LazyImg>
                         </div>
                     </div>
                 </template>

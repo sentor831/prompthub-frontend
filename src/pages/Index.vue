@@ -28,7 +28,7 @@
                         <div class="overflow-hidden">
                             <i v-if="item.collection_count > 0" style="color: crimson" class="el-icon-star-on">{{
                                 item.collection_count }}</i>
-                            <LazyImg :url="url" class="pic"></LazyImg>
+                            <LazyImg :url="url" class="pic" alt="picture"></LazyImg>
                             <!-- <img :src="url" class="pic" /> -->
                         </div>
                     </div>
@@ -126,7 +126,7 @@ export default {
                 background: 'rgba(0, 0, 0, 0.7)'
             })
             if (type === 1) {
-                hot_prompt_list(4 * 32, this.page)
+                hot_prompt_list(24, this.page)
                     .then((res) => {
                         for (let i = 0; i < res.data.prompt_list.length; ++i) {
                             res.data.prompt_list[i].src = res.data.prompt_list[i].picture;
@@ -142,7 +142,7 @@ export default {
                     .finally(() => { loading.close() })
                 this.page += 1;
             } else if (type === 2) {
-                personized_prompt_list(4 * 32, this.page)
+                personized_prompt_list(24, this.page)
                     .then((res) => {
                         console.log(res)
                         for (let i = 0; i < res.data.prompt_list.length; ++i) {

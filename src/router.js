@@ -1,7 +1,6 @@
 import Vue from 'vue';
 import Router from 'vue-router';
 import Index from './pages/Index.vue';
-import Landing from './pages/Landing.vue';
 import Login from './pages/Login.vue';
 import SignUp from './pages/SignUp.vue'
 import Profile from './pages/Profile.vue';
@@ -20,8 +19,6 @@ import CheckPage from './pages/CheckPage.vue';
 
 // 黄新引入部分
 // 引入组件
-import Waterfall_hx from "./components/Hx_components/Waterfall_hx"
-import ProfileCarousel from "./components/Hx_components/ProfileCarousel"
 import ProfileCollection from "./components/Hx_components/ProfileCollection"
 import history from "./components/Hx_components/history"
 import MemberList from "./components/Hx_components/MemberList"
@@ -41,15 +38,6 @@ export default new Router({
       components: { default: Index, header: MainNavbar, footer: MainFooter },
       props: {
         header: { colorOnScroll: 100 },
-        footer: { backgroundColor: 'black' }
-      }
-    },
-    {
-      path: '/landing',
-      name: 'landing',
-      components: { default: Landing, header: MainNavbar, footer: MainFooter },
-      props: {
-        header: { colorOnScroll: 400 },
         footer: { backgroundColor: 'black' }
       }
     },
@@ -100,19 +88,6 @@ export default new Router({
         footer: { backgroundColor: 'black' }
       },
       children: [
-        // {
-        //   path: "",
-        //   component: ProfileCarousel
-        // },
-        // {
-        //   path: 'MyHome',
-        //   component: ProfileCarousel
-        // },
-        // {
-        //   path: 'product',
-        //   // component: Thumbs
-        //   component: Waterfall_hx
-        // },
         {
           path: 'collection',
           // component: Checking
@@ -125,11 +100,6 @@ export default new Router({
         {
           path: 'prompts',
           component: ownedPrompts
-        },
-        {
-          path: 'viewhistory',
-          // component: Viewhistory
-          component: Waterfall_hx
         },
         {
           // 关注列表

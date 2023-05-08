@@ -104,6 +104,7 @@
                     <div class="row" style="overflow-x: scroll;">
                         <p style="margin-left: 2vw;">
                         <pre>{{ others }}</pre>
+                        <!-- {{ jsonBeautifulPrint(others) }} -->
                         </p>
                     </div>
                 </div>

@@ -78,7 +78,7 @@
                                         style="cursor: pointer; margin-top: 1vh;"
                                         @click="deleteCollectionItem(item.id)"></i>
                                     <div @click="picInfo(item.prompt.id)">
-                                        <LazyImg :url="item.prompt.picture" class="pic">
+                                        <LazyImg :url="item.prompt.picture" class="pic" alt="picture">
                                         </LazyImg>
                                     </div>
                                 </div>
