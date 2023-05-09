@@ -55,7 +55,7 @@
                             @click="toUploader()" />
                     </div>
                     <div class="col col-md-auto" style=" padding-top: 3vh;">
-                        <h5 class="username" style="cursor: pointer;">{{ uploader }}</h5>
+                        <h5 class="username" style="cursor: pointer;" @click="toUploader()">{{ uploader }}</h5>
                     </div>
                     <div class="col col-md-auto" style="padding-top: 1vh;">
                         <a class="btn btn-primary" v-if="hasFollowed == 0" @click="follow()">+ 关注</a>
@@ -65,7 +65,7 @@
                 <h3 style="margin-top: 5vh; margin-bottom: 2vh;">Prompts</h3>
                 <div class="row">
                     <p id="prompt-content" class="blockquote blockquote-default"
-                        style="margin: 2vh; margin-bottom: 1vh; margin-top: 1vh; width: 100%;">
+                        style="margin: 2vh; margin-bottom: 1vh; margin-top: 1vh; width: 100%; word-wrap: break-word">
                         {{ prompts }}
                     </p>
                 </div>
@@ -126,16 +126,20 @@
             <!-- TODO v-for -->
             <div class="comment" v-for="(comment, index) in commentList" :key="index">
                 <div class="row">
-                    <img :src="comment.user.avatar" style="width: 4em; height: 4em; border-radius: 50%; cursor: pointer;" />
+                    <img :src="comment.user.avatar" style="width: 4em; height: 4em; border-radius: 50%; cursor: pointer;"
+                        @click="toCommenter(comment.user.id)" />
                     <div class="col">
-                        <h5 class="username" style="cursor: pointer;">{{ comment.user.nickname }}</h5>
+                        <h5 class="username" style="cursor: pointer;" @click="toCommenter(comment.user.id)">{{
+                            comment.user.nickname }}</h5>
                         <div class="row" v-if="comment.parent_comment"
                             style="background-color: whitesmoke; margin-left: auto; padding: 1em; padding-bottom: 0;">
                             <img :src="comment.parent_comment.user.avatar"
+                                @click="toCommenter(comment.parent_comment.user.id)"
                                 style="width: 3em; height: 3em; border-radius: 50%; cursor: pointer;" />
                             <div class="col">
-                                <h5 class="username" style="cursor: pointer; font-size: medium;">{{
-                                    comment.parent_comment.user.nickname }}
+                                <h5 class="username" style="cursor: pointer; font-size: medium;"
+                                    @click="toCommenter(comment.user.id)">{{
+                                        comment.parent_comment.user.nickname }}
                                 </h5>
                                 <p style="word-break: break-all; word-wrap: break-word; font-size: medium;">
                                     {{ comment.parent_comment.content }}</p>
@@ -148,17 +152,20 @@
                             {{ comment.content }}</p>
                         <div class="row" style="margin-left: auto;">
                             <p style="font-size: small;">{{ dispTime(comment.created_at) }}</p>
-                            <a class="btn btn-link" style="margin-top: -0.6vh; margin-left: 3vh;"
+                            <a class="btn btn-link" style="margin-top: -0.6vh; margin-left: 1vw;"
                                 @click="showReply(index)">回复</a>
-                            <el-dropdown v-if="comment.belong_to == true">
+                            <el-button type="text" icon="el-icon-delete" v-if="comment.belong_to"
+                                style="margin-top: -1.8vh; margin-left: 1vw;"
+                                @click="deleteComment(comment.id)"></el-button>
+                            <!-- <el-dropdown v-if="comment.belong_to == true">
                                 <span class="el-dropdown-link">
-                                    <el-button type="text" icon="el-icon-edit"
-                                        style="padding: 0; margin-left: 3vh;"></el-button>
+                                    <el-button type="text" icon="el-icon-delete"
+                                        style="padding: 0; margin-left: 1vw;"></el-button>
                                 </span>
                                 <el-dropdown-menu slot="dropdown">
                                     <el-dropdown-item @click.native="deleteComment(comment.id)">删除</el-dropdown-item>
                                 </el-dropdown-menu>
-                            </el-dropdown>
+                            </el-dropdown> -->
                         </div>
                         <div class="row" v-show="index === show">
                             <div class="input-group mb-3" style="margin-right:2vh">
@@ -297,6 +304,9 @@ export default {
         toUploader() {
             this.$router.push({ path: '/profile/prompts', query: { userId: this.uploaderId } })
         },
+        toCommenter(id) {
+            this.$router.push({ path: '/profile/prompts', query: { userId: id } })
+        },
         follow() {
             if (this.login !== null) {
                 if (this.hasFollowed == 1) {
@@ -343,7 +353,11 @@ export default {
             })
         },
         showReply(index) {
-            this.show = index
+            if (this.show === index) {
+                this.show = -1
+            } else {
+                this.show = index
+            }
         },
         toCollect() {
             if (this.login !== null) {
@@ -367,6 +381,8 @@ export default {
                         type: "success",
                         duration: 2000,
                     });
+                    this.form.name = ""
+                    this.form.visibility = true
                 })
                 .catch((err) => {
                     console.log(err);

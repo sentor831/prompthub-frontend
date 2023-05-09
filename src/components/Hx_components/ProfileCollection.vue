@@ -233,7 +233,7 @@ export default {
                         duration: 2000,
                     });
                     this.form.name = ""
-                    this.visibility = true
+                    this.form.visibility = true
                 })
                 .catch((err) => {
                     console.log(err);

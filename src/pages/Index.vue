@@ -6,7 +6,7 @@
             <div class="container">
                 <div class="content-center brand">
                     <h2>欢迎使用Prompthub</h2>
-                    <el-input class="input" placeholder="搜索..." v-model="keyword" @keyup.enter="goSearch()">
+                    <el-input class="input" placeholder="搜索..." v-model="keyword" @keyup.enter.native="goSearch()">
                         <el-button slot="append" icon="el-icon-search" @click="goSearch()"></el-button>
                     </el-input>
                 </div>

@@ -70,7 +70,7 @@ export default new Router({
       name: 'modipass',
       components: { default: ModiPass, header: TheHeader },
       props: {
-        header: { colorOnScroll: 400 }
+        header: { colorOnScroll: 0 }
       }
     },
     {
@@ -84,7 +84,7 @@ export default new Router({
       name: 'profile',
       components: { default: Profile, header: TheHeader, footer: MainFooter },
       props: {
-        header: { colorOnScroll: 300 },
+        header: { colorOnScroll: 10 },
         footer: { backgroundColor: 'black' }
       },
       children: [
