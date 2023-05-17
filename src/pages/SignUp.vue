@@ -73,6 +73,7 @@ export default {
       verifycode: '',
       verifyDisabled: false,
       timer: 0,
+      timer2: null,
       gap: 60,
       rules: {
         email: {
@@ -100,7 +101,12 @@ export default {
         })
           .then((res) => {
             console.log(res)
-            Notification({ title: '邮件发送成功', message: '快去查看吧', type: 'success', duration: 2000 })
+            this.timer2 = window.setTimeout(() => {
+              Notification({ title: '邮件发送成功', message: '快去查看吧', type: 'success', duration: 2000 })
+            }, 0)
+            this.timer2 = window.setTimeout(() => {
+              Notification({ title: '如果没有收到邮件，请检查邮箱是否输入错误', message: '', type: 'info', duration: 0 })
+            }, 0)
             this.verifyDisabled = true
             this.timer = setInterval(() => {
               this.gap--
