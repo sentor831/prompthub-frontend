@@ -87,6 +87,7 @@
 import { DropDown, Navbar, NavLink } from '@/components';
 import { Popover } from 'element-ui';
 import { get_unread_notification_num, getInfos } from '../api';
+import { Notification } from 'element-ui';
 export default {
   name: 'main-navbar',
   props: {
