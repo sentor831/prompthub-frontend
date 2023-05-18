@@ -10,7 +10,7 @@
           <template>
 
             <!-- <td> -->
-            <fg-input style="display: inline-table; min-width:250px;" class="no-border" placeholder="注册邮箱..."
+            <fg-input style="display: inline-table; min-width:250px;" class="no-border" placeholder="注册邮箱..." type="email"
               addon-left-icon="now-ui-icons ui-1_email-85" prop="email" v-model="email" aria-describedby="basic-addon2">
             </fg-input>
             <!-- </td> -->
@@ -74,6 +74,12 @@ export default {
       verifyDisabled: false,
       timer: 0,
       gap: 60,
+      rules: {
+        email: {
+          rule: /^([a-zA-Z\d][\w-]{2,})@(\w{2,})\.([a-z]{2,})(\.[a-z]{2,})?$/,
+          msg: '请输入正确的邮箱地址'
+        }
+      }
     }
   },
   methods: {
@@ -86,7 +92,7 @@ export default {
         Notification({ title: '提示', message: '请输入新确认密码', type: 'warning', duration: 2000 })
       } else if (this.password !== this.confirmpassword) {
         Notification({ title: '提示', message: '新密码与新确认密码不一致', type: 'warning', duration: 2000 })
-      } else {
+      } else if (this.validate('email')) {
         sendForgetPassEmail({
           email: this.email,
         })
@@ -110,6 +116,14 @@ export default {
             Notification({ title: '邮件发送失败', message: err.response.data.msg, type: 'error', duration: 2000 })
           })
       }
+    },
+    validate(key) {
+      let bool = true
+      if (!this.rules[key].rule.test(this[key])) {
+        Notification({ title: '邮件发送失败', message: this.rules[key].msg, type: 'error', duration: 2000 })
+        bool = false
+      }
+      return bool
     },
     handleModify() {
       modifyForgetPass({
