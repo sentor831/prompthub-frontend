@@ -1,6 +1,6 @@
 <template>
   <div class="section section-signup"
-    style="background-image: url('img/signup.jpg'); background-size: cover; background-position: top center; min-height: 700px;">
+    style="background-image: url('image/signup.jpg'); background-size: cover; background-position: top center; min-height: 700px;">
     <div class="container">
       <div class="row">
         <card class="card-signup" header-classes="text-center" color="orange" style="opacity: 80%;">
