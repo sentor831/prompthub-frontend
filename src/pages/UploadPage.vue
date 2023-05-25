@@ -4,7 +4,7 @@
       <el-upload class="Upload" drag action="http://upload.qiniu.com/putb64/-1" :on-preview="handlePreview"
         :on-remove="handleRemove" :file-list="fileList" list-type="picture" :http-request="UploadHttpRequest">
         <!-- <i class="el-icon-upload"></i> -->
-        <img src='../../public/img/upload.png' width="75" style="margin:6vw 0 1vw 0; ">
+        <img src='../../public/image/upload.png' width="75" style="margin:6vw 0 1vw 0; ">
         <div class="el-upload__text">将文件拖到此处，或<em>点击上传</em></div>
         <!-- <div class="el-upload__tip" slot="tip">只能上传jpg/png文件，且不超过500kb</div> -->
       </el-upload>

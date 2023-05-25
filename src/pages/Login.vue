@@ -1,14 +1,11 @@
 <template>
   <div class="page-header clear-filter" filter-color="orange">
-    <div class="page-header-image" style="background-image:url('img/login2.jpg')"></div>
+    <div class="page-header-image" style="background-image:url('image/login2.jpg')"></div>
     <div class="content">
       <div class="container">
         <div class="col-md-5 ml-auto mr-auto">
           <h3 class="card-title title-up"><strong>登录账号</strong></h3>
           <card type="login" plain>
-            <!-- <div slot="header" class="logo-container">
-              <img v-lazy="'img/now-logo.png'" alt="" />
-            </div> -->
 
             <fg-input type="email" class="no-border input-lg" addon-left-icon="now-ui-icons users_circle-08"
               placeholder="邮箱..." v-model="email">

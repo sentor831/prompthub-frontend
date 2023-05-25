@@ -10,7 +10,6 @@
           <p class="CheckDescribe">{{ dispTime(uploadTime) }}
             <span class="CheckDescribe" style="color:#BFBFBF" v-if="status === 2">
               <el-divider direction="vertical"></el-divider>
-              <!-- <img src='../../../public/img/under-review.png' width="20"> -->
               <i class="el-icon-refresh" style="color:#00A1D6"></i>
               <span class="CheckDescribe" style="color:#00A1D6">审核中</span>
             </span>
