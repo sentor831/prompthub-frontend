@@ -21,39 +21,60 @@
       </li>
 
       <li class="nav-item" v-if="login !== null" style="margin-right: 3vw; cursor: pointer;" @click="toManage()">
-        <div v-popover:popover3 style="margin-top: 2vh">
+        <el-dropdown trigger="hover" style="margin-top: 2vh">
+          <el-dropdown-link>
+            <i class="el-icon-document-checked" style="font-size: 20px; color: whitesmoke;"></i>
+          </el-dropdown-link>
+
+          <el-dropdown-menu slot="dropdown">
+            <el-dropdown-item @click.native="toManage">管理作品</el-dropdown-item>
+          </el-dropdown-menu>
+        </el-dropdown>
+        <!-- <div v-popover:popover3 style="margin-top: 2vh">
           <i class="el-icon-document-checked" style="font-size: 20px;"></i>
         </div>
         <el-popover ref="popover3" popper-class="popover" placement="bottom" trigger="hover">
           <div class="popover-body">
             管理作品
           </div>
-        </el-popover>
+        </el-popover> -->
       </li>
 
       <li class="nav-item" v-if="login !== null" style="margin-right: 3vw; cursor: pointer;" @click="toCreate()">
-        <!-- <el-dropdown trigger="hover">
-          <span class="el-dropdown-link">
-            <i class="el-icon-brush" style="font-size: 20px; margin-top: 2vh"></i>
-          </span>
+        <el-dropdown trigger="hover" style="margin-top: 2vh">
+          <el-dropdown-link>
+            <div>
+              <i class="el-icon-brush" style="font-size: 20px; color: whitesmoke;"></i>
+            </div>
+          </el-dropdown-link>
           <el-dropdown-menu slot="dropdown">
-            <el-dropdown-item icon="el-icon-upload2" @click.native="toCreate">上传作品</el-dropdown-item>
-            <el-dropdown-item icon="el-icon-document-checked" @click.native="toManage">管理作品</el-dropdown-item>
+            <el-dropdown-item @click.native="toCreate">上传作品</el-dropdown-item>
           </el-dropdown-menu>
-        </el-dropdown> -->
+        </el-dropdown>
 
-        <div v-popover:popover1 style="margin-top: 2vh">
+        <!-- <div v-popover:popover1 style="margin-top: 2vh">
           <i class="el-icon-brush" style="font-size: 20px;"></i>
         </div>
         <el-popover ref="popover1" popper-class="popover" placement="bottom" trigger="hover">
           <div class="popover-body">
             上传作品
           </div>
-        </el-popover>
+        </el-popover> -->
       </li>
 
       <li class="nav-item" v-if="login !== null" style="margin-right: 3vw; cursor: pointer;" @click="toNotice()">
-        <div v-popover:popover2 style="margin-top: 2vh">
+        <el-dropdown trigger="hover" style="margin-top: 2vh">
+          <el-dropdown-link>
+            <el-badge :hidden="noticenum == 0" :value=noticenum>
+              <i class="el-icon-bell" style="font-size: 20px; color: whitesmoke;"></i>
+            </el-badge>
+          </el-dropdown-link>
+          <el-dropdown-menu slot="dropdown">
+            <el-dropdown-item @click.native="toNotice">查看通知</el-dropdown-item>
+          </el-dropdown-menu>
+        </el-dropdown>
+
+        <!-- <div v-popover:popover2 style="margin-top: 2vh">
           <el-badge :hidden="noticenum == 0" :value=noticenum>
             <i class="el-icon-bell" style="font-size: 20px;"></i>
           </el-badge>
@@ -62,7 +83,8 @@
           <div class="popover-body">
             查看通知
           </div>
-        </el-popover>
+        </el-popover> -->
+
       </li>
       <li class="nav-item" v-if="login !== null">
         <el-dropdown trigger="hover">
