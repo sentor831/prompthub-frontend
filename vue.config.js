@@ -22,7 +22,7 @@ module.exports = {
         // }
       },
       '/img': {
-        target: 'http://rtjsbslgo.hb-bkt.clouddn.com/',
+        target: 'http://ruwbt5iuz.hb-bkt.clouddn.com/',
         changeOrigin: true,
         pathRewrite: {
           '^/img': ''
