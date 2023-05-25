@@ -239,6 +239,10 @@ export default {
             if (!isJPG && !isPNG) {
                 this.$message.error('上传头像图片只能是 JPG/PNG 格式!');
             }
+            if (file.size === 0) {
+                this.$message.error('上传头像图片不能为空!');
+                return false;
+            }
             return (isJPG || isPNG);
         },
         UploadHttpRequest(options) {
