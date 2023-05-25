@@ -54,6 +54,7 @@
 
             <el-container v-if="collectionId !== -1">
                 <el-header style="text-align: right; font-size: 15px; background-color: rgb(244, 245, 247)">
+                    <div>{{ collection_name }}</div>
                     <el-dropdown v-if="isMe()">
                         <i class="el-icon-setting" style="margin-right: 1vw">设置</i>
                         <el-dropdown-menu slot="dropdown">
@@ -61,11 +62,20 @@
                                 <div @click="toEdit()">编辑</div>
                             </el-dropdown-item>
                             <el-dropdown-item>
-                                <div @click="deleteCollection()">删除</div>
+                                <div @click="toDelete()">删除</div>
                             </el-dropdown-item>
                         </el-dropdown-menu>
                     </el-dropdown>
                 </el-header>
+
+                <el-dialog title="删除确认" :visible.sync="deleteCollectionVisible" width="27%" center>
+                    <span>确定要删除{{ collection_name }}收藏夹吗？</span>
+
+                    <span slot="footer" class="dialog-footer">
+                        <el-button @click="deleteCollectionVisible = false">取 消</el-button>
+                        <el-button type="primary" @click="deleteCollection()">确 定</el-button>
+                    </span>
+                </el-dialog>
 
                 <el-main>
                     <p v-if="noItems === 1">收藏夹空空如也</p>
@@ -147,7 +157,8 @@ export default {
             pageSize: 12,
             collectionId: -1,
             noItems: 0,
-            firstCollection: -1
+            firstCollection: -1,
+            deleteCollectionVisible: false
         };
     },
     components: {
@@ -268,6 +279,7 @@ export default {
                     Notification({ title: '失败', message: err.response.data.msg, type: 'error', duration: 2000 })
                 })
                 .finally(() => {
+                    this.deleteCollectionVisible = false
                     this.getCollectionInfo()
                     this.showCollection(-1)
                 });
@@ -289,6 +301,22 @@ export default {
                     });
                 })
 
+        },
+        toDelete() {
+            this.deleteCollectionVisible = true
+            get_collection_info(this.collectionId)
+                .then((res) => {
+                    this.collection_name = res.data.collection_info.name
+                })
+                .catch((err) => {
+                    console.log(err);
+                    Notification({
+                        title: "失败",
+                        message: err.response.data.msg,
+                        type: "error",
+                        duration: 2000,
+                    });
+                })
         },
         submitEditCollection() {
             let visibility = this.newform.visibility === true ? 0 : 1;
@@ -325,6 +353,19 @@ export default {
                 this.totalNum = 0
             } else {
                 this.collectionId = id
+                get_collection_info(id)
+                    .then((res) => {
+                        this.collection_name = res.data.collection_info.name
+                    })
+                    .catch((err) => {
+                        console.log(err);
+                        Notification({
+                            title: "失败",
+                            message: err.response.data.msg,
+                            type: "error",
+                            duration: 2000,
+                        });
+                    })
                 get_collection_record_list(id, this.pageSize, this.currentPage).then((res) => {
                     this.collectionRecordList = res.data.collection_record_list;
                     this.totalNum = res.data.collection_record_list.length;
@@ -373,6 +414,8 @@ export default {
     background-color: #b3c0d1;
     color: #333;
     line-height: 60px;
+    display: flex;
+    justify-content: space-between;
 }
 
 .el-aside {
